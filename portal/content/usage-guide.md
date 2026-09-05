@@ -4,7 +4,7 @@
 
 **先分清输入位置：** 标注“终端”的 `omp ...` 在 Linux Shell 中运行；标注“OMP 输入框”的 `/...` 和自然语言在启动后的 OMP 中输入。每个代码块是一次独立输入；示例项目路径、文件名、功能和模型名请换成自己的。
 
-**常用操作优先按快捷键，fork 键位以 [fork.md](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md) 为准。** 下表在 OMP 主输入框中使用；按下组合键即可，不要把键名输入或粘贴进去。键位被个人配置修改、或终端拦截时，用 `/hotkeys` 查看当前绑定。
+**常用操作优先按快捷键，fork 键位以 [fork.md](https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md) 为准。** 下表依据上游提交 `61fb07d`（2026-09-05），不表示本地二进制已更新。在 OMP 主输入框按下组合键即可，不要把键名输入或粘贴进去。旧版本、个人配置或终端拦截可能造成键位差异，用 `/hotkeys` 查看当前绑定。
 
 | 想做什么 | 默认快捷键 | 接下来怎么做 |
 |---|---|---|
@@ -12,9 +12,9 @@
 | 配置 slow、Advisor 等模型角色 | **Alt+M** | 打开模型中心，选择角色与模型 |
 | 在常用模型间轮换 | **Ctrl+P** | 按轮换列表切换，查看状态栏确认当前模型 |
 | 切换 Plan 模式状态 | **Shift+Tab** | 依次开启、暂停、关闭；看状态栏确认 |
-| 切换 Main／Discuss | **Ctrl+0** | 在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe |
+| 切换 Main／Discuss | **Shift+F2** | 在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe |
 | 显示或隐藏思考内容 | **Alt+P** | 只改变 thinking blocks 的显示，不改变推理强度 |
-| 调整推理强度 | **Alt+,**（Alt 加逗号） | 循环切换 thinking level，查看状态栏确认档位 |
+| 调整推理强度 | **Shift+F1** | 循环切换 thinking level，查看状态栏确认档位 |
 | 查看 Agent 工作情况 | **Alt+A**（或 **Ctrl+S**） | 打开 Agent Hub；有子代理记录时，也可在空输入框快速连按两次左箭头 |
 | 展开工具调用详情 | **Ctrl+O** | 阅读执行输出；再次按下收起 |
 | 打断当前执行 | **Esc** | 停止本轮，补充或纠正要求后继续 |
@@ -324,4 +324,4 @@ omp config reset task.maxConcurrency
 
 核对依据：[模型与设置](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/settings.md)、[模型角色选择实现](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/modes/controllers/selector-controller.ts)、[Advisor](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/advisor-watchdog.md)、[Plan 流程](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/prompts/system/plan-mode-active.md)、[Vibe 模式](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/vibe-mode.md)、[并发设置](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/config/settings-schema.ts)、[并发调度实现](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/task/parallel.ts)。
 
-快捷键首要依据：[fork.md 的快捷键与状态栏、代理行为与 Discuss](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md)。其中未列出的通用键位补充核对[同版本键位定义](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/packages/coding-agent/src/config/keybindings.ts)；本机自定义绑定以 `/hotkeys` 为准。
+快捷键首要依据：[fork.md 的快捷键与状态栏、代理行为与 Discuss](https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md)。其中未列出的通用键位补充核对[同提交键位定义](https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/config/keybindings.ts)；本机自定义绑定以 `/hotkeys` 为准。

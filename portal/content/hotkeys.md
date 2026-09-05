@@ -1,6 +1,6 @@
 # 常用快捷键
 
-在 OMP 主输入框中按下组合键，不要把键名输入或粘贴进去。以下整理自[场景使用指南](usage-guide.html)，参考版本为 `v18.1.10+fork.172`；个人配置可能修改键位，使用 `/hotkeys` 查看当前绑定。
+在 OMP 主输入框中按下组合键，不要把键名输入或粘贴进去。以下整理自[场景使用指南](usage-guide.html)，快捷键依据为上游提交 `61fb07d`（2026-09-05）；这不表示本地二进制已更新。旧版本或个人配置的键位可能不同，使用 `/hotkeys` 查看当前绑定。
 
 ## 模型与推理
 
@@ -10,14 +10,14 @@
 | 配置 slow、Advisor 等模型角色 | **Alt+M** | 打开模型中心，选择角色与模型 |
 | 在常用模型间轮换 | **Ctrl+P** | 按轮换列表切换，查看状态栏确认当前模型 |
 | 显示或隐藏思考内容 | **Alt+P** | 只改变 thinking blocks 的显示，不改变推理强度 |
-| 调整推理强度 | **Alt+,**（Alt 加逗号） | 循环切换 thinking level，查看状态栏确认档位 |
+| 调整推理强度 | **Shift+F1** | 循环切换 thinking level，查看状态栏确认档位 |
 
 ## 计划与执行
 
 | 想做什么 | 默认快捷键 | 接下来怎么做 |
 |---|---|---|
 | 切换 Plan 模式状态 | **Shift+Tab** | 依次开启、暂停、关闭；看状态栏确认 |
-| 切换 Main／Discuss | **Ctrl+0** | 在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe |
+| 切换 Main／Discuss | **Shift+F2** | 在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe |
 | 查看 Agent 工作情况 | **Alt+A**（或 **Ctrl+S**） | 打开 Agent Hub；有子代理记录时，也可在空输入框快速连按两次左箭头 |
 | 展开工具调用详情 | **Ctrl+O** | 阅读执行输出；再次按下收起 |
 | 打断当前执行 | **Esc** | 停止本轮，补充或纠正要求后继续 |
@@ -32,4 +32,4 @@ Plan 须在 Main 中使用，并启用 `plan.enabled`；不能与 Goal／Vibe �
 
 ## 参考版本
 
-键位依据：[fork.md](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md)；通用键位补充参考[同版本键位定义](https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/packages/coding-agent/src/config/keybindings.ts)。本机实际绑定以 `/hotkeys` 为准。
+键位依据：[fork.md](https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md)；通用键位补充参考[同提交键位定义](https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/config/keybindings.ts)。本机实际绑定以 `/hotkeys` 为准。
