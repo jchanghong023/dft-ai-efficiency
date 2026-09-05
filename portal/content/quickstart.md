@@ -48,7 +48,7 @@ PATH 只影响当前 Shell；同步脚本不修改启动文件。也可直接运
 /code-and-verify 修复当前模块复位后输出延迟异常，并验证已有行为
 ```
 
-通过 `/agents` 查看团队 Worker，通过 `/extensions` 检查 Skill，通过 `/tools` 检查 Wiki 是否可用。新启动的会话读取同步后的文件；在未退出会话中手工调整扩展文件时可用 `/reload-plugins`。
+通过 `/agents` 查看团队 Worker，通过 `/extensions` 检查 Skill；用 `/tools` 确认 `wiki` 工具可见，再用 `/docs` 检查索引状态。工具可见不代表索引已建立或可用。新启动的会话读取同步后的文件；在未退出会话中手工调整扩展文件时可用 `/reload-plugins`。
 
 原文路径会追加到同步后的团队上下文，即使 Agent 从其他代码仓启动也能定位。索引无结果时按关键词在原文目录中 `grep` / `read`，不要把“没有命中”等同于“没有规定”。
 

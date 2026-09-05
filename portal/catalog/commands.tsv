@@ -28,9 +28,9 @@ browser	切换浏览器无头或可见模式	调试已启用的浏览器交互	�
 copy	从对话中选择文本或代码复制	提取某段代码或回答	写系统剪贴板	/copy
 open	打开对话最近的链接	访问刚提到的参考页面	启动浏览器并可能发送网络请求	/open
 todo	查看或编辑 Agent 待办清单	跟踪多步任务	编辑/导入/删除会修改清单；导出写文件	/todo
-session	查看、删除或置顶会话	管理会话记录	delete 删除会话；pin 改变置顶状态	/session info
+session	查看、删除会话或绑定 OAuth 账户	管理会话记录与当前提供方的账户绑定	delete 删除会话；pin 将当前提供方绑定到已存 OAuth 账户，恢复列表置顶使用 /pin	/session info
 jobs	查看异步后台任务	确认子任务是否仍运行	仅查询任务状态	/jobs
-usage	查看提供方用量和限额	了解当前额度	show 查询服务；reset 重置本地用量统计	/usage show
+usage	查看提供方用量和限额	了解当前额度	show 查询服务；reset 消耗一次已存的 Codex 限流重置额度，不是清空本地统计	/usage show
 stats	打开本地统计看板	分析模型消耗和会话记录	启动本地服务；host 参数影响监听范围	/stats
 changelog	查看发行变更说明	理解版本差异	仅显示变更记录	/changelog
 hotkeys	查看当前快捷键	学习 TUI 操作	仅显示快捷键	/hotkeys
