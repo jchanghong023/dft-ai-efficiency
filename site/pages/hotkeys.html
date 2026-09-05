@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>常用快捷键 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a class="active" aria-current="page" href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="_1">常用快捷键</h1>
+<p>在 OMP 主输入框中按下组合键，不要把键名输入或粘贴进去。以下整理自<a href="usage-guide.html">场景使用指南</a>，快捷键依据为上游提交 <code>61fb07d</code>（2026-09-05）；这不表示本地二进制已更新。旧版本或个人配置的键位可能不同，使用 <code>/hotkeys</code> 查看当前绑定。</p>
+<h2 id="_2">模型与推理</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>想做什么</th>
+<th>默认快捷键</th>
+<th>接下来怎么做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>切换当前模型</td>
+<td><strong>Ctrl+T</strong></td>
+<td>输入模型名筛选，↑／↓ 选择，Enter 确认</td>
+</tr>
+<tr>
+<td>配置 slow、Advisor 等模型角色</td>
+<td><strong>Alt+M</strong></td>
+<td>打开模型中心，选择角色与模型</td>
+</tr>
+<tr>
+<td>在常用模型间轮换</td>
+<td><strong>Ctrl+P</strong></td>
+<td>按轮换列表切换，查看状态栏确认当前模型</td>
+</tr>
+<tr>
+<td>显示或隐藏思考内容</td>
+<td><strong>Alt+P</strong></td>
+<td>只改变 thinking blocks 的显示，不改变推理强度</td>
+</tr>
+<tr>
+<td>调整推理强度</td>
+<td><strong>Shift+F1</strong></td>
+<td>循环切换 thinking level，查看状态栏确认档位</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_3">计划与执行</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>想做什么</th>
+<th>默认快捷键</th>
+<th>接下来怎么做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>切换 Plan 模式状态</td>
+<td><strong>Shift+Tab</strong></td>
+<td>依次开启、暂停、关闭；看状态栏确认</td>
+</tr>
+<tr>
+<td>切换 Main／Discuss</td>
+<td><strong>Shift+F2</strong></td>
+<td>在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe</td>
+</tr>
+<tr>
+<td>查看 Agent 工作情况</td>
+<td><strong>Alt+A</strong>（或 <strong>Ctrl+S</strong>）</td>
+<td>打开 Agent Hub；有子代理记录时，也可在空输入框快速连按两次左箭头</td>
+</tr>
+<tr>
+<td>展开工具调用详情</td>
+<td><strong>Ctrl+O</strong></td>
+<td>阅读执行输出；再次按下收起</td>
+</tr>
+<tr>
+<td>打断当前执行</td>
+<td><strong>Esc</strong></td>
+<td>停止本轮，补充或纠正要求后继续</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plan 须在 Main 中使用，并启用 <code>plan.enabled</code>；不能与 Goal／Vibe 同时使用。状态栏中 Plan 带暂停标记表示暂停，不是关闭，标记样式随主题变化。已有计划草稿时，离开规划还会要求确认；切换模式不等于批准计划，开始实施使用计划审阅界面的执行选项。</p>
+<h2 id="_4">快捷键不可用时</h2>
+<p>先用 <code>/hotkeys</code> 查看当前绑定，确认是否被个人配置修改或终端拦截。模型选择可用 <code>/switch</code>，模型中心可用 <code>/model</code>，Plan 模式可用 <code>/plan</code>。</p>
+<p>没有默认快捷键的操作仍使用斜杠命令，例如 Vibe、Advisor 开关、压缩和新会话。完整入口见<a href="commands.html">内置命令</a>，实际工作流程见<a href="usage-guide.html">场景使用指南</a>。</p>
+<h2 id="_5">参考版本</h2>
+<p>键位依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md">fork.md</a>；通用键位补充参考<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/config/keybindings.ts">同提交键位定义</a>。本机实际绑定以 <code>/hotkeys</code> 为准。</p>
+
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_2">模型与推理</a></li>
+<li><a href="#_3">计划与执行</a></li>
+<li><a href="#_4">快捷键不可用时</a></li>
+<li><a href="#_5">参考版本</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

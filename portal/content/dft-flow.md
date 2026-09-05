@@ -114,4 +114,4 @@ Diagnosis 是基于证据缩小候选范围，不是把第一条失败链当成�
 
 ## 公开参考
 
-流程中的术语和阶段边界可对照 [Synopsys TestMAX DFT 官方介绍](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html) 与 [TestMAX ATPG 官方介绍](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html)。扫描测试的运行约束可参考 [Power Management during Scan Based Sequential Circuit Testing](https://arxiv.org/abs/1106.2794)。这些链接是外部参考，页面本身和互动模型不依赖网络；具体命令、库单元与签核标准必须以项目批准资料为准。
+流程中的术语和阶段边界可对照 [Synopsys TestMAX DFT 官方介绍](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html) 与 [TestMAX ATPG 官方介绍](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html)。扫描移位功耗背景可参考 [Power Management during Scan Based Sequential Circuit Testing](https://arxiv.org/abs/1106.2794)，该文不作为通用时钟、复位或签核约束的依据。这些链接是外部参考，页面本身和互动模型不依赖网络；具体命令、库单元与签核标准必须以项目批准资料为准。

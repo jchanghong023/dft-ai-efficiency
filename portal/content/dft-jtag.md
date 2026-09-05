@@ -27,6 +27,13 @@ Select-IR-Scan --0--> Capture-IR --0--> Shift-IR --1--> Exit1-IR
 Exit1-{DR,IR} --0--> Pause-{DR,IR} --1--> Exit2-{DR,IR}
 Exit1-{DR,IR} --1--> Update-{DR,IR} --0--> Run-Test/Idle
 Exit2-{DR,IR} --0--> Shift-{DR,IR}; Exit2-{DR,IR} --1--> Update-{DR,IR}
+Capture-{DR,IR} --1--> Exit1-{DR,IR}
+Select-IR-Scan --1--> Test-Logic-Reset
+Update-{DR,IR} --1--> Select-DR-Scan
+Test-Logic-Reset --1--> Test-Logic-Reset
+Run-Test/Idle --0--> Run-Test/Idle
+Shift-{DR,IR} --0--> Shift-{DR,IR}
+Pause-{DR,IR} --0--> Pause-{DR,IR}
 ```
 
 上面的缩写是为了阅读方便；交互实验中的 16 个节点列出各自的 TMS=0/1 分支。你可以分别给出 TMS 与 TDI：TMS 选择下一状态，TDI 只在移位时进入寄存器；TDO 读数是本拍采出的旧位，不是本拍结束后的引脚电平。
@@ -55,7 +62,7 @@ Exit2-{DR,IR} --0--> Shift-{DR,IR}; Exit2-{DR,IR} --1--> Update-{DR,IR}
 
 ### 一个最小访问序列
 
-先用 TMS=1 进入 `Select-IR-Scan`，再经过 `Capture-IR` 和 `Shift-IR` 写入指令，最后在 `Update-IR` 提交。随后回到 `Select-DR-Scan`，进入对应的 DR 路径。真实操作还要依据 IR 捕获特征位、指令长度和最低有效位顺序填充数据。
+从 `Run-Test/Idle` 连续送入两个 TMS=1：先到 `Select-DR-Scan`，再到 `Select-IR-Scan`；随后经过 `Capture-IR` 和 `Shift-IR` 写入指令，最后在 `Update-IR` 提交。随后回到 `Select-DR-Scan`，进入对应的 DR 路径。真实操作还要依据 IR 捕获特征位、指令长度和最低有效位顺序填充数据。
 
 交互没有把这些步骤压缩成一个“完成”按钮，而是保留每个 TMS 决策。这样可以看到 `Pause` 和 `Exit2` 不是装饰状态：长链扫描或调试器暂停时，数据可以暂时停住，再通过 TMS 回到 Shift。
 
@@ -73,8 +80,8 @@ Boundary Scan Cell 放在核与 PAD 的边界附近，通常由捕获、移位�
 
 ## 资料与继续阅读
 
-- [IEEE 1149.1 标准页面](https://standards.ieee.org/ieee/1149.1/)：TAP、状态机和测试逻辑的规范入口。
-- [Microchip DS31400 数据手册，第 9.2–9.3 节](https://ww1.microchip.com/downloads/en/DeviceDoc/DS31400datasheet2019-04.pdf)：状态迁移与进入 Update 后下降沿提交的厂商实现说明。这里只核对边沿关系，不采用该器件的三位 IR 编码。
+- [IEEE 1149.1-2013 标准页面](https://standards.ieee.org/ieee/1149.1/4484/)：TAP、状态机和测试逻辑的参考版本入口；页面标注为 Inactive-Reserved，项目采用版本需另行确认。
+- [Microchip DS31400 数据手册，第 9.2 节](https://ww1.microchip.com/downloads/en/DeviceDoc/DS31400datasheet2019-04.pdf)：状态迁移与进入 Update 后下降沿提交的厂商实现说明。这里只核对边沿关系，不采用该器件的三位 IR 编码。
 - [Siemens Tessent BoundaryScan](https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/)：商业工具对边界扫描流程的说明；不代表本门户实现该工具。
 - [Synopsys TestMAX DFT](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html)：DFT 设计、检查与测试自动化的产品资料。
 

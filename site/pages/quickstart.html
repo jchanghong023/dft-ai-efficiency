@@ -30,7 +30,7 @@
 
 <div class="docs-layout">
   
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a class="active" aria-current="page" href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a class="active" aria-current="page" href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
   
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
   <h1 id="_1">快速开始</h1>
@@ -89,7 +89,7 @@ omp
 <h2 id="4">4. 执行一次开发任务</h2>
 <pre><code class="language-text">/code-and-verify 修复当前模块复位后输出延迟异常，并验证已有行为
 </code></pre>
-<p>通过 <code>/agents</code> 查看团队 Worker，通过 <code>/extensions</code> 检查 Skill，通过 <code>/tools</code> 检查 Wiki 是否可用。新启动的会话读取同步后的文件；在未退出会话中手工调整扩展文件时可用 <code>/reload-plugins</code>。</p>
+<p>通过 <code>/agents</code> 查看团队 Worker，通过 <code>/extensions</code> 检查 Skill；用 <code>/tools</code> 确认 <code>wiki</code> 工具可见，再用 <code>/docs</code> 检查索引状态。工具可见不代表索引已建立或可用。新启动的会话读取同步后的文件；在未退出会话中手工调整扩展文件时可用 <code>/reload-plugins</code>。</p>
 <p>原文路径会追加到同步后的团队上下文，即使 Agent 从其他代码仓启动也能定位。索引无结果时按关键词在原文目录中 <code>grep</code> / <code>read</code>，不要把“没有命中”等同于“没有规定”。</p>
 <h2 id="_2">同步输出怎么理解</h2>
 <p><code>UPDATE</code> 表示已替换；<code>SKIP unchanged</code> 表示内容一致；数据库缺失的 <code>SKIP</code> 表示保留个人版本。<code>FAIL</code> 后不继续执行；若此前已有 UPDATE，那些变更已实施。脚本不维护安装历史或自动回退系统。</p>

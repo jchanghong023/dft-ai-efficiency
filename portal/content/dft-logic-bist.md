@@ -58,4 +58,4 @@ ATPG 根据指定故障模型寻找确定性模式和期望响应；LBIST 依靠
 
 ## 公开参考
 
-Siemens 的 [Tessent LogicBIST 官方资料](https://static.sw.cdn.siemens.com/siemens-disw-assets/public/7kVdJZfTR9JCxdNplREEpY/en-US/Siemens-SW-tessent-logicbist-FS-82711-C2.pdf)介绍 LogicBIST 的伪随机测试、响应压缩和面向系统测试的应用边界；[Siemens Xcelerator Academy 文章](https://blogs.sw.siemens.com/xcelerator-academy/2024/01/30/enhance-test-time-and-quality-with-tessent-hybrid-testkompress-logicbist/)说明混合 TK/LBIST 中可共享解压、扫描链和 MISR 等资源。本文的位宽、序列和签名是独立教学示例。
+Siemens 的 [Tessent LogicBIST 官方资料](https://static.sw.cdn.siemens.com/siemens-disw-assets/public/7kVdJZfTR9JCxdNplREEpY/en-US/Siemens-SW-tessent-logicbist-FS-82711-C2.pdf)介绍 LogicBIST 的伪随机测试、响应压缩和面向系统测试的应用边界；[Siemens Xcelerator Academy 文章](https://blogs.sw.siemens.com/xcelerator-academy/2024/01/30/enhance-test-time-and-quality-with-tessent-hybrid-testkompress-logicbis/)说明混合 TK/LBIST 中可共享解压、扫描链和 MISR 等资源。本文的位宽、序列和签名是独立教学示例。

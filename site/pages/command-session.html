@@ -30,22 +30,22 @@
 
 <div class="docs-layout">
   
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a class="active" aria-current="location" href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a class="active" aria-current="location" href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
   
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
   <h1 id="session">/session</h1>
-<p>查看、删除或置顶会话。</p>
+<p>查看、删除会话或绑定 OAuth 账户。</p>
 <h2 id="_1">示例</h2>
 <pre><code class="language-text">/session info
 </code></pre>
 <h2 id="_2">功能与场景</h2>
-<p>查看、删除或置顶会话。</p>
-<p>典型场景：管理会话记录。</p>
+<p>查看、删除会话或绑定 OAuth 账户。</p>
+<p>典型场景：管理会话记录与当前提供方的账户绑定。</p>
 <h2 id="_3">主要参数</h2>
 <p>下列子命令选择具体操作。</p>
 <p>源码注册的子命令：<code>info</code>、<code>delete</code>、<code>pin</code>。</p>
 <h2 id="_4">文件与状态影响</h2>
-<p>delete 删除会话；pin 改变置顶状态。</p>
+<p>delete 删除会话；pin 将当前提供方绑定到已存 OAuth 账户，恢复列表置顶使用 /pin。</p>
 <p>示例中的路径、链接与名称须按实际任务替换；涉及写入或远端操作时，请先确认操作对象与影响。</p>
 <h2 id="_5">版本依据</h2>
 <p>v18.1.9+fork.170 · <a href="https://github.com/jchanghong023/oh-my-pi/blob/755b392dc4e99bec1415bed12b3a581d1b19643c/packages/coding-agent/src/slash-commands/builtin-session.ts#L178">对应注册源码</a>。</p>

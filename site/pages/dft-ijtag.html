@@ -75,8 +75,8 @@
 </blockquote>
 <h2 id="_1">为什么需要动态路径</h2>
 <p>如果所有 MBIST、传感器、调试寄存器永远串在一条链上，普通的访问会变长、测试时间增加，也更难隔离未使用的仪器。IJTAG 用可控的段插入位（SIB）决定一个数据段是否进入当前扫描路径：</p>
-<pre><code class="language-text">TDI → SIB=0 → 旁路位 → TDO
-TDI → SIB=1 → 目标仪器寄存器 → TDO
+<pre><code class="language-text">SIB 关闭：TDI → SIB 移位位 → TDO（共 1 位，无额外旁路位）
+SIB 打开：TDI → SIB 移位位 → 目标仪器寄存器 → TDO（共 1 + 仪器位数）
 </code></pre>
 <p>真实网络可能有多个嵌套 SIB、并行段和不同层级的访问寄存器；访问协议仍需要遵守具体实现的扫描时序。</p>
 <h2 id="iclpdl-retarget">ICL、PDL 与 retarget</h2>
@@ -108,7 +108,7 @@ TDI → SIB=1 → 目标仪器寄存器 → TDO
 </table></div>
 <p>因此，PDL 中“写入某寄存器”不是直接对 TDI/TDO 的魔法调用。工具需要结合 ICL 找到路径，插入打开 SIB 的操作，完成数据寄存器扫描，再按需要关闭或保留路径。没有 ICL/PDL 和对应工具链时，不应声称已经完成 retarget。</p>
 <h2 id="_2">动手改变链长</h2>
-<p>交互默认关闭 SIB，完整当前路径只有一位 SIB；先用 <code>Shift SIB 位</code> 准备控制位，再用 <code>Update SIB</code> 提交开闭，选择的仪器段才会插入扫描路径。打开后，<code>Shift 完整路径</code> 同时经过 SIB 与仪器寄存器，<code>Update 仪器值</code> 才提交仪器段。<code>Memory BIST</code> 示例为 8 位仪器段，<code>温度传感器</code> 示例为 4 位；SIB 关闭时的移位不会改变仪器值。</p>
+<p>交互默认关闭 SIB，完整当前路径只有一位 SIB；先用 <code>Shift SIB 位</code> 准备控制位，再用 <code>Update SIB</code> 提交开闭，选择的仪器段才会插入扫描路径。路径开闭由已提交的 SIB 值决定，不由正在移位的控制位即时决定。两个 Shift 按钮在本模型中都移位当前完整路径：关闭时只经过 SIB，打开后都同时经过 SIB 与仪器寄存器，不能只移 SIB 而保持仪器移位寄存器不动。<code>Update 仪器值</code> 才提交仪器段。<code>Memory BIST</code> 示例为 8 位仪器段，打开后共 9 位；<code>温度传感器</code> 示例为 4 位，打开后共 5 位。SIB 关闭时的移位不会改变仪器值。</p>
 <p>这里的“仪器观察值”只是对当前演示数组的格式化显示。它没有启动存储器测试，没有采集温度，也不会给出通过/失败结论。真实仪器的状态、数据宽度、读写副作用和时钟要求由 ICL/PDL 及芯片文档定义。</p>
 <h3 id="_3">读懂一次访问</h3>
 <p>可以把一次访问拆成四个动作：先复位网络，再把 SIB 控制位移到目标值；接着在段已插入的路径中扫描仪器寄存器；最后按仪器定义的顺序更新或读取。每一步都可能有额外的 Capture、Update 或等待周期。</p>
@@ -125,9 +125,8 @@ TDI → SIB=1 → 目标仪器寄存器 → TDO
 <p>页面中的链长数字故意保持很小，便于把 SIB 的动态插入看清楚。</p>
 <h2 id="_5">资料与继续阅读</h2>
 <ul>
-<li><a href="https://standards.ieee.org/ieee/1687/">IEEE 1687 标准页面</a>：IJTAG 的规范入口。</li>
+<li><a href="https://standards.ieee.org/ieee/1687/10896/">IEEE P1687 修订项目页面</a>：IJTAG 修订项目与工作组入口；项目页不等于已发布标准正文。</li>
 <li><a href="https://www.siemens.com/en-gb/products/ic/tessent/test/ijtag/">Siemens Tessent IJTAG</a>：片内仪器访问与工具流程资料。</li>
-<li><a href="https://www.accellera.org/activities/working-groups/ijtag">Accellera IJTAG 资源</a>：相关标准化工作与公开资源入口。</li>
 </ul>
 <p>资料中的术语可能使用不同工具的命名方式；学习时应先确认网络结构，再确认操作语义。</p>
   <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-jtag.html"><small>← 上一主题</small><strong>JTAG / Boundary Scan</strong></a><a href="../pages/dft-wrapper.html"><small>下一主题 →</small><strong>Wrapper 与分层 DFT</strong></a></nav>

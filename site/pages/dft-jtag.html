@@ -131,6 +131,13 @@ Select-IR-Scan --0--&gt; Capture-IR --0--&gt; Shift-IR --1--&gt; Exit1-IR
 Exit1-{DR,IR} --0--&gt; Pause-{DR,IR} --1--&gt; Exit2-{DR,IR}
 Exit1-{DR,IR} --1--&gt; Update-{DR,IR} --0--&gt; Run-Test/Idle
 Exit2-{DR,IR} --0--&gt; Shift-{DR,IR}; Exit2-{DR,IR} --1--&gt; Update-{DR,IR}
+Capture-{DR,IR} --1--&gt; Exit1-{DR,IR}
+Select-IR-Scan --1--&gt; Test-Logic-Reset
+Update-{DR,IR} --1--&gt; Select-DR-Scan
+Test-Logic-Reset --1--&gt; Test-Logic-Reset
+Run-Test/Idle --0--&gt; Run-Test/Idle
+Shift-{DR,IR} --0--&gt; Shift-{DR,IR}
+Pause-{DR,IR} --0--&gt; Pause-{DR,IR}
 </code></pre>
 <p>上面的缩写是为了阅读方便；交互实验中的 16 个节点列出各自的 TMS=0/1 分支。你可以分别给出 TMS 与 TDI：TMS 选择下一状态，TDI 只在移位时进入寄存器；TDO 读数是本拍采出的旧位，不是本拍结束后的引脚电平。</p>
 <p>每次按钮执行一个完整 TCK 拍：上升沿按沿前状态捕获/移位并迁移状态；如果进入 Update，则在<strong>同一拍随后的下降沿</strong>提交 IR 或 EXTEST 输出。进入 Capture 的那一拍不会提前移位；TMS=1 离开 Shift 的那一拍仍移位一次。这个数字模型不模拟 TDO 电气延迟、高阻驱动或 setup/hold。</p>
@@ -167,7 +174,7 @@ Exit2-{DR,IR} --0--&gt; Shift-{DR,IR}; Exit2-{DR,IR} --1--&gt; Update-{DR,IR}
 </table></div>
 <p>真实 EXTEST 不只是“写 1 再读 1”：还要考虑输出使能、复位、模拟/电源引脚、时序和板级电气模型。交互中的引脚比较按钮是独立数字实验，不自动执行完整 DR 扫描；未加载 EXTEST 时不生成期望/实际测试结果。提供正常、开路固定读 0、短路固定读 1 三种简化连线；驱动 0 遇到开路固定 0，或驱动 1 遇到短路固定 1 时会显示“未检出”。更改刺激、故障或提交指令/驱动后，旧比较结果失效，必须重新执行。</p>
 <h3 id="_2">一个最小访问序列</h3>
-<p>先用 TMS=1 进入 <code>Select-IR-Scan</code>，再经过 <code>Capture-IR</code> 和 <code>Shift-IR</code> 写入指令，最后在 <code>Update-IR</code> 提交。随后回到 <code>Select-DR-Scan</code>，进入对应的 DR 路径。真实操作还要依据 IR 捕获特征位、指令长度和最低有效位顺序填充数据。</p>
+<p>从 <code>Run-Test/Idle</code> 连续送入两个 TMS=1：先到 <code>Select-DR-Scan</code>，再到 <code>Select-IR-Scan</code>；随后经过 <code>Capture-IR</code> 和 <code>Shift-IR</code> 写入指令，最后在 <code>Update-IR</code> 提交。随后回到 <code>Select-DR-Scan</code>，进入对应的 DR 路径。真实操作还要依据 IR 捕获特征位、指令长度和最低有效位顺序填充数据。</p>
 <p>交互没有把这些步骤压缩成一个“完成”按钮，而是保留每个 TMS 决策。这样可以看到 <code>Pause</code> 和 <code>Exit2</code> 不是装饰状态：长链扫描或调试器暂停时，数据可以暂时停住，再通过 TMS 回到 Shift。</p>
 <h2 id="boundary-scan">与 Boundary Scan 的边界</h2>
 <p>Boundary Scan Cell 放在核与 PAD 的边界附近，通常由捕获、移位、更新和输出控制组成；它是芯片 I/O 测试结构。JTAG TAP 是访问控制入口，Boundary Scan 是可能被选中的数据寄存器/单元集合。二者有关联，但不能把 TAP 状态机称作一排 Boundary Cell，也不能把核级 Wrapper 当作 PAD 边界。</p>
@@ -180,8 +187,8 @@ Exit2-{DR,IR} --0--&gt; Shift-{DR,IR}; Exit2-{DR,IR} --1--&gt; Update-{DR,IR}
 </ol>
 <h2 id="_4">资料与继续阅读</h2>
 <ul>
-<li><a href="https://standards.ieee.org/ieee/1149.1/">IEEE 1149.1 标准页面</a>：TAP、状态机和测试逻辑的规范入口。</li>
-<li><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/DS31400datasheet2019-04.pdf">Microchip DS31400 数据手册，第 9.2–9.3 节</a>：状态迁移与进入 Update 后下降沿提交的厂商实现说明。这里只核对边沿关系，不采用该器件的三位 IR 编码。</li>
+<li><a href="https://standards.ieee.org/ieee/1149.1/4484/">IEEE 1149.1-2013 标准页面</a>：TAP、状态机和测试逻辑的参考版本入口；页面标注为 Inactive-Reserved，项目采用版本需另行确认。</li>
+<li><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/DS31400datasheet2019-04.pdf">Microchip DS31400 数据手册，第 9.2 节</a>：状态迁移与进入 Update 后下降沿提交的厂商实现说明。这里只核对边沿关系，不采用该器件的三位 IR 编码。</li>
 <li><a href="https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/">Siemens Tessent BoundaryScan</a>：商业工具对边界扫描流程的说明；不代表本门户实现该工具。</li>
 <li><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT</a>：DFT 设计、检查与测试自动化的产品资料。</li>
 </ul>

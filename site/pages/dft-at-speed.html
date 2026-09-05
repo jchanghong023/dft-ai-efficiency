@@ -72,15 +72,13 @@
 <ol>
 <li><strong>Launch</strong>：把一个已知状态变成另一个状态，转换沿着组合路径传播。</li>
 <li><strong>Capture</strong>：在规定时间后采样路径末端。如果路径仍未稳定，采样到的值可能与预期不同。</li>
-<li><code>Tperiod - Tsetup - Tskew</code> 是本实验用来估算的简化可用窗口；真实签核还要考虑时钟树、OCV、脉宽、库模型和测试约束。</li>
+<li><code>Tperiod - Tsetup - Tskew</code> 是本实验用来估算的简化可用窗口。这里 <code>Tskew ≥ 0</code> 表示按不利方向扣除的时钟偏斜预算，不是带符号的 <code>capture 时钟到达时间 − launch 时钟到达时间</code>；按后一种定义，正偏斜反而增加 setup 可用时间。真实签核还要考虑时钟树、OCV、脉宽、库模型和测试约束。</li>
 </ol>
 <p>这里的“通过”只表示输入参数满足这个教学不等式；LOS 还要求 <code>SE</code> 在 capture 前留出本实验复用的建立裕量：</p>
-<pre><code class="language-text">路径延迟 + 时钟偏斜 ≤ 时钟周期 − 捕获端建立时间
-
-```text
-SE 关闭时间 + SE 建立裕量 ≤ capture 时间
+<pre><code class="language-text">路径延迟 + 不利时钟偏斜预算 ≤ 时钟周期 − 捕获端建立时间
 </code></pre>
-<p>```</p>
+<pre><code class="language-text">SE 关闭时间 + SE 建立裕量 ≤ capture 时间
+</code></pre>
 <p>它不是 STA 报告，也不是 ATPG 或硅片测试结果。</p>
 <h2 id="loclaunch-on-capture">LOC：launch-on-capture</h2>
 <p>LOC 先用扫描模式装入状态，再关闭 <code>SE</code>，由功能时钟序列完成发起和捕获。教学模型把第一个功能沿记作 <code>t=0</code>，第二个功能沿记作 <code>t=T</code>；这样可以直接观察两个功能沿之间的路径预算。</p>

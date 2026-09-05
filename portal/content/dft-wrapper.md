@@ -53,7 +53,7 @@ JTAG TAP 可以成为二者的访问入口，但 TAP、Wrapper 和 Boundary Cell
 
 ## 资料与继续阅读
 
-- [IEEE 1500 标准页面](https://standards.ieee.org/ieee/1500/)：可复用核测试 Wrapper 的规范入口。
+- [IEEE 1500-2022 标准页面](https://standards.ieee.org/ieee/1500/7704/)：可复用核测试 Wrapper 的规范入口。
 - [Synopsys TestMAX DFT](https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html)：层级 DFT、Wrapper 与实现流程的产品资料。
 - [Siemens Tessent BoundaryScan](https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/)：Boundary Scan 的实现背景，便于对照 Wrapper 与 PAD 边界的差异。
 

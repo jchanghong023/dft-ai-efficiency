@@ -9,8 +9,8 @@ IEEE 1687（通常称 IJTAG）关注的是片内嵌入式仪器的访问网络�
 如果所有 MBIST、传感器、调试寄存器永远串在一条链上，普通的访问会变长、测试时间增加，也更难隔离未使用的仪器。IJTAG 用可控的段插入位（SIB）决定一个数据段是否进入当前扫描路径：
 
 ```text
-TDI → SIB=0 → 旁路位 → TDO
-TDI → SIB=1 → 目标仪器寄存器 → TDO
+SIB 关闭：TDI → SIB 移位位 → TDO（共 1 位，无额外旁路位）
+SIB 打开：TDI → SIB 移位位 → 目标仪器寄存器 → TDO（共 1 + 仪器位数）
 ```
 
 真实网络可能有多个嵌套 SIB、并行段和不同层级的访问寄存器；访问协议仍需要遵守具体实现的扫描时序。
@@ -27,7 +27,7 @@ TDI → SIB=1 → 目标仪器寄存器 → TDO
 
 ## 动手改变链长
 
-交互默认关闭 SIB，完整当前路径只有一位 SIB；先用 `Shift SIB 位` 准备控制位，再用 `Update SIB` 提交开闭，选择的仪器段才会插入扫描路径。打开后，`Shift 完整路径` 同时经过 SIB 与仪器寄存器，`Update 仪器值` 才提交仪器段。`Memory BIST` 示例为 8 位仪器段，`温度传感器` 示例为 4 位；SIB 关闭时的移位不会改变仪器值。
+交互默认关闭 SIB，完整当前路径只有一位 SIB；先用 `Shift SIB 位` 准备控制位，再用 `Update SIB` 提交开闭，选择的仪器段才会插入扫描路径。路径开闭由已提交的 SIB 值决定，不由正在移位的控制位即时决定。两个 Shift 按钮在本模型中都移位当前完整路径：关闭时只经过 SIB，打开后都同时经过 SIB 与仪器寄存器，不能只移 SIB 而保持仪器移位寄存器不动。`Update 仪器值` 才提交仪器段。`Memory BIST` 示例为 8 位仪器段，打开后共 9 位；`温度传感器` 示例为 4 位，打开后共 5 位。SIB 关闭时的移位不会改变仪器值。
 
 <!-- lab:ijtag -->
 
@@ -54,8 +54,7 @@ IJTAG 描述的是片内仪器网络和访问抽象；JTAG/1149.1 是常见的�
 
 ## 资料与继续阅读
 
-- [IEEE 1687 标准页面](https://standards.ieee.org/ieee/1687/)：IJTAG 的规范入口。
+- [IEEE P1687 修订项目页面](https://standards.ieee.org/ieee/1687/10896/)：IJTAG 修订项目与工作组入口；项目页不等于已发布标准正文。
 - [Siemens Tessent IJTAG](https://www.siemens.com/en-gb/products/ic/tessent/test/ijtag/)：片内仪器访问与工具流程资料。
-- [Accellera IJTAG 资源](https://www.accellera.org/activities/working-groups/ijtag)：相关标准化工作与公开资源入口。
 
 资料中的术语可能使用不同工具的命名方式；学习时应先确认网络结构，再确认操作语义。

@@ -30,13 +30,13 @@
 
 <div class="docs-layout">
   
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a class="active" aria-current="page" href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a class="active" aria-current="page" href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
   
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
   <h1 id="_1">场景使用指南</h1>
 <p>已经完成安装同步，接下来怎样用 OMP 做开发？从启动和一个简单任务开始，再按任务需要选择模型、计划或并发分工。本页只讲 OMP 与当前 fork 自带的日常能力；完整参数可查 <a href="cli.html">CLI 与 TUI</a> 和<a href="commands.html">内置命令</a>。尚未安装请先看<a href="quickstart.html">快速开始</a>。</p>
 <p><strong>先分清输入位置：</strong> 标注“终端”的 <code>omp ...</code> 在 Linux Shell 中运行；标注“OMP 输入框”的 <code>/...</code> 和自然语言在启动后的 OMP 中输入。每个代码块是一次独立输入；示例项目路径、文件名、功能和模型名请换成自己的。</p>
-<p><strong>常用操作优先按快捷键，fork 键位以 <a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md">fork.md</a> 为准。</strong> 下表在 OMP 主输入框中使用；按下组合键即可，不要把键名输入或粘贴进去。键位被个人配置修改、或终端拦截时，用 <code>/hotkeys</code> 查看当前绑定。</p>
+<p><strong>常用操作优先按快捷键，fork 键位以 <a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md">fork.md</a> 为准。</strong> 下表依据上游提交 <code>61fb07d</code>（2026-09-05），不表示本地二进制已更新。在 OMP 主输入框按下组合键即可，不要把键名输入或粘贴进去。旧版本、个人配置或终端拦截可能造成键位差异，用 <code>/hotkeys</code> 查看当前绑定。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -68,8 +68,8 @@
 </tr>
 <tr>
 <td>切换 Main／Discuss</td>
-<td><strong>Ctrl+0</strong></td>
-<td>空闲时切换；讨论用 Discuss，实施切回 Main</td>
+<td><strong>Shift+F2</strong></td>
+<td>在主会话视图、空闲且无排队消息时切换；须先退出 Plan／Goal／Vibe</td>
 </tr>
 <tr>
 <td>显示或隐藏思考内容</td>
@@ -78,13 +78,13 @@
 </tr>
 <tr>
 <td>调整推理强度</td>
-<td><strong>Alt+,</strong>（Alt 加逗号）</td>
+<td><strong>Shift+F1</strong></td>
 <td>循环切换 thinking level，查看状态栏确认档位</td>
 </tr>
 <tr>
 <td>查看 Agent 工作情况</td>
-<td><strong>Alt+A</strong></td>
-<td>打开 Agent Hub 查看任务和状态</td>
+<td><strong>Alt+A</strong>（或 <strong>Ctrl+S</strong>）</td>
+<td>打开 Agent Hub；有子代理记录时，也可在空输入框快速连按两次左箭头</td>
 </tr>
 <tr>
 <td>展开工具调用详情</td>
@@ -152,7 +152,7 @@ omp
 <p>Advisor 会产生额外模型调用；它提供检查和建议，不代替测试或用户审阅。<code>on</code>、<code>off</code> 控制本会话，不会持久化修改 <code>advisor.enabled</code>。</p>
 <h2 id="5">5. 新功能较复杂，先澄清再计划</h2>
 <p><strong>什么时候用：</strong> 新功能涉及多个模块、接口或兼容性，或者还没想清楚具体需求。</p>
-<p>在普通会话的 OMP 主输入框按 <strong>Shift+Tab</strong>，确认进入 Plan 模式，再输入需求：</p>
+<p>先切回 Main，并退出 Goal／Vibe；Plan 还需启用 <code>plan.enabled</code>。在 OMP 主输入框按 <strong>Shift+Tab</strong>，确认进入 Plan 模式，再输入需求：</p>
 <pre><code class="language-text">为当前工具增加批量处理功能。
 先阅读现有单文件流程，向我澄清输入格式、失败处理、输出位置和兼容要求；
 再给出实现步骤和测试验收方案，暂不实施代码修改。
@@ -161,10 +161,10 @@ omp
 <p>计划审阅界面关闭后，仍在 Plan 模式时可重新打开：</p>
 <pre><code class="language-text">/plan-review
 </code></pre>
-<p>方案还不完整就继续提出修改意见；执行完成后核对测试和交付结果。<strong>Shift+Tab 依次开启、暂停、关闭 Plan</strong>；已有计划草稿时，离开规划还会要求确认。看到 <code>Plan ⏸</code> 表示暂停，要完全退出需再按一次并确认状态栏不再显示 Plan。切换模式不等于批准计划，开始实施使用计划审阅界面的执行选项。快捷键不可用时，可用 <code>/plan</code> 切换模式。需要多路分工时，在需求或计划中明确可独立的工作项，执行阶段采用第 7 节的并发方式。</p>
+<p>方案还不完整就继续提出修改意见；执行完成后核对测试和交付结果。<strong>Shift+Tab 依次开启、暂停、关闭 Plan</strong>；已有计划草稿时，离开规划还会要求确认。状态栏中 Plan 带暂停标记表示暂停，标记样式随主题变化；要完全退出需再按一次并确认状态栏不再显示 Plan。切换模式不等于批准计划，开始实施使用计划审阅界面的执行选项。快捷键不可用时，可用 <code>/plan</code> 切换模式。需要多路分工时，在需求或计划中明确可独立的工作项，执行阶段采用第 7 节的并发方式。</p>
 <h2 id="6-vibe-worker">6. Vibe 导演模式，持续指导多个 Worker</h2>
 <p><strong>什么时候用：</strong> 你希望主会话负责安排和检查工作，让持续存在的 Worker 负责调查、编码和运行测试，并可以不断给它们补充要求。</p>
-<p>先完成并退出 Plan 或 Goal 模式；<strong>Vibe 与活动或暂停中的 Plan／Goal 都不能同时使用</strong>。如果状态栏显示 <code>Plan ⏸</code>，再按一次 <strong>Shift+Tab</strong> 完全退出 Plan，然后在普通会话的 <strong>OMP 输入框</strong>输入：</p>
+<p>先切回 Main，并完成、退出 Plan 或 Goal 模式；<strong>Vibe 不能在 Discuss 中开启，也不能与活动或暂停中的 Plan／Goal 同时使用</strong>。如果状态栏中的 Plan 带暂停标记，再按一次 <strong>Shift+Tab</strong> 完全退出 Plan，然后在 <strong>OMP 输入框</strong>输入：</p>
 <pre><code class="language-text">/vibe 按刚才确认的批量处理需求推进实现。
 把参数入口和核心处理拆成边界清楚的工作流，
 为各 Worker 说明负责范围、接口约束和验收要求；
@@ -196,7 +196,7 @@ omp
 优先速度和经验证的质量，在独立工作上充分使用并发子代理，
 依赖项按顺序推进，最后汇总实际改动和测试结果。
 </code></pre>
-<p><strong>下一步：</strong> 按 <strong>Alt+A</strong> 打开 Agent Hub 查看工作情况；用 <code>/jobs</code> 可查询后台任务状态，也可直接要求汇总分工、阻塞项和验证结果。<code>/orchestrate</code> 强调多 Agent 编排；<code>/fullsend</code> 强调速度与验证质量，会按收益直接执行或委派，不保证开满并发，也不会自动修改并发上限。两者的提示效果受 <code>magicKeywords</code> 设置控制；复杂可编排工作流另见 <a href="command-workflowz.html"><code>/workflowz</code></a>。</p>
+<p><strong>下一步：</strong> 按 <strong>Alt+A</strong>（或 <strong>Ctrl+S</strong>）打开 Agent Hub 查看工作情况；有子代理记录时，也可在空输入框中<strong>快速连按两次左箭头 ← ←</strong> 打开，尚无子代理时这个手势不打开面板。用 <code>/jobs</code> 可查询后台任务状态，也可直接要求汇总分工、阻塞项和验证结果。<code>/orchestrate</code> 强调多 Agent 编排；<code>/fullsend</code> 强调速度与验证质量，会按收益直接执行或委派，不保证开满并发，也不会自动修改并发上限。两者的提示效果受 <code>magicKeywords</code> 设置控制；复杂可编排工作流另见 <a href="command-workflowz.html"><code>/workflowz</code></a>。</p>
 <h2 id="8">8. 调整并发上限，或使用不设限模式</h2>
 <p><strong>什么时候用：</strong> 已有足够多的独立任务，希望调整同时运行的子代理数量。</p>
 <p>在<strong>终端</strong>查询并记下当前值：</p>
@@ -264,7 +264,7 @@ omp
 <h2 id="_2">版本与进一步查阅</h2>
 <p>本页依据手册参考版本 <strong>v18.1.9+fork.170</strong>；本机可用命令、模型和配置以实际安装为准。这里只精选常用操作，全量参考见<a href="commands.html">内置命令</a>，配置字段见<a href="config.html">常用配置</a>。</p>
 <p>核对依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/settings.md">模型与设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/modes/controllers/selector-controller.ts">模型角色选择实现</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/advisor-watchdog.md">Advisor</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/prompts/system/plan-mode-active.md">Plan 流程</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/vibe-mode.md">Vibe 模式</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/config/settings-schema.ts">并发设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/task/parallel.ts">并发调度实现</a>。</p>
-<p>快捷键首要依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md">fork.md 的快捷键与状态栏、代理行为与 Discuss</a>。其中未列出的通用键位补充核对<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/packages/coding-agent/src/config/keybindings.ts">同版本键位定义</a>；本机自定义绑定以 <code>/hotkeys</code> 为准。</p>
+<p>快捷键首要依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md">fork.md 的快捷键与状态栏、代理行为与 Discuss</a>。其中未列出的通用键位补充核对<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/config/keybindings.ts">同提交键位定义</a>；本机自定义绑定以 <code>/hotkeys</code> 为准。</p>
   
   <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">

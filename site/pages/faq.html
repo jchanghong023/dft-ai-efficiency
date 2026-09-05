@@ -30,7 +30,7 @@
 
 <div class="docs-layout">
   
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a class="active" aria-current="page" href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a class="active" aria-current="page" href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
   
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
   <h1 id="faq">FAQ / 最佳实践</h1>
@@ -43,7 +43,7 @@
 <h2 id="yellowdocsdb">yellow/docs.db 缺失会怎样</h2>
 <p>跳过并保留个人数据库；不会创建空数据库替换它。原始 Markdown 仍留在仓库里，公共门户与公共包只保留 <code>yellow/.gitignore</code>。</p>
 <h2 id="omp">OMP 进程无法退出</h2>
-<p>同步失败且不开始覆盖；查明当前任务或权限问题并手工正常退出后重试。脚本只处理当前用户进程，不操作其他用户的 OMP。同步中重新启动进程也会中止后续替换。</p>
+<p>若最初停止 OMP 进程失败，同步尚未开始覆盖；查明当前任务或权限问题并手工正常退出后重试。脚本只处理当前用户进程，不操作其他用户的 OMP。若同步中重新启动进程，脚本会中止后续替换，但此前已输出 <code>UPDATE</code> 的变更不会自动回退。</p>
 <h2 id="skill-worker">Skill 或 Worker 没有出现</h2>
 <p>检查实际 profile、<code>omp config path</code>、Skill 启用设置及同名项目覆盖。此同步只负责默认 <code>~/.omp/agent/</code>。重新启动 OMP，或对扩展改动使用 <code>/reload-plugins</code>；在 <code>/extensions</code>、<code>/agents</code> 查看来源。</p>
 <h2 id="wiki">Wiki 无结果或源路径失效</h2>

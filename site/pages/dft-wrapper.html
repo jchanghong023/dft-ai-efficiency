@@ -58,7 +58,7 @@
   </div>
   <div class="lab-readouts" aria-label="Wrapper 读数">
     <div><small>当前模式</small><strong data-access-field="mode">Internal Test</strong></div>
-    <div><small>核心是否隔离</small><strong data-access-field="isolation">否</strong></div>
+    <div><small>隔离状态</small><strong data-access-field="isolation">外部边界隔离</strong></div>
     <div><small>路径结果</small><strong data-access-field="result">尚未应用</strong></div>
     <div><small>外部互连简化值 / 旁路寄存器</small><strong><span data-access-field="neighbor">—</span> / <span data-access-field="bypass-reg">—</span></strong></div>
   </div>
@@ -140,7 +140,7 @@
 <p>“加入 Wrapper”不等于“核已经可测”。可测性还依赖内部状态的可控/可观测程度、扫描链、时钟控制、约束和 ATPG。反过来，Boundary Scan 也不能替代核内部的测试结构；它主要提供外部边界访问。</p>
 <h2 id="_5">资料与继续阅读</h2>
 <ul>
-<li><a href="https://standards.ieee.org/ieee/1500/">IEEE 1500 标准页面</a>：可复用核测试 Wrapper 的规范入口。</li>
+<li><a href="https://standards.ieee.org/ieee/1500/7704/">IEEE 1500-2022 标准页面</a>：可复用核测试 Wrapper 的规范入口。</li>
 <li><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT</a>：层级 DFT、Wrapper 与实现流程的产品资料。</li>
 <li><a href="https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/">Siemens Tessent BoundaryScan</a>：Boundary Scan 的实现背景，便于对照 Wrapper 与 PAD 边界的差异。</li>
 </ul>
