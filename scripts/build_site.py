@@ -29,14 +29,14 @@ TEAM_SOURCE_FILES = (
     "omp/skills/generate-dft-circuit/references/tiny-base.md",
 )
 
-NAV = [("quickstart", "快速开始"), ("usage-guide", "场景使用指南"), ("cli", "CLI 与 TUI"), ("tools", "内置工具"),
+NAV = [("quickstart", "快速开始"), ("hotkeys", "常用快捷键"), ("usage-guide", "场景使用指南"), ("cli", "CLI 与 TUI"), ("tools", "内置工具"),
        ("config", "常用配置"), ("skills", "团队 Skills 总览"), ("commands", "内置命令"),
        ("agents", "内置 Agent"), ("team", "团队公共能力"), ("faq", "FAQ / 最佳实践"),
        ("team-agents", "团队 Agent"), ("team-commands", "自定义命令"),
        ("maintenance", "维护与版本"), ("internal", "内部文档")]
 AREAS = [
     dict(key="start", title="开始使用", description="从安装到日常会话，掌握 OMP 的命令、工具和配置。", label="GET STARTED",
-         slugs=["quickstart", "usage-guide", "cli", "tools", "config", "commands", "agents", "faq"]),
+         slugs=["quickstart", "hotkeys", "usage-guide", "cli", "tools", "config", "commands", "agents", "faq"]),
     dict(key="team", title="团队能力", description="复用团队的开发流程、Skills 与 Worker，把需求落实到验证。", label="TEAM WORKFLOWS",
          slugs=["team", "skills", "team-agents", "team-commands", "skill-generate-unit-tests", "skill-generate-dft-circuit"]),
     dict(key="maintenance", title="维护手册", description="维护版本、文档与交付物，管理构建、校验和离线分发。", label="MAINTENANCE",
