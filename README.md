@@ -33,18 +33,18 @@ OCC 支持单步、播放和速度调整，逐个记录源沿是否放行及计�
 三个独立入口分别负责生成网站（`scripts/build_site.py`）、同步安装（`scripts/sync.py`）和启动服务（`scripts/serve_site.py`）。启动服务只需 Python 标准库，不安装额外软件、不联网、不重新构建或同步，脚本随离线 ZIP 分发。
 
 ```bash
-python3.11 scripts/serve_site.py
+python3 scripts/serve_site.py
 ```
 
-Windows 可用 `py -3.13 scripts/serve_site.py`，或自己的 Python 3.11+ 解释器。浏览器访问 **http://127.0.0.1:9333/**，终端保持运行，按 **Ctrl+C** 停止。脚本支持从任意目录通过绝对路径启动；缺少已生成首页或端口被占用时会报错退出。
+Windows 可用 `py -3 scripts/serve_site.py`，或自己的 Python 3.11+ 解释器。浏览器访问 **http://127.0.0.1:9333/**，终端保持运行，按 **Ctrl+C** 停止。脚本支持从任意目录通过绝对路径启动；缺少已生成首页或端口被占用时会报错退出。
 
 服务仅监听本机，不对其他电脑开放。首页自动跳转至 `/site/index.html`，保留公共页面、内部生成页和原文附件之间的相对链接；只提供 `site/`、`yellow/.site/` 和 `yellow/docs/` 内的静态文件，不提供目录列表或 `yellow/docs.db`。公共离线包仍不包含内部文档。
 
 ### 同步安装
 
 ```bash
-python3.11 scripts/sync.py --dry-run
-python3.11 scripts/sync.py
+python3 scripts/sync.py --dry-run
+python3 scripts/sync.py
 export PATH="$HOME/.local/bin:$PATH"
 cd /path/to/your/project
 omp
@@ -84,14 +84,13 @@ omp
 
 ## 维护
 
-所有脚本使用 Python 3.11+。同步、二进制维护、静态验证和打包仅用标准库；网页构建依赖 Jinja2/Markdown。Windows 维护者可用 `py -3.13` 或自己的 Python 3.11+ 环境。
+所有脚本直接使用本地已安装的 Python 3.11+。同步、二进制维护、静态验证和打包仅用标准库；网页构建依赖 Jinja2/Markdown。先用 `python3 --version` 确认版本至少为 3.11；Windows 用 `py -3 --version`，并将下列命令中的 `python3` 换成 `py -3`。默认版本不满足要求时，改用本地已安装的 Python 3.11+ 解释器绝对路径，安装依赖和运行脚本使用同一个解释器。
 
 ```bash
-python3.11 -m venv .tmp/venv
-.tmp/venv/bin/python -m pip install --cache-dir .tmp/pip-cache -r requirements-build.txt
-.tmp/venv/bin/python scripts/build_site.py
-python3.11 tests/verify.py
-python3.11 scripts/maintenance/package.py
+python3 -m pip install --cache-dir .tmp/pip-cache -r requirements-build.txt
+python3 scripts/build_site.py
+python3 tests/verify.py
+python3 scripts/maintenance/package.py
 ```
 
 离线重建前须预先安装 `requirements-build.txt` 中依赖或带入适合维护机的 wheel；普通用户只浏览已生成页面，无需构建环境。`package.py` 在 `.tmp/releases/` 生成 ZIP、SHA-256 和包清单，核对 ZIP CRC 与包内实体哈希；不读取或收录黄区数据。
@@ -103,28 +102,28 @@ python3.11 scripts/maintenance/package.py
 用 `--max-lines N` 修改内部 Markdown 的行数阈值，例如：
 
 ```bash
-python3.11 scripts/build_site.py --max-lines 3000
+python3 scripts/build_site.py --max-lines 3000
 ```
 
 阈值必须为正整数，按 `<= N` 筛选：默认 3000 行允许，3001 行及以上跳过。行数包含空行，兼容 LF/CRLF，末尾无换行的一行也计入。超限文档不生成页面、不进入导航或网页搜索；降低阈值后会清理此前生成的超限页面。跳过的文件及行数记录在 `yellow/.site/manifest.json`，原始 Markdown 和 `yellow/docs.db` 不变。此参数仅在构建时过滤公司文档，不筛选公共手册。
 
-只构建公共部分且不访问黄区时使用 `python3.11 scripts/build_site.py --public-only`。
+只构建公共部分且不访问黄区时使用 `python3 scripts/build_site.py --public-only`。
 
 ### 公共手册提交检查
 
 “开始使用／团队能力／维护手册／DFT知识”等公共手册位于 `portal/content/`，行数检查放在 Git 提交前，**不是网页生成时**。每份 Markdown 默认不能超过 3000 行；超限须按主题拆成多个互相链接的页面，不能靠跳过页面通过检查。
 
 ```bash
-python3.11 scripts/maintenance/install_hooks.py
-python3.11 tests/check_docs.py
+python3 scripts/maintenance/install_hooks.py
+python3 tests/check_docs.py
 ```
 
-安装后 `pre-commit` 自动检查**暂存区中的 Markdown**，未暂存修改不会改变检查结果，也不读取内部文档。新 clone 需安装一次；迁移 Python 环境后重新安装。现有其他钩子不会被覆盖。公共提交阈值可用 `git config dft.docsMaxLines 3000` 配置，手动检查可用 `python3.11 tests/check_docs.py --staged --max-lines 3000`。这些操作不自动提交或推送。
+安装后 `pre-commit` 自动检查**暂存区中的 Markdown**，未暂存修改不会改变检查结果，也不读取内部文档。新 clone 需安装一次；迁移 Python 环境后重新安装。现有其他钩子不会被覆盖。公共提交阈值可用 `git config dft.docsMaxLines 3000` 配置，手动检查可用 `python3 tests/check_docs.py --staged --max-lines 3000`。这些操作不自动提交或推送。
 
 外围更新二进制：
 
 ```bash
-python3.11 scripts/maintenance/maintain_binaries.py
+python3 scripts/maintenance/maintain_binaries.py
 ```
 
 这一个脚本仅依赖 Python 标准库，下载 OMP 最新正式发行版和 Claude Code stable，校验发行方 SHA-256 后替换两个二进制。默认 Linux x64，可加 `--arch arm64`。临时下载自动清理，不生成状态文件，也不需要克隆源码、安装 AST 依赖或更新文档快照。
@@ -134,8 +133,8 @@ python3.11 scripts/maintenance/maintain_binaries.py
 ## 验证
 
 ```bash
-python3.11 tests/test_sync.py
-.tmp/venv/bin/python tests/test_metadata.py
+python3 tests/test_sync.py
+python3 tests/test_metadata.py
 ```
 
 桌面浏览器检查需要提前准备 Playwright 及其 Chromium，浏览器安装位置通过 `PLAYWRIGHT_BROWSERS_PATH=.tmp/browsers` 指定。运行 `tests/test_portal.py`，截图与结果保存到 `.tmp/browser-check/`。所有同步测试使用隔离目录；Linux 下另测真实 `/proc` 识别及仅对测试进程的 SIGTERM。
@@ -145,11 +144,11 @@ python3.11 tests/test_sync.py
 DFT 新主题的纯计算测试由 Python 入口调用维护机的 Node.js（仅测试需要），不启动浏览器或服务器：
 
 ```bash
-python3.11 -m unittest tests.test_dft_curriculum tests.test_dft_scan tests.test_dft_faults tests.test_dft_clocks tests.test_dft_access tests.test_dft_bist tests.test_dft_compression_power tests.test_dft_flow
+python3 -m unittest tests.test_dft_curriculum tests.test_dft_scan tests.test_dft_faults tests.test_dft_clocks tests.test_dft_access tests.test_dft_bist tests.test_dft_compression_power tests.test_dft_flow
 ```
 
 此命令检查教学模型的已知数值、状态和边界，以及生成页面的课程/资源绑定；不能代替真实浏览器交互与视觉验收。
 
-页面呈现契约及可选纯 DOM 检查：`python3.11 -B -m unittest tests.test_presentation`。纯 DOM 检查需要维护机安装 `linkedom@0.18.12` 到 `.tmp/dom-check/`（安装命令见测试文件）；未安装时该项明确跳过。它不启动浏览器，不验证 CSS 排版、实际图片放大或视觉效果。网站运行和构建不依赖此包。
+页面呈现契约及可选纯 DOM 检查：`python3 -B -m unittest tests.test_presentation`。纯 DOM 检查需要维护机安装 `linkedom@0.18.12` 到 `.tmp/dom-check/`（安装命令见测试文件）；未安装时该项明确跳过。它不启动浏览器，不验证 CSS 排版、实际图片放大或视觉效果。网站运行和构建不依赖此包。
 
 完整设计与实施要求见 [最终版文档](本仓库项目自身相关文档/DFT_OMP_AI开发提效方案与实施计划_最终版.md)，已同步 Python 入口、脚本分层、桌面门户、内部文档分区存储及电路生成 Skill 等确认事项。

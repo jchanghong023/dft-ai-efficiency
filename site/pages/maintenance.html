@@ -35,24 +35,33 @@
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../maintenance/index.html">维护手册</a></div>
   <h1 id="_1">维护与版本</h1>
 <h2 id="_2">日常离线重建</h2>
-<p>普通使用者无需安装任何构建依赖。维护者具备 Python 3.11+，提前准备 <code>requirements-build.txt</code> 所列依赖即可离线重建：</p>
-<pre><code class="language-bash">python3.11 scripts/build_site.py
-python3.11 tests/verify.py
-python3.11 scripts/maintenance/package.py
+<p>普通使用者浏览已生成的 <code>site/</code> 无需安装构建依赖。维护者直接使用本地已安装的 Python 3.11+，在仓库根目录向同一个解释器安装 <code>requirements-build.txt</code> 中的依赖。先运行 <code>python3 --version</code>（Windows 用 <code>py -3 --version</code>）确认版本至少为 3.11；若默认命令对应旧版本，请改用已安装的 Python 3.11+ 解释器绝对路径。首次安装依赖需要可访问的软件源；离线重建前须预先安装依赖或准备适合维护机的 wheel。</p>
+<p>Linux（Python 3.11+）：</p>
+<pre><code class="language-bash">python3 -m pip install --cache-dir .tmp/pip-cache -r requirements-build.txt
+python3 scripts/build_site.py
+</code></pre>
+<p>Windows PowerShell（使用本地 Python 3 启动器）：</p>
+<pre><code class="language-powershell">py -3 -m pip install --cache-dir .tmp/pip-cache -r requirements-build.txt
+py -3 scripts/build_site.py
+</code></pre>
+<p>后续重建直接运行同一个本地解释器的构建命令，无需重复安装依赖；仅生成公共网站时，在命令末尾加 <code>--public-only</code>。<code>site/</code> 删除后也可通过上述命令重新生成，前提是保留 <code>portal/</code> 等构建源文件。</p>
+<p>构建完成后可校验并打包（Windows 将下面的 <code>python3</code> 换为 <code>py -3</code>）：</p>
+<pre><code class="language-bash">python3 tests/verify.py
+python3 scripts/maintenance/package.py
 </code></pre>
 <p>构建公共页面后，默认另将 <code>yellow/docs/</code> 中行数不超过 3000 的 Markdown 生成为本地内部文档页；不会在线更新 Fork 资料。打包必须有经过校验的真实二进制。</p>
 <h2 id="_3">内部文档浏览</h2>
-<p>将公司 Markdown 及其本地附件放入 <code>yellow/docs/</code>，运行 <code>python3.11 scripts/build_site.py</code>，再点击顶部“内部文档”。左侧每个导航项对应一个符合行数条件的 Markdown 文件，支持文件名筛选、正文搜索和文档间跳转。</p>
+<p>将公司 Markdown 及其本地附件放入 <code>yellow/docs/</code>，运行 <code>python3 scripts/build_site.py</code>，再点击顶部“内部文档”。左侧每个导航项对应一个符合行数条件的 Markdown 文件，支持文件名筛选、正文搜索和文档间跳转。</p>
 <p><code>--max-lines N</code> 控制内部 Markdown 的行数阈值，默认 <code>3000</code>，必须是正整数。例如：</p>
-<pre><code class="language-bash">python3.11 scripts/build_site.py --max-lines 3000
+<pre><code class="language-bash">python3 scripts/build_site.py --max-lines 3000
 </code></pre>
 <p>按行数 <strong>不超过 N</strong> 收录：3000 行允许，3001 行及以上默认跳过。空行计入行数；LF/CRLF 换行均支持，末尾没有换行的非空行也计入。超限文档不生成网页，也不进入导航和网页搜索；原始 Markdown 与 Wiki 数据库不变，正文中指向超限文档的链接回到原始文件。跳过清单及实际行数仅保存在 <code>yellow/.site/manifest.json</code>。降低阈值重新构建后，会清除原先生成的超限页面。此参数仅在构建时过滤公司文档，公共手册不在构建时过滤或做行数限制校验。</p>
 <p>内部输出单独保存在 <code>yellow/.site/</code>，不写入公共 <code>site/</code>、公共搜索索引或发布包，且由黄区 Git 忽略规则覆盖。原始文件保持不变。新增、修改或删除文档后重新构建即可更新导航和页面。</p>
 <p>仅重建公共部分且完全不访问黄区时使用：</p>
-<pre><code class="language-bash">python3.11 scripts/build_site.py --public-only
+<pre><code class="language-bash">python3 scripts/build_site.py --public-only
 </code></pre>
 <h2 id="_4">外围更新发行版</h2>
-<pre><code class="language-bash">python3.11 scripts/maintenance/maintain_binaries.py
+<pre><code class="language-bash">python3 scripts/maintenance/maintain_binaries.py
 </code></pre>
 <p>只需这一个 Python 脚本，使用标准库下载 OMP 最新正式发行版和 Claude Code <code>stable</code>，验证发行方 SHA-256 后替换实体。默认 Linux x64，可指定 <code>--arch arm64</code>。</p>
 <p><code>dist/</code> 只有 <code>omp/omp</code>、<code>claude-code/claude</code> 两个二进制，不保存 VERSION、JSON、校验清单或更新状态。临时文件在下载结束或失败后自动清理；两个下载都通过校验后才开始替换。更新不需要克隆源码、安装 AST 依赖、更新元数据或重建网站，也不安装到用户环境。</p>
@@ -60,10 +69,10 @@ python3.11 scripts/maintenance/package.py
 <h2 id="_5">内容维护</h2>
 <p>门户有五个独立分区：首页位于 <code>site/start/</code>、<code>site/team/</code>、<code>site/maintenance/</code>、<code>site/internal/</code>、<code>site/dft/</code>，各自拥有独立导航。公共文章保留在 <code>site/pages/</code>；内部正文只在 <code>yellow/.site/</code>。</p>
 <p>公共 Markdown 的行数在提交前检查，默认最多 3000 行。新 clone 安装一次钩子：</p>
-<pre><code class="language-bash">python3.11 scripts/maintenance/install_hooks.py
+<pre><code class="language-bash">python3 scripts/maintenance/install_hooks.py
 </code></pre>
 <p>Git 提交时，钩子运行 <code>tests/check_docs.py --staged</code>，检查 <code>portal/content/</code> 的暂存内容；超过阈值则报错，须拆成多个页面、更新相关导航和链接，再重新暂存提交。不检查公司文档，也不在网站生成时执行公共行数限制。</p>
-<p>可提前运行 <code>python3.11 tests/check_docs.py</code> 检查工作区；公共提交阈值由 <code>git config dft.docsMaxLines 3000</code> 配置，默认为 3000，等于阈值允许。公共提交阈值与内部构建参数分别设置。检查只报告问题，不自动提交、截断内容或代替语义拆页。</p>
+<p>可提前运行 <code>python3 tests/check_docs.py</code> 检查工作区；公共提交阈值由 <code>git config dft.docsMaxLines 3000</code> 配置，默认为 3000，等于阈值允许。公共提交阈值与内部构建参数分别设置。检查只报告问题，不自动提交、截断内容或代替语义拆页。</p>
 <p><code>portal/content/</code> 维护 Markdown 正文；<code>portal/catalog/</code> 维护命令中文解释；<code>portal/metadata/omp.json</code> 保存手册引用的命令资料与参考版本。文档按需单独更新，不与二进制版本绑定。新增项缺说明或本地链接失效时验证失败。</p>
 <p>公共页面和 CSS/JavaScript 均在 <code>site/</code> 交付并纳入 Git；内部页面及搜索数据仅保存在 <code>yellow/.site/</code>。两者搜索均采用本地 JS 数据，不使用 fetch、CDN 或在线字体。内部文档的外部图片不会自动加载；外部来源链接仅在用户主动打开时联网。</p>
 <h2 id="_6">公共发布包</h2>

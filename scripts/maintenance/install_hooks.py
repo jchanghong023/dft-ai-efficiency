@@ -1,6 +1,7 @@
 """Install this repository's public-document pre-commit check using Python 3.11+."""
 from __future__ import annotations
 import argparse
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -20,16 +21,11 @@ def install(root=ROOT):
     if target.exists() and MARKER not in target.read_text(encoding="utf-8"):
         raise ValueError(f"Existing unrelated hook left unchanged: {target}")
     executable = Path(sys.executable).as_posix()
-    # Git for Windows handles quoted interpreter paths. Linux installations use
-    # the explicitly required python3.11 command if the current path has spaces.
-    if " " in executable:
-        executable = f'"{executable}"' if sys.platform == "win32" else "/usr/bin/env python3.11"
-    body = f'#!{executable}\n{MARKER}\n' + '''import pathlib
-import subprocess
-import sys
-root = subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
-raise SystemExit(subprocess.call([sys.executable, "-B", str(pathlib.Path(root) / "tests/check_docs.py"), "--staged"]))
-'''
+    # Git runs shell hooks on Linux and Windows. Quote the actual interpreter
+    # path so spaces never cause a fallback to another Python installation.
+    body = f'#!/bin/sh\n{MARKER}\n' + 'root=$(git rev-parse --show-toplevel) || exit $?\n' + (
+        f'exec {shlex.quote(executable)} -B "$root/tests/check_docs.py" --staged\n'
+    )
     folder.mkdir(parents=True, exist_ok=True)
     target.write_text(body, encoding="utf-8", newline="\n")
     target.chmod(0o755)

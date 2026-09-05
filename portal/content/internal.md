@@ -5,7 +5,7 @@
 本地文档页面尚未生成时，将文档放入该目录并执行：
 
 ```bash
-python3.11 scripts/build_site.py
+python3 scripts/build_site.py
 ```
 
 默认只生成行数**不超过 3000** 的 Markdown 网页；可用 `--max-lines N` 调整阈值。超过阈值的文档不进入导航和网页搜索，原文仍保留。

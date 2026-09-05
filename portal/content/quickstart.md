@@ -10,11 +10,11 @@
 
 ## 2. 预览并同步
 
-在仓库根目录运行：
+在仓库根目录运行。先用 `python3 --version` 确认本地 Python 至少为 3.11；若默认版本较旧，将 `python3` 替换为已安装的 Python 3.11+ 解释器绝对路径：
 
 ```bash
-python3.11 scripts/sync.py --dry-run
-python3.11 scripts/sync.py
+python3 scripts/sync.py --dry-run
+python3 scripts/sync.py
 ```
 
 也可从任意工作目录用脚本绝对路径运行，路径有空格时加引号。预览不会停止进程或修改目标目录；正式同步会终止当前用户的 OMP 进程。先保存正在进行的任务。

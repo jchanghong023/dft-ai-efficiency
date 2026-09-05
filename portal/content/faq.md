@@ -42,4 +42,4 @@ Git 获取的代码可能只有 LFS 指针。外围运行 `git lfs pull`，或�
 
 ## 如何更新门户版本
 
-更新二进制只运行 `python3.11 scripts/maintenance/maintain_binaries.py`。门户内容按需单独维护，修改公共正文和命令说明后重新构建即可；手册参考版本不与二进制绑定。普通离线构建不联网。详见[维护与版本](maintenance.html)。
+更新二进制只运行 `python3 scripts/maintenance/maintain_binaries.py`。门户内容按需单独维护，修改公共正文和命令说明后重新构建即可；手册参考版本不与二进制绑定。普通离线构建不联网。详见[维护与版本](maintenance.html)。

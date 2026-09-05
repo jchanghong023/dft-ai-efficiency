@@ -39,9 +39,9 @@
 <p>解压离线包到长期保留的位置。Git 用户在外围先执行 <code>git lfs pull</code>，不能把未拉取的 LFS 指针带入离线环境。发布包内已经是二进制实体，使用者无需 Git LFS。</p>
 <p>本门户可以直接双击打开 <code>site/index.html</code>；不需要 Web 服务器，也不需要安装网站构建依赖。</p>
 <h2 id="2">2. 预览并同步</h2>
-<p>在仓库根目录运行：</p>
-<pre><code class="language-bash">python3.11 scripts/sync.py --dry-run
-python3.11 scripts/sync.py
+<p>在仓库根目录运行。先用 <code>python3 --version</code> 确认本地 Python 至少为 3.11；若默认版本较旧，将 <code>python3</code> 替换为已安装的 Python 3.11+ 解释器绝对路径：</p>
+<pre><code class="language-bash">python3 scripts/sync.py --dry-run
+python3 scripts/sync.py
 </code></pre>
 <p>也可从任意工作目录用脚本绝对路径运行，路径有空格时加引号。预览不会停止进程或修改目标目录；正式同步会终止当前用户的 OMP 进程。先保存正在进行的任务。</p>
 <div class="table-wrap"><table>

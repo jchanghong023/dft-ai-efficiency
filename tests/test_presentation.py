@@ -125,7 +125,7 @@ assert(search.document.querySelectorAll('.search-result').length<40);
 assert(search.document.querySelector('.search-more').hidden);
 const found=search.document.querySelector('.search-result'); assert(found.getAttribute('href').includes('?q=fullsend'));
 assert(search.document.querySelector('mark.search-hit'));
-const highlightDoc=load('pages/quickstart.html?q=python3.11');
+const highlightDoc=load('pages/quickstart.html?q=python3');
 assert(highlightDoc.document.querySelector('.article mark.search-hit'));
 const original=parseHTML(fs.readFileSync('site/pages/quickstart.html','utf8')).document;
 assert.equal(highlightDoc.document.querySelector('pre code').textContent,original.querySelector('pre code').textContent);

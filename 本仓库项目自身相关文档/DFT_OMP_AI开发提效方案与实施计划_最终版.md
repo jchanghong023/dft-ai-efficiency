@@ -142,7 +142,7 @@ dft-ai-efficiency/
 
 所有构建中间文件、临时下载、临时解压、调试输出等统一放在 `.tmp/`，不提交 Git。`scripts/` 顶层保留 `build_site.py`、`sync.py` 和 `serve_site.py`；其他实现与维护入口放子目录，测试相关脚本统一放最顶层 `tests/`，不放在 `scripts/` 中。
 
-运行 `python3.11 scripts/serve_site.py` 后，浏览器访问 `http://127.0.0.1:9333/`，按 Ctrl+C 停止服务。脚本随离线包分发，使用已有 Python 3.11+ 标准库，无需额外服务软件；只提供公共网站、内部生成页面和原文附件，不提供仓库其他文件或目录列表。
+运行 `python3 scripts/serve_site.py` 后，浏览器访问 `http://127.0.0.1:9333/`，按 Ctrl+C 停止服务。脚本随离线包分发，使用已有 Python 3.11+ 标准库，无需额外服务软件；只提供公共网站、内部生成页面和原文附件，不提供仓库其他文件或目录列表。
 
 `yellow/.gitignore` 用于保证 `yellow/` 目录本身保留在仓库中，但黄区接入的实际数据不被提交，例如：
 
@@ -178,14 +178,14 @@ yellow/
 
 1. 将公司内部 Markdown 及附件复制到 `yellow/docs/`。
 2. 将对应的 `docs.db` 复制到 `yellow/docs.db`。
-3. 执行 `python3.11 scripts/build_site.py`，生成公共门户，并为行数不超过阈值的内部 Markdown 生成页面；内部页面、网页搜索数据单独写入 `yellow/.site/`。
+3. 执行 `python3 scripts/build_site.py`，生成公共门户，并为行数不超过阈值的内部 Markdown 生成页面；内部页面、网页搜索数据单独写入 `yellow/.site/`。
 4. 打开 `site/index.html`，通过“内部文档”检查文件导航、正文和本地附件。
 5. 检查内部内容未被 Git 跟踪，临时处理文件统一放入 `.tmp/`。
 6. 按公司流程将包含公共工具、公共门户和整个 `yellow/` 的内部交付内容传入红区；公共打包脚本不负责收录公司数据。
 
-内部 Markdown 增删改后重新构建。默认构建允许读取 `yellow/docs/`，但内部内容不进入公共页面、公共搜索或公共构建清单；仅维护公共门户时使用 `python3.11 scripts/build_site.py --public-only`，该模式不访问黄区。`yellow/docs.db` 由独立的 Wiki 数据准备流程提供，网站构建不会将网页搜索数据当作 Wiki 数据库。
+内部 Markdown 增删改后重新构建。默认构建允许读取 `yellow/docs/`，但内部内容不进入公共页面、公共搜索或公共构建清单；仅维护公共门户时使用 `python3 scripts/build_site.py --public-only`，该模式不访问黄区。`yellow/docs.db` 由独立的 Wiki 数据准备流程提供，网站构建不会将网页搜索数据当作 Wiki 数据库。
 
-构建脚本提供 `--max-lines N`，默认 `3000`，只为**行数不超过 N** 的内部 Markdown 生成网页。例如 `python3.11 scripts/build_site.py --max-lines 3000`：3000 行允许，3001 行及以上跳过。N 必须是正整数；空行计入，支持 LF/CRLF，末尾没有换行的一行也计入。公司文档仅在生成网页时过滤，不影响原始 Markdown、Agent 原文检索或 Wiki 数据库；公共手册不在构建时过滤或做行数限制校验。
+构建脚本提供 `--max-lines N`，默认 `3000`，只为**行数不超过 N** 的内部 Markdown 生成网页。例如 `python3 scripts/build_site.py --max-lines 3000`：3000 行允许，3001 行及以上跳过。N 必须是正整数；空行计入，支持 LF/CRLF，末尾没有换行的一行也计入。公司文档仅在生成网页时过滤，不影响原始 Markdown、Agent 原文检索或 Wiki 数据库；公共手册不在构建时过滤或做行数限制校验。
 
 超限文档不进入网页导航或全文搜索，跳过的文件与实际行数记录在 `yellow/.site/manifest.json`。降低阈值并重新构建时，清理此前生成的超限页面，避免旧内容残留；正文链接如指向超限 Markdown，则保留原文入口，不链接不存在的 HTML。行数阈值用于控制网页体量，不等同于原始 Office/PDF 页数。
 
@@ -194,7 +194,7 @@ yellow/
 ```text
 获取传入红区的效率仓库
         ↓
-执行 python3.11 scripts/sync.py
+执行 python3 scripts/sync.py
         ↓
 同步 OMP、公共能力和 docs.db
         ↓
@@ -208,8 +208,8 @@ Wiki 快速检索 + 必要时 grep/read 原始 Markdown
 统一入口：
 
 ```bash
-python3.11 scripts/sync.py --dry-run
-python3.11 scripts/sync.py
+python3 scripts/sync.py --dry-run
+python3 scripts/sync.py
 ```
 
 ### 3.3 `sync.py` 的职责
@@ -294,7 +294,7 @@ python3.11 scripts/sync.py
 | `coding-worker` | 代码修改 |
 | `verification-worker` | 测试与结果检查 |
 
-这些内容统一保存在公共 Git 仓库中，通过发布包和 `python3.11 scripts/sync.py` 分发，不通过个人目录或聊天附件维护多套版本。命令和三个 Worker 使用固定版 OMP 支持的原生格式，并依据只读源码核验发现路径和调用方法。
+这些内容统一保存在公共 Git 仓库中，通过发布包和 `python3 scripts/sync.py` 分发，不通过个人目录或聊天附件维护多套版本。命令和三个 Worker 使用固定版 OMP 支持的原生格式，并依据只读源码核验发现路径和调用方法。
 
 两项 Skill 均可在匹配任务中自动选择，也支持 `/skill:generate-unit-tests` 和 `/skill:generate-dft-circuit` 显式调用。Skill 说明保持聚焦，不重复通用团队规则。UT Skill 沿用目标工程已有测试框架、fixture 和运行器，依据真实修改补充相关测试，不另建无关测试体系。
 
@@ -326,7 +326,7 @@ Markdown 页面采用安静的阅读布局和右侧页内目录；电路学习�
 
 | 栏目 | 内容 |
 |---|---|
-| 快速开始 | 获取发布包、执行 `python3.11 scripts/sync.py`、启动 OMP、打开门户 |
+| 快速开始 | 获取发布包、执行 `python3 scripts/sync.py`、启动 OMP、打开门户 |
 | 场景使用指南 | 安装后的日常开发路径：简单任务直接输入，复杂任务先计划，按需选择模型、并发、诊断与验证 |
 | OMP 常用命令 | 日常 CLI / TUI 命令、用途、参数和示例 |
 | OMP 内置工具 | `read`、`grep`、`wiki`、`task`、LSP 等工具的作用和典型场景 |
@@ -431,7 +431,7 @@ sonic
 
 “开始使用／团队能力／维护手册／DFT知识”等公共 Markdown 位于 `portal/content/`，每份默认不能超过 3000 行。检查发生在 **Git 提交前**，不是网站生成时。超过阈值就报错、阻止提交，维护者须按主题拆成多个互相链接的页面，更新分区导航后重新暂存；不能通过丢弃页面、截断正文来规避要求。
 
-`python3.11 scripts/maintenance/install_hooks.py` 安装本地 `pre-commit` 钩子，钩子运行 `tests/check_docs.py --staged`，检查真正准备提交的暂存区内容，不受未暂存修改影响。检查范围限定为公共手册，不读取 `yellow/`。公共阈值可由 `git config dft.docsMaxLines 3000` 配置，手动检查也可指定 `--max-lines`；公共提交阈值与公司文档构建阈值分别设置，均允许等于阈值。
+`python3 scripts/maintenance/install_hooks.py` 安装本地 `pre-commit` 钩子，钩子运行 `tests/check_docs.py --staged`，检查真正准备提交的暂存区内容，不受未暂存修改影响。检查范围限定为公共手册，不读取 `yellow/`。公共阈值可由 `git config dft.docsMaxLines 3000` 配置，手动检查也可指定 `--max-lines`；公共提交阈值与公司文档构建阈值分别设置，均允许等于阈值。
 
 新 clone 需安装一次钩子；安装不覆盖已有的其他钩子，也不自动提交或推送。检查与测试脚本全部放在根目录 `tests/`。
 

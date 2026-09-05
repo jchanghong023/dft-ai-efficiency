@@ -15,7 +15,7 @@
 {% elif area_key == 'maintenance' %}
 <div class="maintenance-scripts" aria-label="三个日常操作入口">
 {% for name, title, description in [('build_site','生成网站','文档更新后，重新生成公共门户与本地内部页面。'),('serve_site','启动本地服务','保持终端运行，用浏览器访问 127.0.0.1:9333。'),('sync','同步安装','将团队能力与二进制同步到当前用户环境。')] %}
-<section class="script-card"><span class="journey-number">{{ '%02d'|format(loop.index) }}</span><h2>{{ title }}</h2><p>{{ description }}</p><pre><code class="language-bash">python3.11 scripts/{{ name }}.py</code></pre>{% if name == 'serve_site' %}<small>仅监听本机 · Ctrl+C 停止</small>{% elif name == 'sync' %}<small>首次执行可加 --dry-run 预览</small>{% else %}<small>在仓库根目录执行 · Python 3.11+</small>{% endif %}</section>
+<section class="script-card"><span class="journey-number">{{ '%02d'|format(loop.index) }}</span><h2>{{ title }}</h2><p>{{ description }}</p><pre><code class="language-bash">python3 scripts/{{ name }}.py</code></pre>{% if name == 'serve_site' %}<small>仅监听本机 · Ctrl+C 停止</small>{% elif name == 'sync' %}<small>首次执行可加 --dry-run 预览</small>{% else %}<small>在仓库根目录执行 · Python 3.11+</small>{% endif %}</section>
 {% endfor %}
 </div>
 {% endif %}
