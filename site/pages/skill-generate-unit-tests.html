@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>generate-unit-tests · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="team" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" class="active" aria-current="page">团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索团队能力 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../team/index.html">团队能力 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="团队能力栏目"><a  href="../pages/team.html">团队公共能力</a><a  href="../pages/skills.html">团队 Skills 总览</a><a  href="../pages/team-agents.html">团队 Agent</a><a  href="../pages/team-commands.html">自定义命令</a><a class="active" aria-current="page" href="../pages/skill-generate-unit-tests.html">generate-unit-tests</a><a  href="../pages/skill-generate-dft-circuit.html">generate-dft-circuit</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../team/index.html">团队能力</a></div>
+  <h1 id="generate-unit-tests">generate-unit-tests</h1>
+<h2 id="_1">用途</h2>
+<p>从当前实际代码修改出发，复用目标项目既有测试框架，补充并执行相关单元测试，输出可核实的验证结果。</p>
+<h2 id="_2">适用与不适用</h2>
+<p>适用于功能修改、缺陷回归、受影响边界条件和跨模块契约的验证。不适用于只读代码审查、无关覆盖率提升、另建测试框架，或把当前项目迁移到另一套运行器。</p>
+<h2 id="_3">如何调用</h2>
+<p>Agent 可自动选择：<strong>是</strong>。必须手动调用：<strong>否</strong>。也可显式调用：</p>
+<pre><code class="language-text">/skill:generate-unit-tests 对当前未提交的复位修改补充相关 UT，并执行项目已有测试入口
+</code></pre>
+<h2 id="_4">输入</h2>
+<p>用户指定的变更范围、真实 diff、受影响代码、项目规则、现有测试和构建/CI 运行入口。遇到暂存和未暂存修改时一并识别，但只处理本任务相关部分。</p>
+<h2 id="_5">输出</h2>
+<p>相关测试及必要 fixture 的变更；实际运行命令、退出码、通过或失败结果；必要日志位置和未验证项。测试验证可观察行为，不能仅检查与实现同构的内部细节。</p>
+<h2 id="_6">示例与缺失条件</h2>
+<p>已有 pytest 项目时沿用配置和 fixture，针对当前行为修改测试并运行相关用例，而非新增一套自制断言框架。缺少测试框架时先查构建与 CI；仍无法确定时输出测试设计和缺口，不宣称测试已经通过。</p>
+<p>硬件仿真器、库或公司工具缺失时区分“用例已写”和“运行已验证”。失败用例不得通过降低断言或无关产品代码修改来掩盖。</p>
+<p>参阅<a href="team.html">统一开发命令</a>与<a href="faq.html">验证边界</a>。</p>
+<h2 id="skill">Skill 原始文件</h2>
+<p>以下内容在构建时直接读取公共源文件，保留配置头与完整正文。</p>
+<p class="source-file"><code>omp/skills/generate-unit-tests/SKILL.md</code></p><pre data-source="omp/skills/generate-unit-tests/SKILL.md"><code class="language-markdown">---
+name: generate-unit-tests
+description: 根据真实代码修改，在目标项目既有测试框架中补充并执行相关单元测试。适用于功能变更和缺陷回归，不用于新建无关测试体系或代替只读审查。
+---
+
+# 补充相关单元测试
+
+读取用户指定范围的实际 diff、受影响行为、已有测试和运行器配置；存在暂存与未暂存修改时都检查，但不把无关改动纳入任务。
+
+复用目标项目的框架、fixture、mock 边界和命名习惯。用可观察输入输出或契约验证变更，优先原始缺陷回归、正常路径和受影响的关键边界；不要按实现结构逐句镜像断言。对缺陷修复，在可行且不污染工作区时证明用例能区分修复前后行为。
+
+执行对应的已有测试入口和项目强制检查。跨模块契约变化时按需运行已有集成测试，不擅自另建测试框架。找不到框架时先查构建/CI 脚本和项目文档；仍缺少必要运行条件，则列明缺口，交付可确定的测试设计，不声称测试通过。
+
+只为本次行为增补必要用例与 fixture，不修改产品代码掩盖失败，不降低既有断言。执行输出归入目标项目允许的临时目录；新 Python 验证入口使用 Python 3.11+。
+
+交付相关测试变更、实际命令、退出码及测试结果，并说明未验证部分。可自动选择，也可通过 `/skill:generate-unit-tests &lt;修改范围&gt;` 显式调用；无须强制手动调用。
+</code></pre>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">用途</a></li>
+<li><a href="#_2">适用与不适用</a></li>
+<li><a href="#_3">如何调用</a></li>
+<li><a href="#_4">输入</a></li>
+<li><a href="#_5">输出</a></li>
+<li><a href="#_6">示例与缺失条件</a></li>
+<li><a href="#skill">Skill 原始文件</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索团队能力</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

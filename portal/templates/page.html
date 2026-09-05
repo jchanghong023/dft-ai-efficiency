@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>{{ title }} · DFT 工作台</title>
+  <script src="{{ base }}assets/theme.js"></script>
+  <link rel="stylesheet" href="{{ base }}assets/style.css">
+  <script defer src="{{ search_data|default(base ~ 'assets/search-data.js') }}"></script>
+  <script defer src="{{ base }}assets/app.js"></script>
+  {% if home %}<link rel="stylesheet" href="{{ base }}assets/home.css">{% else %}<link rel="stylesheet" href="{{ base }}assets/reading.css"><script defer src="{{ base }}assets/reading.js"></script>{% endif %}
+  {% if internal_page|default(false) %}<script defer src="{{ base }}assets/internal.js"></script>{% endif %}
+  {% if area_key|default('') == 'dft' %}<link rel="stylesheet" href="{{ base }}assets/dft.css"><link rel="stylesheet" href="{{ base }}assets/lab.css">{% if page_slug|default('') in ['dft-scan','dft-edt'] %}<script defer src="{{ base }}assets/dft.js"></script>{% endif %}{% if lab_script|default('') %}<script defer src="{{ base }}assets/labs/{{ lab_script }}"></script>{% endif %}{% endif %}
+  <link rel="stylesheet" href="{{ base }}assets/theme.css">
+  <link rel="stylesheet" href="{{ base }}assets/desktop.css">
+</head>
+<body data-base="{{ base }}" data-area="{{ area_key|default('home') }}" data-page-kind="{{ 'command' if page_slug|default('') is string and (page_slug|default('')).startswith(('command-', 'cli-')) else 'document' }}" data-internal-entry="{{ 'true' if internal_entry|default(false) else 'false' }}">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="{{ base }}index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="{{ base }}index.html" {% if home %}class="active" aria-current="page"{% endif %}>首页</a>{% for area in areas %}<a href="{% if area.key == 'internal' and internal_home is defined %}{{ internal_home }}{% else %}{{ base }}{{ area.key }}/index.html{% endif %}" {% if area_key|default('') == area.key %}class="active" aria-current="page"{% endif %}>{{ area.title }}</a>{% endfor %}</nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">{% if home %}搜索工作手册{% else %}搜索{{ area_title }}{% endif %} <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+{% if home %}
+{% include "home.html" %}
+{% else %}
+<div class="docs-layout{% if area_key|default('') == 'dft' and not landing|default(false) %} circuit-layout{% endif %}{% if internal_page|default(false) %} internal-docs{% endif %}{% if landing|default(false) %} area-layout{% endif %}">
+  {% if internal_page|default(false) %}
+  <aside class="sidebar document-sidebar"><button class="module-search" type="button">搜索内部文档正文 <span>/</span></button><h2>内部文档 <small>{{ internal_files|default([])|length }}</small></h2><label class="document-filter-label" for="document-filter">按文件名筛选</label><input id="document-filter" type="search" placeholder="查找 Markdown 文件…"><nav class="document-list" aria-label="内部 Markdown 文件">{% for item in internal_files|default([]) %}<a href="{{ item.href }}" title="{{ item.name }}" {% if active_document == item.href %}class="active" aria-current="page"{% endif %}>{{ item.name }}</a>{% else %}<p>暂无已加载的文档</p>{% endfor %}</nav></aside>
+  {% else %}
+  <aside class="sidebar"><a class="area-back" href="{{ base }}{{ area_key }}/index.html">{{ area_title }} · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="{{ area_title }}栏目">{% if area_groups|default([]) %}{% for group in area_groups %}<section class="nav-group"><h2>{{ '%02d'|format(loop.index) }} / {{ group.title }}</h2>{% for item in group.lessons %}<a {% if active_navigation|default(page_slug|default(section)) == item.slug %}class="active" aria-current="{{ 'page' if page_slug|default('') == item.slug else 'location' }}"{% endif %} href="{{ base }}pages/{{ item.slug }}.html">{{ item.title }}</a>{% endfor %}</section>{% endfor %}{% else %}{% for item in area_navigation %}<a {% if active_navigation|default(page_slug|default(section)) == item.slug %}class="active" aria-current="{{ 'page' if page_slug|default('') == item.slug else 'location' }}"{% endif %} href="{{ base }}pages/{{ item.slug }}.html">{{ item.title }}</a>{% endfor %}{% endif %}</nav><div class="sidebar-version">{% if area_key == 'dft' %}DFT 概念与交互演示<br>公共教学示例 · 非工艺电路{% else %}手册参考版本<br><strong>{{ version }}</strong><br>公共内容 · 本地浏览{% endif %}</div></aside>
+  {% endif %}
+  <main id="main" class="article"><div class="breadcrumb"><a href="{{ base }}index.html">工作台</a><span>/</span><a href="{{ internal_home|default(base ~ area_key ~ '/index.html') }}">{{ area_title }}</a></div>
+  {% if landing|default(false) %}
+    {% include "area.html" %}
+  {% else %}{{ body|safe }}{% endif %}
+  {% if previous_lesson|default(none) or next_lesson|default(none) %}<nav class="lesson-pager" aria-label="学习路线">{% if previous_lesson %}<a href="{{ base }}pages/{{ previous_lesson.slug }}.html"><small>← 上一主题</small><strong>{{ previous_lesson.title }}</strong></a>{% else %}<span></span>{% endif %}{% if next_lesson %}<a href="{{ base }}pages/{{ next_lesson.slug }}.html"><small>下一主题 →</small><strong>{{ next_lesson.title }}</strong></a>{% endif %}</nav>{% endif %}
+  <div class="article-end">{% if internal_page|default(false) %}{% if original_document is defined %}原文：<a href="{{ original_document }}">{{ document_name }}</a>{% else %}内部文档 · 仅在本地浏览{% endif %}{% elif area_key == 'dft' %}科普教学模型 · 实际电路与测试配置以工程资料为准。{% else %}本页参考 {{ version }}。实际可用能力以本机二进制与会话配置为准。{% endif %}</div></main>
+  <aside class="toc" aria-label="本页导航"><p>{% if area_key == 'dft' %}学习导航{% else %}本页目录{% endif %}</p>{% if area_key == 'dft' and not landing|default(false) %}<div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div>{% endif %}{{ toc|safe }}<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+{% endif %}
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>{{ version }} <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">{% if home %}搜索工作手册{% else %}搜索{{ area_title }}{% endif %}</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

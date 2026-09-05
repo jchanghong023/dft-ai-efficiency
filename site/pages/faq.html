@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>FAQ / 最佳实践 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a class="active" aria-current="page" href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="faq">FAQ / 最佳实践</h1>
+<h2 id="_1">页面离线能用，为什么模型不能回答</h2>
+<p>门户完全离线；客户端只是离线分发，推理仍依赖已配置且目标网络可达的模型服务。门户不会替你配置服务或下载模型。</p>
+<h2 id="lfs">同步找不到二进制或发现 LFS 指针</h2>
+<p>Git 获取的代码可能只有 LFS 指针。外围运行 <code>git lfs pull</code>，或使用携带实体的离线包。同步与打包直接检查实体的 ELF 格式及架构，不会把指针当成可执行文件。发行方 SHA-256 在下载更新时核验；打包另核对复制前后的实体哈希。</p>
+<h2 id="wal-shm-journal">同步报告 WAL / SHM / journal 未关闭</h2>
+<p>不要直接删除 sidecar 强行继续。让数据库维护者停止写入，完成 SQLite checkpoint 并正常关闭连接，再导出或复制完整一致的主数据库。脚本不合并运行中的数据库。</p>
+<h2 id="yellowdocsdb">yellow/docs.db 缺失会怎样</h2>
+<p>跳过并保留个人数据库；不会创建空数据库替换它。原始 Markdown 仍留在仓库里，公共门户与公共包只保留 <code>yellow/.gitignore</code>。</p>
+<h2 id="omp">OMP 进程无法退出</h2>
+<p>同步失败且不开始覆盖；查明当前任务或权限问题并手工正常退出后重试。脚本只处理当前用户进程，不操作其他用户的 OMP。同步中重新启动进程也会中止后续替换。</p>
+<h2 id="skill-worker">Skill 或 Worker 没有出现</h2>
+<p>检查实际 profile、<code>omp config path</code>、Skill 启用设置及同名项目覆盖。此同步只负责默认 <code>~/.omp/agent/</code>。重新启动 OMP，或对扩展改动使用 <code>/reload-plugins</code>；在 <code>/extensions</code>、<code>/agents</code> 查看来源。</p>
+<h2 id="wiki">Wiki 无结果或源路径失效</h2>
+<p>先用 <code>omp docs list</code> 确认索引，多个索引需指定名称。再使用团队上下文中的原始资料路径 read/grep。旧索引可能保留建库机路径；同步不会擅自重写索引内容。必要时由公司维护者按真实目录重新建库。</p>
+<h2 id="_2">内部文档是否进入公共页面或发布包</h2>
+<p>不会。顶部“内部文档”读取本地生成的 <code>yellow/.site/</code>，左侧按 <code>yellow/docs/</code> 的 Markdown 文件导航。公共页面、公共全文索引和公共发布包不包含内部正文或文件名。默认构建会更新内部页面；<code>--public-only</code> 只构建公共部分且不访问黄区。公司 Markdown、附件、数据库和内部生成页面不能进入公共 Git。</p>
+<h2 id="sailor">生成基础电路是否表示 Sailor 已通过</h2>
+<p>不表示。基础 RTL、语法检查、功能仿真、真实 PAD 接入、DFT 插入验证是不同完成层次。缺 PAD 库或 Sailor 时只报告已完成的层次，不虚构工具命令或成功日志。</p>
+<h2 id="_3">怎样写一个有效开发需求</h2>
+<p>明确目标模块、预期输入输出、要保留的接口、可用测试及资料位置。使用 <code>/code-and-verify</code> 后检查实际 diff 与验证证据；不要用“Agent 说通过”代替退出码和结果。</p>
+<h2 id="_4">如何更新门户版本</h2>
+<p>更新二进制只运行 <code>python3.11 scripts/maintenance/maintain_binaries.py</code>。门户内容按需单独维护，修改公共正文和命令说明后重新构建即可；手册参考版本不与二进制绑定。普通离线构建不联网。详见<a href="maintenance.html">维护与版本</a>。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">页面离线能用，为什么模型不能回答</a></li>
+<li><a href="#lfs">同步找不到二进制或发现 LFS 指针</a></li>
+<li><a href="#wal-shm-journal">同步报告 WAL / SHM / journal 未关闭</a></li>
+<li><a href="#yellowdocsdb">yellow/docs.db 缺失会怎样</a></li>
+<li><a href="#omp">OMP 进程无法退出</a></li>
+<li><a href="#skill-worker">Skill 或 Worker 没有出现</a></li>
+<li><a href="#wiki">Wiki 无结果或源路径失效</a></li>
+<li><a href="#_2">内部文档是否进入公共页面或发布包</a></li>
+<li><a href="#sailor">生成基础电路是否表示 Sailor 已通过</a></li>
+<li><a href="#_3">怎样写一个有效开发需求</a></li>
+<li><a href="#_4">如何更新门户版本</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

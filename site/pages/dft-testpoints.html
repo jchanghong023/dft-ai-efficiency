@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>Test Point：改善可控性与可观测性 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a class="active" aria-current="page" href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="test-point">Test Point：改善可控性与可观测性</h1>
+<section class="dft-lab" id="testpoints-lab" data-lab="faults-testpoints" aria-label="测试点与可测试性互动实验">
+  <header class="lab-header"><span class="demo-tag">LAB 03 / TEST POINTS</span><div><h3>给难测节点一条新路径</h3><p>选择控制点、观察点或两者，比较教学模型中的收益与代价。</p></div></header>
+  <div class="lab-controls">
+    <label>候选结构 <select data-point-setting disabled><option value="none">不加测试点</option><option value="control">加入控制点</option><option value="observe">加入观察点</option><option value="both">控制点 + 观察点</option></select></label>
+    <button type="button" data-action="point-evaluate" disabled>评估候选点</button><button type="button" data-action="point-reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage point-stage">
+    <svg viewBox="0 0 760 190" role="img" aria-labelledby="point-lab-title point-lab-desc">
+      <title id="point-lab-title">控制点和观察点对内部节点的影响</title>
+      <desc id="point-lab-desc">h=a AND b，p=a XOR b，out=h AND p 被掩蔽；控制点作用于 h，观察点捕获控制后的 h。</desc>
+      <path d="M38 58H112M38 132H112M212 58H292M212 132H292M392 95H472M572 95H700" class="lab-wire"/>
+      <text x="28" y="52" class="lab-label">a</text><text x="28" y="126" class="lab-label">b</text>
+      <rect x="112" y="30" width="100" height="56" rx="10" class="lab-gate"/><text x="162" y="55" text-anchor="middle">AND</text><text x="162" y="73" text-anchor="middle" class="lab-small">h = a &amp; b</text>
+      <rect x="112" y="106" width="100" height="56" rx="10" class="lab-gate"/><text x="162" y="131" text-anchor="middle">XOR</text><text x="162" y="149" text-anchor="middle" class="lab-small">p = a ^ b</text>
+      <rect x="292" y="30" width="100" height="56" rx="10" class="lab-gate lab-control"/><text x="342" y="55" text-anchor="middle">控制点</text><text x="342" y="73" text-anchor="middle" class="lab-small">h / test=1</text>
+      <rect x="472" y="62" width="100" height="66" rx="10" class="lab-hidden"/><text x="522" y="91" text-anchor="middle">out = h&amp;p</text><text x="522" y="110" text-anchor="middle" class="lab-small">逻辑输出（被掩蔽）</text>
+      <rect x="700" y="62" width="48" height="66" rx="10" class="lab-observe"/><text x="724" y="91" text-anchor="middle">观</text><text x="724" y="110" text-anchor="middle" class="lab-small">h</text>
+      <path d="M392 58V95H472M212 134H260V95H292" class="lab-wire"/>
+      <text x="42" y="177" class="lab-label">四个模式：00 / 01 / 10 / 11</text><text x="574" y="151" class="lab-label">SO</text>
+      <circle cx="272" cy="58" r="7" class="lab-node" data-node="h"/><circle cx="272" cy="134" r="7" class="lab-node" data-node="p"/>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite"><div><small>激活集合</small><strong data-field="activation-set">—</strong></div><div><small>被检出故障</small><strong data-field="detected-set">—</strong></div><div><small>检出数量</small><strong data-field="detected-count">—</strong></div><div><small>可用模式数</small><strong data-field="pattern-count">—</strong></div></div>
+  <p class="lab-explanation" data-field="explanation">小电路枚举固定故障集合和四个输入模式。控制点改变激励路径，观察点改变可观察集合；结果来自逐模式好/坏电路比较。</p>
+  <noscript><p>本实验需要 JavaScript 枚举教学电路。控制点主要改变隐藏节点的激励，观察点主要增加隐藏节点捕获；真实工具结果需要具体设计和约束。</p></noscript>
+</section>
+
+<p>当 ATPG 长时间找不到模式，问题可能不是模式生成器“不够聪明”，而是某个内部节点很难被控制或很难把差异传到观察点。Test Point（测试点）是在满足功能约束的前提下增加测试专用控制/观察结构，让目标节点更容易被激活或观察。</p>
+<h2 id="_1">两类基本测试点</h2>
+<ul>
+<li><strong>控制点（control point）</strong>：通过测试使能和额外控制值，帮助把内部节点推到需要的 0 或 1。它改善可控性，但可能增加逻辑、切换活动、面积和约束。</li>
+<li><strong>观察点（observe point）</strong>：把内部节点或其组合结果接入扫描寄存器、观察链或其他测试通路，帮助把差异带到可读出的地方。它改善可观测性，也可能增加负载、布线和压缩/X 处理复杂度。</li>
+</ul>
+<p>真实工具会根据候选位置、故障列表、时序、功耗和布局约束筛选点；不是节点越多越好。测试点还必须在功能模式下保持正确隔离，测试模式下的控制优先级、复位和时钟关系要经过 DFT DRC 与门级验证。</p>
+<h2 id="_2">一个被掩蔽节点的故事</h2>
+<p>本页实验的 <code>h = a &amp; b</code> 只在 <code>11</code> 时为 1，<code>p = a XOR b</code> 却在 <code>01/10</code> 时为 1；<code>out = h &amp; p</code> 因此始终为 0。即使 <code>h</code> 或 <code>p</code> 的故障已经被激活，差异也可能被后级逻辑掩蔽。控制点把测试路径上的 <code>h</code> 强制为 1，观察点则直接捕获控制后的 <code>h</code>，分别解决激励和观察瓶颈。</p>
+<h2 id="_3">怎样评价一个候选点</h2>
+<p>候选点不应只按“覆盖率增加多少”排序，至少要同时看：</p>
+<ol>
+<li>能改善哪些目标故障的控制或观察条件；</li>
+<li>是否增加时序路径、面积和布线负载；</li>
+<li>shift/capture 功耗是否仍可接受；</li>
+<li>是否引入新的 X 来源、时钟/复位风险或模式约束；</li>
+<li>是否减少模式数和 ATPG 运行时间，且收益能在仿真与 ATE 上复现。</li>
+</ol>
+<p>页面实验使用一个明确的布尔教学电路：<code>h = a &amp; b</code>、<code>p = a XOR b</code>、<code>out = h &amp; p</code>。四个输入模式全部枚举，故障集合固定为 <code>h stuck-at-0</code> 与 <code>p stuck-at-0</code>。由于 <code>h</code> 与 <code>p</code> 的取值组合，<code>out</code> 的差异会被掩蔽；实验逐模式比较好/坏电路，并列出实际被检出的故障和模式，不使用虚构的可控性分数或面积分数。</p>
+<p>控制点在测试路径上把 <code>h</code> 强制为 1，扩大 <code>h</code> 故障的激励集合，也让 <code>p</code> 故障的差异到达 <code>out</code>；观察点直接捕获 <code>h</code>，绕过 <code>out</code> 的掩蔽。组合使用时，两条故障的检测集合都发生变化。这是一个可手算的逻辑模型，不是工具对真实网表的 coverage 预测。</p>
+<h2 id="_4">控制点的实现注意事项</h2>
+<p>控制点通常需要测试使能、测试数据和功能数据的选择结构。测试使能的极性、复位值和默认值必须明确，避免功能模式误进入测试路径；组合逻辑还要检查新增多路选择器对时序和逻辑等价的影响。若控制点驱动高扇出网络，shift 与 capture 的翻转功耗也可能变化。</p>
+<h2 id="_5">观察点的实现注意事项</h2>
+<p>观察点可能接到额外扫描单元、已有扫描寄存器或压缩观察网络。要确认观察路径的时钟、链长、压缩器连接和 X 屏蔽策略；否则“能看到”可能被压缩冲突或未知值抵消。新增寄存器也会影响物理布局、测试时间和模式协议。</p>
+<p>控制点和观察点都要有可追踪的实例、原因、目标故障和验证结果。只在截图中标出一个节点，不能替代实现后的 DFT DRC、ATPG 和门级验证。</p>
+<h2 id="dft">与 DFT 流程的关系</h2>
+<p>通常会先做 RTL 或网表级可测试性分析，再由工具提出或实现候选点，重新运行 DRC、ATPG、故障仿真、门级模式仿真和功耗/时序检查。测试点插入不应绕过功能验证，也不应把一个估算分数当作已完成的硅片质量结论。</p>
+<p>如果目标是改善某一类故障，应先保留插入前基线：目标故障数、模式数、运行时间、shift/capture 功耗和关键路径。插入后对同一设计快照重新测量，才能把收益与代价归因于测试点，而不是归因于同时变化的约束或故障列表。</p>
+<p>因此，测试点选择是一个可复核的工程决策，而不是动画中某个节点变亮就算完成。</p>
+<h2 id="_6">常见误区</h2>
+<ul>
+<li><strong>测试点不是修复功能逻辑</strong>：它只在测试模式下提供额外的可控/可观测路径。</li>
+<li><strong>更多点不一定更好</strong>：面积、时序、功耗、布线和模式复杂度可能反而恶化。</li>
+<li><strong>可控性与可观测性不是同一指标</strong>：改善一个不保证改善另一个。</li>
+<li><strong>估算覆盖率不是最终覆盖率</strong>：最终结果需要具体网表、故障模型、约束与仿真证据。</li>
+</ul>
+<h2 id="_7">公开参考</h2>
+<p><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-advisor.html">Synopsys TestMAX Advisor 官方介绍</a>明确将 RTL/网表测试性分析、DFT violation checking、coverage estimation 和 test point selection 放在早期优化流程中。<a href="https://www.siemens.com/en-us/products/ic/tessent/test/rtl-pro/">Siemens Tessent RTL Pro 官方资料</a>也介绍了在 RTL 阶段分析和加入测试点的能力。本文页面只演示概念权衡，不代表任何工具已经选择或插入真实测试点。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-coverage.html"><small>← 上一主题</small><strong>覆盖率与测试质量</strong></a><a href="../pages/dft-scan.html"><small>下一主题 →</small><strong>Scan 基础：移入、捕获、移出</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">两类基本测试点</a></li>
+<li><a href="#_2">一个被掩蔽节点的故事</a></li>
+<li><a href="#_3">怎样评价一个候选点</a></li>
+<li><a href="#_4">控制点的实现注意事项</a></li>
+<li><a href="#_5">观察点的实现注意事项</a></li>
+<li><a href="#dft">与 DFT 流程的关系</a></li>
+<li><a href="#_6">常见误区</a></li>
+<li><a href="#_7">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

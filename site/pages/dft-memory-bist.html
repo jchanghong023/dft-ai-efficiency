@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>MBIST、BIRA、BISR：测试、分析、修复分成三步 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/bist.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a class="active" aria-current="page" href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="mbistbirabisr">MBIST、BIRA、BISR：测试、分析、修复分成三步</h1>
+<section class="dft-demo dft-lab" id="memory-bist-lab" data-lab="bist-memory" aria-label="MBIST、BIRA 与 BISR 内存测试演示">
+  <div class="lab-header demo-heading"><span class="demo-tag">03 / MEMORY TEST</span><strong>一条失败地址，如何经过测试、分析和修复</strong></div>
+  <div class="lab-controls demo-controls">
+    <button type="button" data-action="step" disabled>单步</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <button type="button" data-action="analyze" disabled>执行 BIRA</button>
+    <button type="button" data-action="repair" disabled>加载 BISR</button>
+    <button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <label>故障注入 <select data-setting="fault" disabled><option value="stuck1">地址 3：stuck-at-1</option><option value="two">地址 3、6：两个 stuck-at-1</option><option value="none">无故障</option></select></label>
+  </div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备运行 March</span><span>步骤 <b data-field="cursor">0</b> / <b data-field="total">48</b></span><span>地址 <b data-field="address">—</b></span></div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 438" role="img" aria-labelledby="memory-bist-title memory-bist-desc">
+      <title id="memory-bist-title">MBIST 访问八行内存，BIRA 分配一条冗余行，BISR 加载映射</title>
+      <desc id="memory-bist-desc">左侧测试控制器向八行内存执行读写，中部显示失败地址，右侧显示一条备用行和修复映射。</desc>
+      <defs><marker id="bist-memory-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <rect x="22" y="44" width="154" height="96" rx="10" class="logic-box"/><text x="99" y="78" text-anchor="middle" class="pin-label">MBIST 控制器</text><text x="99" y="103" text-anchor="middle" class="tiny-label">March R / W</text><text x="99" y="124" text-anchor="middle" class="tiny-label" data-field="operation">等待操作</text>
+      <path d="M176 91H222" class="wire" marker-end="url(#bist-memory-arrow)"/><text x="182" y="78" class="tiny-label">地址 + 数据</text>
+      <rect x="226" y="20" width="258" height="370" rx="12" class="logic-box"/><text x="355" y="47" text-anchor="middle" class="pin-label">8 × 1 bit memory</text>
+      <g data-row="0"><text x="246" y="84" class="tiny-label">A0</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="0">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="0">—</text></g><g data-row="1"><text x="246" y="84" class="tiny-label">A1</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="1">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="1">—</text></g><g data-row="2"><text x="246" y="84" class="tiny-label">A2</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="2">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="2">—</text></g><g data-row="3"><text x="246" y="84" class="tiny-label">A3</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="3">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="3">—</text></g><g data-row="4"><text x="246" y="84" class="tiny-label">A4</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="4">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="4">—</text></g><g data-row="5"><text x="246" y="84" class="tiny-label">A5</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="5">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="5">—</text></g><g data-row="6"><text x="246" y="84" class="tiny-label">A6</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="6">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="6">—</text></g><g data-row="7"><text x="246" y="84" class="tiny-label">A7</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="7">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="7">—</text></g>
+      <text x="470" y="407" text-anchor="end" class="tiny-label">左：逻辑行　右：物理 / spare 映射</text>
+      <path d="M484 92H523" class="wire" marker-end="url(#bist-memory-arrow)"/><rect x="526" y="45" width="118" height="95" rx="10" class="logic-box"/><text x="585" y="78" text-anchor="middle" class="pin-label">BIRA</text><text x="585" y="102" text-anchor="middle" class="tiny-label">失败地址分析</text><text x="585" y="123" text-anchor="middle" class="tiny-label" data-field="failures">尚无失败</text>
+      <path d="M644 92H678" class="wire" marker-end="url(#bist-memory-arrow)"/><rect x="681" y="45" width="96" height="95" rx="10" class="logic-box"/><text x="729" y="78" text-anchor="middle" class="pin-label">BISR</text><text x="729" y="101" text-anchor="middle" class="tiny-label">加载映射</text><text x="729" y="123" text-anchor="middle" class="tiny-label" data-field="mapping">—</text>
+      <rect x="526" y="184" width="251" height="94" rx="10" class="logic-box"/><text x="651" y="213" text-anchor="middle" class="pin-label">spare row · 1 条资源</text><text x="651" y="240" text-anchor="middle" class="bit" data-field="spare">SPARE 0</text><text x="651" y="262" text-anchor="middle" class="tiny-label" data-field="resource">未分配</text>
+      <path d="M526 231H484" class="wire" marker-end="url(#bist-memory-arrow)"/><text x="488" y="218" class="tiny-label">验证重定向</text>
+      <text x="22" y="424" class="tiny-label">教学模型：读回值与期望值比较；只有验证阶段通过才显示修复有效。</text>
+    </svg>
+  </div>
+  <div class="lab-readouts demo-readouts"><div><small>当前读回 / 期望</small><strong data-field="readout">尚未执行</strong></div><div><small>失败地址</small><strong data-field="failure-list">—</strong></div><div><small>验证结果</small><strong data-field="result">尚未验证</strong></div></div>
+  <p class="lab-explanation demo-explanation" data-field="explanation">先运行 MBIST 的已知 March 序列。发现失败后，再分别执行 BIRA 资源分配和 BISR 映射加载。</p>
+  <noscript><p>动画需要 JavaScript；静态图仍展示 MBIST 控制器、8 行内存、BIRA 失败分析、spare row 与 BISR 映射的关系。实际芯片的修复信息可能写入 eFuse/OTP，本页不操作真实熔丝。</p></noscript>
+</section>
+
+<p>MBIST（Memory Built-In Self-Test）把存储器访问序列放进芯片内的测试控制器。它可以在生产测试或系统启动时，对嵌入式 SRAM 等存储器施加读写操作，并记录失败地址；但“发现失败”和“修好存储器”不是同一个动作。</p>
+<h2 id="_1">先分清三个角色</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>负责什么</th>
+<th>本页模型做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MBIST</td>
+<td>生成地址顺序与读/写操作，比较读回值</td>
+<td>逐步执行一个简化 March 程序</td>
+</tr>
+<tr>
+<td>BIRA</td>
+<td>根据失败地址分配可用的冗余行/列</td>
+<td>用贪心规则把失败行映射到 spare row</td>
+</tr>
+<tr>
+<td>BISR</td>
+<td>保存并加载修复信息，使后续访问绕过坏行</td>
+<td>把映射加载到模型，再跑验证读写</td>
+</tr>
+</tbody>
+</table></div>
+<p>真实芯片还会包含存储器接口、控制器时序、诊断寄存器、熔丝/OTP 或其他非易失配置路径。本页只展示数据关系，不能替代工艺库、宏模型或供应商的修复流程。</p>
+<h3 id="_2">读图时看三条路径</h3>
+<ol>
+<li>左侧是 MBIST 发出的逻辑地址、操作和期望数据。</li>
+<li>中间是逻辑行到物理行的当前映射；没有修复时，两侧地址相同。</li>
+<li>右侧是 BIRA 的资源判断和 BISR 的映射加载状态。</li>
+</ol>
+<p>“当前值”是教学模型在本拍后的值；它不是 SRAM 宏内部的晶体管状态，也没有模拟读写延迟、保持时间或电源噪声。</p>
+<h2 id="march">动手跑一个简化 March 测试</h2>
+<p>选择故障后点击“单步”，每一步只执行一个地址操作。网页交互固定使用 8 行、地址 0 到 7；JavaScript 纯模型 API 另外允许正整数行数，用于单元测试和扩展示例。默认在地址 3 注入一个 stuck-at-1 故障。测试程序按“升序写 0、升序读 0 写 1、降序读 1 写 0、降序读 0”展开。读操作才会产生比较失败，写操作只改变模型中的存储值。</p>
+<p>当读 0 却得到 1 时，控制器只知道“某个地址在这个操作下不符合期望”；真实诊断可能还要区分 stuck-at、transition、coupling 或地址译码故障。这里的故障地址是教学输入，不是工具诊断结果。</p>
+<h3 id="_3">一个失败如何被记录</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>观察</th>
+<th>控制器记录</th>
+<th>后续用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>R0</code> 读出 <code>1</code></td>
+<td>地址、期望值、实际值</td>
+<td>形成失败地址集合</td>
+</tr>
+<tr>
+<td>同一地址再次失败</td>
+<td>不重复增加资源需求</td>
+<td>BIRA 对地址去重</td>
+</tr>
+<tr>
+<td>不同地址失败</td>
+<td>需要不同的冗余映射</td>
+<td>与 spare 数量比较</td>
+</tr>
+</tbody>
+</table></div>
+<p>因此演示中地址 3 可能在多个读 0 操作中失败，但 BIRA 只需要为这一行分配一次 spare。量产工具还可能记录行列信息、失败类型和诊断上下文。</p>
+<h2 id="bira">为什么 BIRA 需要资源分配</h2>
+<p>冗余行不是无限的。BIRA 先把失败地址去重，再从有限的 spare rows 中分配映射。本演示的一条 spare row 足以修复一个失败行；如果同时注入地址 3 和 6 两个坏行，第二个地址没有资源，BIRA 会明确标为未修复，而不会报告“全部通过”。实际 BIRA 可能使用更复杂的行列联合分析、冗余约束和修复优先级。</p>
+<p>如果坏的是列而不是行，简单的“一个地址换一条 spare row”模型就不适用；如果冗余结构共享，也不能仅按失败地址数量判断可修复性。这里专门固定为行冗余，让资源耗尽的边界可以被单步观察。</p>
+<h2 id="bisr">BISR 的加载时点</h2>
+<p>BISR（Built-In Self-Repair）不是重新执行 MBIST。它把 BIRA 形成的修复映射装入修复寄存器或相关配置路径，之后地址译码把逻辑地址重定向到 spare row。制造流程中，修复信息可能写入 eFuse、OTP 或其他非易失介质，并在上电时加载；本页只模拟“加载映射”，不操作真实熔丝，也不声明永久修复。</p>
+<p>验证阶段重新写入 0/1 并读回。只有验证操作通过，模型才显示“修复后通过”；如果 spare 不够，剩余坏地址会继续失败。</p>
+<p>验证不是“擦除故障”，而是检查地址重定向后逻辑接口是否仍然表现正确。演示把 spare 初始化为普通可读写单元；真实宏还要验证修复后的地址译码、冗余选择、启动加载顺序和不同测试模式之间的切换。</p>
+<h2 id="_4">故障模型和覆盖率边界</h2>
+<p>本页的 stuck-at-1 是人为注入的单一逻辑模型。一次已知序列通过，只说明该序列下的模型观察到预期行为，不是 memory fault coverage、良率或量产测试结论。March 算法的具体元素、读写方向、时序和故障覆盖能力需由存储器类型、工艺和验证目标决定。</p>
+<h3 id="_5">不要把三个结果混为一谈</h3>
+<ul>
+<li><strong>测试失败</strong>：某个操作的实际读回值与期望值不同。</li>
+<li><strong>可修复</strong>：BIRA 找到足够的行/列冗余，并形成合法映射。</li>
+<li><strong>修复后通过</strong>：BISR 加载映射后，验证操作没有留下失败。</li>
+</ul>
+<p>一个设计可能测试失败但可修复，也可能测试失败且冗余不足；只有最后一种验证结果才允许在本模型中显示 <code>PASS</code>。</p>
+<h2 id="_6">公开参考</h2>
+<p>Siemens 的 <a href="https://www.siemens.com/en-us/products/ic/tessent/test/memorybist/">Tessent MemoryBIST 官方介绍</a>将嵌入式存储器的测试、诊断、修复和调试作为不同能力，并说明可进行层次化 BIST/BISR 集成。页面中的“冗余分配”和“非易失修复”是概念化教学模型；实际流程以目标 memory compiler、DFT 工具和芯片规格为准。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-wrapper.html"><small>← 上一主题</small><strong>Wrapper 与分层 DFT</strong></a><a href="../pages/dft-logic-bist.html"><small>下一主题 →</small><strong>LBIST 与签名分析</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">先分清三个角色</a><ul>
+<li><a href="#_2">读图时看三条路径</a></li>
+</ul>
+</li>
+<li><a href="#march">动手跑一个简化 March 测试</a><ul>
+<li><a href="#_3">一个失败如何被记录</a></li>
+</ul>
+</li>
+<li><a href="#bira">为什么 BIRA 需要资源分配</a></li>
+<li><a href="#bisr">BISR 的加载时点</a></li>
+<li><a href="#_4">故障模型和覆盖率边界</a><ul>
+<li><a href="#_5">不要把三个结果混为一谈</a></li>
+</ul>
+</li>
+<li><a href="#_6">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

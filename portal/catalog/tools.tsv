@@ -1,0 +1,31 @@
+name	purpose
+read	读取文件、URL 和内部资源；检查引用原文
+security_scan	运行安全扫描及返回证据；会写扫描数据
+bash	执行 Shell 命令、编译和测试；可改变文件与进程
+edit	对现有文件执行局部修改
+ast_grep	按语法结构查找代码
+ast_edit	按语法结构修改代码
+ask	向用户请求缺少的信息或选择
+debug	诊断 Agent 或工具运行问题；按启用条件提供
+eval	通过持久执行环境编排工具调用；可产生实际读写
+github	访问 GitHub 操作入口；取决于实际操作与授权
+glob	按路径模式查找文件
+grep	按文本模式检索指定内容
+lsp	查询语言服务或执行重命名等代码动作；需对应服务
+wiki	检索和读取本地 Markdown 索引
+checkpoint	创建会话上下文检查点；按配置提供
+rewind	恢复上下文检查点；不是通用 Git 回退
+task	按 Agent 定义委派任务；可执行代码修改
+hub	管理 Agent 与运行中工作；控制动作可改变进程
+todo	维护本会话待办清单
+web_search	检索外网公开资料；需要可用搜索服务
+write	创建或覆盖指定文件
+memory_edit	编辑记忆数据
+retain	保留后续可能需要的记忆信息
+recall	查找已有记忆
+reflect	反思和检索相关记忆上下文
+learn	学习可复用的任务经验；按配置维护记忆
+manage_skill	管理学习生成的 Skill；可能写入技能文件
+think	隐藏思考工具，仅特定模式提供
+yield	让出控制或等待任务；按会话模式提供
+goal	隐藏的持续目标管理工具；仅 goal 模式提供

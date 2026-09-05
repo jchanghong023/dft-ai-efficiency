@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>EDT：少通道测试更多扫描链 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/dft.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a class="active" aria-current="page" href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="edt">EDT：少通道测试更多扫描链</h1>
+<section class="dft-demo" id="edt-demo" data-demo="edt" aria-label="EDT 数据通路概念演示">
+  <div class="demo-heading"><span class="demo-tag">02 / EDT</span><strong>两个外部通道，四条内部扫描链</strong></div>
+  <div class="demo-controls"><button type="button" data-action="step" disabled>单步</button><button type="button" data-action="play" disabled>播放</button><button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><label>响应场景 <select data-setting="fault" disabled><option value="none">无响应错误</option><option value="single">单个响应位翻转</option><option value="double">两个响应位抵消</option></select></label></div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">已捕获响应，准备移位</span><span>SE = 1</span><span>移位时钟 <b data-field="cycle">0</b> / 4</span></div>
+  <svg viewBox="0 0 800 360" role="img" aria-labelledby="edt-svg-title edt-svg-desc">
+    <title id="edt-svg-title">两个输入位经玩具解压映射驱动四条扫描链，四个响应位经 XOR 压缩成两位</title><desc id="edt-svg-desc">四条链每条四级，同时移位；输入映射为 a、b、a XOR b、a，输出为 R1 XOR R3 和 R2 XOR R4。</desc>
+    <defs><marker id="edt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    <text x="28" y="80" class="pin-label">测试机输入</text><text x="38" y="152" class="bit" data-field="input-a">1</text><text x="38" y="216" class="bit" data-field="input-b">0</text><text x="20" y="152">a</text><text x="20" y="216">b</text>
+    <path d="M59 146H109M59 210H109" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <rect x="112" y="80" width="124" height="210" rx="10" class="logic-box"/><text x="174" y="150" text-anchor="middle">解压映射</text><text x="174" y="178" text-anchor="middle" class="tiny-label">玩具 XOR 示例</text><text x="174" y="205" text-anchor="middle" class="tiny-label">非真实 EDT 实现</text>
+    
+    
+    <path d="M236 105H310M514 105H574" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="253" y="94" class="tiny-label">a</text><text x="286" y="96" class="bit" data-lane="0">1</text>
+    <rect x="314" y="88" width="42" height="34" rx="4" class="ff-box"/><text x="335" y="111" text-anchor="middle" class="bit" data-edt-q="0-0">1</text><rect x="364" y="88" width="42" height="34" rx="4" class="ff-box"/><text x="385" y="111" text-anchor="middle" class="bit" data-edt-q="0-1">0</text><rect x="414" y="88" width="42" height="34" rx="4" class="ff-box"/><text x="435" y="111" text-anchor="middle" class="bit" data-edt-q="0-2">1</text><rect x="464" y="88" width="42" height="34" rx="4" class="ff-box"/><text x="485" y="111" text-anchor="middle" class="bit" data-edt-q="0-3">0</text>
+    <text x="537" y="94" class="tiny-label">R1</text>
+    
+    <path d="M236 157H310M514 157H574" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="253" y="146" class="tiny-label">b</text><text x="286" y="148" class="bit" data-lane="1">0</text>
+    <rect x="314" y="140" width="42" height="34" rx="4" class="ff-box"/><text x="335" y="163" text-anchor="middle" class="bit" data-edt-q="1-0">0</text><rect x="364" y="140" width="42" height="34" rx="4" class="ff-box"/><text x="385" y="163" text-anchor="middle" class="bit" data-edt-q="1-1">1</text><rect x="414" y="140" width="42" height="34" rx="4" class="ff-box"/><text x="435" y="163" text-anchor="middle" class="bit" data-edt-q="1-2">1</text><rect x="464" y="140" width="42" height="34" rx="4" class="ff-box"/><text x="485" y="163" text-anchor="middle" class="bit" data-edt-q="1-3">0</text>
+    <text x="537" y="146" class="tiny-label">R2</text>
+    
+    <path d="M236 209H310M514 209H574" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="253" y="198" class="tiny-label">a⊕b</text><text x="286" y="200" class="bit" data-lane="2">1</text>
+    <rect x="314" y="192" width="42" height="34" rx="4" class="ff-box"/><text x="335" y="215" text-anchor="middle" class="bit" data-edt-q="2-0">1</text><rect x="364" y="192" width="42" height="34" rx="4" class="ff-box"/><text x="385" y="215" text-anchor="middle" class="bit" data-edt-q="2-1">1</text><rect x="414" y="192" width="42" height="34" rx="4" class="ff-box"/><text x="435" y="215" text-anchor="middle" class="bit" data-edt-q="2-2">0</text><rect x="464" y="192" width="42" height="34" rx="4" class="ff-box"/><text x="485" y="215" text-anchor="middle" class="bit" data-edt-q="2-3">1</text>
+    <text x="537" y="198" class="tiny-label">R3</text>
+    
+    <path d="M236 261H310M514 261H574" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="253" y="250" class="tiny-label">a</text><text x="286" y="252" class="bit" data-lane="3">1</text>
+    <rect x="314" y="244" width="42" height="34" rx="4" class="ff-box"/><text x="335" y="267" text-anchor="middle" class="bit" data-edt-q="3-0">0</text><rect x="364" y="244" width="42" height="34" rx="4" class="ff-box"/><text x="385" y="267" text-anchor="middle" class="bit" data-edt-q="3-1">0</text><rect x="414" y="244" width="42" height="34" rx="4" class="ff-box"/><text x="435" y="267" text-anchor="middle" class="bit" data-edt-q="3-2">1</text><rect x="464" y="244" width="42" height="34" rx="4" class="ff-box"/><text x="485" y="267" text-anchor="middle" class="bit" data-edt-q="3-3">1</text>
+    <text x="537" y="250" class="tiny-label">R4</text>
+    
+    <text x="415" y="62" text-anchor="middle" class="pin-label">4 条内部链 × 每链 4 级</text>
+    <rect x="580" y="80" width="124" height="210" rx="10" class="logic-box"/><text x="642" y="145" text-anchor="middle">响应压缩</text><text x="642" y="177" text-anchor="middle" class="tiny-label">C0 = R1 ⊕ R3</text><text x="642" y="203" text-anchor="middle" class="tiny-label">C1 = R2 ⊕ R4</text>
+    <path d="M704 146H762M704 210H762" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="710" y="80" class="pin-label">测试机输出</text><text x="736" y="136" class="bit" data-field="out-c0">—</text><text x="736" y="200" class="bit" data-field="out-c1">—</text>
+    <text x="400" y="328" text-anchor="middle" class="pin-label">每拍：并行移出旧响应，同时移入下一组测试刺激</text><text x="400" y="352" text-anchor="middle" class="tiny-label">输入序列 (a,b)：10 → 01 → 11 → 10；本动画不执行 Capture。</text>
+  </svg>
+  <div class="demo-readouts"><div><small>本拍移出的 R1..R4</small><strong data-field="raw-output">尚未移出</strong></div><div><small>压缩响应 C0C1</small><strong data-field="output">尚未移出</strong></div><div><small>无错误期望序列</small><strong>11 · 10 · 11 · 00</strong></div></div>
+  <p class="demo-explanation" data-field="explanation">链内已有响应。点击单步，观察四个旧末级位如何变成两个压缩观察位。</p>
+  <noscript><p>动画需要 JavaScript。静态图仍展示完整通路：2 个输入通道 → 解压映射 → 4 条并行扫描链 → XOR 响应压缩 → 2 个输出通道。</p></noscript>
+</section>
+
+<p>扫描链很多时，直接把每条链连接到测试机通道会增加引脚需求。EDT（Embedded Deterministic Test）通过片上解压和响应压缩，把较少外部测试通道连接到较多内部扫描链；真实刺激生成需要与压缩硬件配合。</p>
+<h2 id="_1">一次时钟，四条链同时移动</h2>
+<p>动画从“已经捕获一组响应”开始。每次 Shift 同时移出旧响应，并装载下一组刺激。试着切换“单个响应位翻转”和“两个响应位抵消”，观察压缩结果为什么不一定能反映所有原始差异。</p>
+<h2 id="_2">数据流怎样走</h2>
+<ol>
+<li>测试机每拍提供两个输入位 <code>a、b</code>。</li>
+<li>示例解压映射产生四个相关的链输入：<code>a、b、a XOR b、a</code>。</li>
+<li>四条链并行移位，每条链的旧末级位送入响应压缩逻辑。</li>
+<li>示例压缩器输出 <code>C0 = R1 XOR R3</code>、<code>C1 = R2 XOR R4</code>。</li>
+</ol>
+<p>两位输入不能任意指定四个独立位。动画使用无状态的玩具 XOR 映射说明连接关系，<strong>不是 Tessent EDT 的实际解压电路或编码算法</strong>；真实设计可能包含状态、更多连接、X 处理及其他控制，需要使用工具支持的压缩结构和模式生成流程。</p>
+<h2 id="_3">两个容易误解的地方</h2>
+<h3 id="_4">压缩响应不是可逆还原</h3>
+<p>本例四条四级链的 16 个响应位，在四个移位时钟中形成 8 个压缩观察位。压缩会丢失信息：两个错误如果落入同一 XOR 组且同时翻转，可能彼此抵消。本例的“双错误抵消”专门展示这种情况；“压缩结果一致”不等于“芯片没有故障”。未知值 X 也可能影响观察，真实工具需要相应处理。</p>
+<h3 id="_5">动画的位数比例不是实际压缩率</h3>
+<p>这里的 <code>4 链 / 2 通道</code> 只是一个教学比例，不代表产品的测试数据压缩率、覆盖率或测试时间收益。实际收益与链长、模式数量、编码约束和测试配置有关。</p>
+<h2 id="_6">公开参考</h2>
+<p>EDT 与 TestKompress 的背景参阅 <a href="https://www.siemens.com/en-gb/products/ic/tessent/test/testkompress/">Siemens Tessent TestKompress 官方介绍</a>。压缩逻辑与扫描链之间的集成关系参阅 <a href="https://blogs.sw.siemens.com/tessent/2015/11/11/a-flexible-flow-for-inserting-embedded-compression-logic-in-rtl/">Siemens：插入嵌入式压缩逻辑的流程</a>。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-clock-reset.html"><small>← 上一主题</small><strong>OCC、时钟与复位</strong></a><a href="../pages/dft-compression.html"><small>下一主题 →</small><strong>EDT 约束与 X 处理</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">一次时钟，四条链同时移动</a></li>
+<li><a href="#_2">数据流怎样走</a></li>
+<li><a href="#_3">两个容易误解的地方</a><ul>
+<li><a href="#_4">压缩响应不是可逆还原</a></li>
+<li><a href="#_5">动画的位数比例不是实际压缩率</a></li>
+</ul>
+</li>
+<li><a href="#_6">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<section class="dft-demo" id="edt-demo" data-demo="edt" aria-label="EDT 数据通路概念演示">
+  <div class="demo-heading"><span class="demo-tag">02 / EDT</span><strong>两个外部通道，四条内部扫描链</strong></div>
+  <div class="demo-controls"><button type="button" data-action="step" disabled>单步</button><button type="button" data-action="play" disabled>播放</button><button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><label>响应场景 <select data-setting="fault" disabled><option value="none">无响应错误</option><option value="single">单个响应位翻转</option><option value="double">两个响应位抵消</option></select></label></div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">已捕获响应，准备移位</span><span>SE = 1</span><span>移位时钟 <b data-field="cycle">0</b> / 4</span></div>
+  <svg viewBox="0 0 800 360" role="img" aria-labelledby="edt-svg-title edt-svg-desc">
+    <title id="edt-svg-title">两个输入位经玩具解压映射驱动四条扫描链，四个响应位经 XOR 压缩成两位</title><desc id="edt-svg-desc">四条链每条四级，同时移位；输入映射为 a、b、a XOR b、a，输出为 R1 XOR R3 和 R2 XOR R4。</desc>
+    <defs><marker id="edt-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    <text x="28" y="80" class="pin-label">测试机输入</text><text x="38" y="152" class="bit" data-field="input-a">1</text><text x="38" y="216" class="bit" data-field="input-b">0</text><text x="20" y="152">a</text><text x="20" y="216">b</text>
+    <path d="M59 146H109M59 210H109" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <rect x="112" y="80" width="124" height="210" rx="10" class="logic-box"/><text x="174" y="150" text-anchor="middle">解压映射</text><text x="174" y="178" text-anchor="middle" class="tiny-label">玩具 XOR 示例</text><text x="174" y="205" text-anchor="middle" class="tiny-label">非真实 EDT 实现</text>
+    {% set initial = [[1,0,1,0],[0,1,1,0],[1,1,0,1],[0,0,1,1]] %}
+    {% for row in range(4) %}
+    <path d="M236 {{ 105+row*52 }}H310M514 {{ 105+row*52 }}H574" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="253" y="{{ 94+row*52 }}" class="tiny-label">{{ ['a','b','a⊕b','a'][row] }}</text><text x="286" y="{{ 96+row*52 }}" class="bit" data-lane="{{ row }}">{{ [1,0,1,1][row] }}</text>
+    {% for col in range(4) %}<rect x="{{ 314+col*50 }}" y="{{ 88+row*52 }}" width="42" height="34" rx="4" class="ff-box"/><text x="{{ 335+col*50 }}" y="{{ 111+row*52 }}" text-anchor="middle" class="bit" data-edt-q="{{ row }}-{{ col }}">{{ initial[row][col] }}</text>{% endfor %}
+    <text x="537" y="{{ 94+row*52 }}" class="tiny-label">R{{ row+1 }}</text>
+    {% endfor %}
+    <text x="415" y="62" text-anchor="middle" class="pin-label">4 条内部链 × 每链 4 级</text>
+    <rect x="580" y="80" width="124" height="210" rx="10" class="logic-box"/><text x="642" y="145" text-anchor="middle">响应压缩</text><text x="642" y="177" text-anchor="middle" class="tiny-label">C0 = R1 ⊕ R3</text><text x="642" y="203" text-anchor="middle" class="tiny-label">C1 = R2 ⊕ R4</text>
+    <path d="M704 146H762M704 210H762" class="wire edt-flow" marker-end="url(#edt-arrow)"/>
+    <text x="710" y="80" class="pin-label">测试机输出</text><text x="736" y="136" class="bit" data-field="out-c0">—</text><text x="736" y="200" class="bit" data-field="out-c1">—</text>
+    <text x="400" y="328" text-anchor="middle" class="pin-label">每拍：并行移出旧响应，同时移入下一组测试刺激</text><text x="400" y="352" text-anchor="middle" class="tiny-label">输入序列 (a,b)：10 → 01 → 11 → 10；本动画不执行 Capture。</text>
+  </svg>
+  <div class="demo-readouts"><div><small>本拍移出的 R1..R4</small><strong data-field="raw-output">尚未移出</strong></div><div><small>压缩响应 C0C1</small><strong data-field="output">尚未移出</strong></div><div><small>无错误期望序列</small><strong>11 · 10 · 11 · 00</strong></div></div>
+  <p class="demo-explanation" data-field="explanation">链内已有响应。点击单步，观察四个旧末级位如何变成两个压缩观察位。</p>
+  <noscript><p>动画需要 JavaScript。静态图仍展示完整通路：2 个输入通道 → 解压映射 → 4 条并行扫描链 → XOR 响应压缩 → 2 个输出通道。</p></noscript>
+</section>

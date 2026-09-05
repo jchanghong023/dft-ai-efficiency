@@ -1,0 +1,49 @@
+<section class="dft-lab compression-lab" id="compression-lab" data-lab="compression" aria-label="EDT 约束与 X 处理交互演示">
+  <div class="lab-header">
+    <div><span class="lab-kicker">LAB 03 · COMPRESSION</span><h2>约束如何穿过解压与响应压缩</h2><p>给定 4 位链约束，枚举 2 位输入的可行编码，再观察 X mask 与旁路。</p></div>
+    <span class="lab-badge">教学模型 · 非真实 EDT</span>
+  </div>
+  <div class="lab-controls">
+    <label>4 位链 care <input data-compression-input="care" value="10?1" maxlength="4" disabled></label>
+    <label>4 位链响应 <input data-compression-input="response" value="1011" maxlength="4" disabled></label>
+    <label>X mask（1=屏蔽） <input data-compression-input="mask" value="0010" maxlength="4" disabled></label>
+    <label class="lab-check"><input data-compression-input="bypass" type="checkbox" disabled> 旁路观察</label>
+    <button type="button" data-compression-action="apply" disabled>应用约束</button>
+    <button type="button" data-compression-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 920 320" role="img" aria-labelledby="compression-title compression-desc">
+      <title id="compression-title">少量通道经教学解压映射驱动多条链，再由压缩器观察</title>
+      <desc id="compression-desc">输入通道、教学解压器、可调内部链和 X mask 压缩器组成的数据路径。</desc>
+      <defs><marker id="compression-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <text x="25" y="40" class="lab-svg-label">测试机输入 a,b</text>
+      <text x="55" y="105" class="lab-svg-bit" data-compression-field="care">10?1</text>
+      <path d="M130 100H205" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <rect x="210" y="55" width="145" height="180" rx="14" class="lab-svg-box lab-svg-box-accent"/>
+      <text x="282" y="106" text-anchor="middle" class="lab-svg-title">教学解压器</text>
+      <text x="282" y="132" text-anchor="middle" class="lab-svg-muted">[a,b,a⊕b,a]</text>
+      <text x="282" y="163" text-anchor="middle" class="lab-svg-warn">固定小矩阵 · 非真实 EDT</text>
+      <path d="M355 85H420M355 125H420M355 165H420M355 205H420" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <g class="compression-lanes">
+        <text x="424" y="81" class="lab-svg-muted">L0</text><rect x="450" y="60" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="82" class="lab-svg-bit" data-compression-lane="0">1</text><text x="520" y="81" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="121" class="lab-svg-muted">L1</text><rect x="450" y="100" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="122" class="lab-svg-bit" data-compression-lane="1">0</text><text x="520" y="121" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="161" class="lab-svg-muted">L2</text><rect x="450" y="140" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="162" class="lab-svg-bit" data-compression-lane="2">1</text><text x="520" y="161" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="201" class="lab-svg-muted">L3</text><rect x="450" y="180" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="202" class="lab-svg-bit" data-compression-lane="3">1</text><text x="520" y="201" class="lab-svg-muted">链刺激</text>
+      </g>
+      <path d="M620 76H700M620 116H700M620 156H700M620 196H700" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <rect x="705" y="55" width="135" height="180" rx="14" class="lab-svg-box"/>
+      <text x="772" y="104" text-anchor="middle" class="lab-svg-title">X-aware</text><text x="772" y="126" text-anchor="middle" class="lab-svg-title">压缩器</text>
+      <text x="772" y="160" text-anchor="middle" class="lab-svg-muted">mask 位门控为 0</text><text x="772" y="185" text-anchor="middle" class="lab-svg-bit" data-compression-field="compact">—</text>
+      <path d="M840 145H890" class="lab-svg-wire" marker-end="url(#compression-arrow)"/><text x="845" y="130" class="lab-svg-label">观察</text>
+      <text x="460" y="270" class="lab-svg-muted">响应：<tspan data-compression-field="response">1011</tspan> · X mask：<tspan data-compression-field="mask">0010</tspan></text>
+      <text x="460" y="294" class="lab-svg-muted">旁路：<tspan data-compression-field="bypass">关闭</tspan></text>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite">
+    <div><small>可行输入候选</small><strong data-compression-field="matches">—</strong></div>
+    <div><small>链刺激 / 未压缩响应</small><strong data-compression-field="stimulus">—</strong></div>
+    <div><small>压缩 / 旁路观察</small><strong data-compression-field="output">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-compression-field="explanation">启用 JavaScript 后，输入约束并点击“应用约束”。`?` 是可选 care 位，X 是未知响应，两者不会自动互换。</p>
+  <noscript><p>静态路径：通道 → 教学解压器 → 多条扫描链 → X-aware 压缩器。交互需要 JavaScript；静态图中的 XOR、X mask 与旁路仅用于概念说明，不代表真实 EDT 实现。</p></noscript>
+</section>

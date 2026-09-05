@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>EDT 深化：约束、X 处理与旁路 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/compression-power.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a class="active" aria-current="page" href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="edt-x">EDT 深化：约束、X 处理与旁路</h1>
+<section class="dft-lab compression-lab" id="compression-lab" data-lab="compression" aria-label="EDT 约束与 X 处理交互演示">
+  <div class="lab-header">
+    <div><span class="lab-kicker">LAB 03 · COMPRESSION</span><h2>约束如何穿过解压与响应压缩</h2><p>给定 4 位链约束，枚举 2 位输入的可行编码，再观察 X mask 与旁路。</p></div>
+    <span class="lab-badge">教学模型 · 非真实 EDT</span>
+  </div>
+  <div class="lab-controls">
+    <label>4 位链 care <input data-compression-input="care" value="10?1" maxlength="4" disabled></label>
+    <label>4 位链响应 <input data-compression-input="response" value="1011" maxlength="4" disabled></label>
+    <label>X mask（1=屏蔽） <input data-compression-input="mask" value="0010" maxlength="4" disabled></label>
+    <label class="lab-check"><input data-compression-input="bypass" type="checkbox" disabled> 旁路观察</label>
+    <button type="button" data-compression-action="apply" disabled>应用约束</button>
+    <button type="button" data-compression-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 920 320" role="img" aria-labelledby="compression-title compression-desc">
+      <title id="compression-title">少量通道经教学解压映射驱动多条链，再由压缩器观察</title>
+      <desc id="compression-desc">输入通道、教学解压器、可调内部链和 X mask 压缩器组成的数据路径。</desc>
+      <defs><marker id="compression-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <text x="25" y="40" class="lab-svg-label">测试机输入 a,b</text>
+      <text x="55" y="105" class="lab-svg-bit" data-compression-field="care">10?1</text>
+      <path d="M130 100H205" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <rect x="210" y="55" width="145" height="180" rx="14" class="lab-svg-box lab-svg-box-accent"/>
+      <text x="282" y="106" text-anchor="middle" class="lab-svg-title">教学解压器</text>
+      <text x="282" y="132" text-anchor="middle" class="lab-svg-muted">[a,b,a⊕b,a]</text>
+      <text x="282" y="163" text-anchor="middle" class="lab-svg-warn">固定小矩阵 · 非真实 EDT</text>
+      <path d="M355 85H420M355 125H420M355 165H420M355 205H420" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <g class="compression-lanes">
+        <text x="424" y="81" class="lab-svg-muted">L0</text><rect x="450" y="60" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="82" class="lab-svg-bit" data-compression-lane="0">1</text><text x="520" y="81" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="121" class="lab-svg-muted">L1</text><rect x="450" y="100" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="122" class="lab-svg-bit" data-compression-lane="1">0</text><text x="520" y="121" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="161" class="lab-svg-muted">L2</text><rect x="450" y="140" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="162" class="lab-svg-bit" data-compression-lane="2">1</text><text x="520" y="161" class="lab-svg-muted">链刺激</text>
+        <text x="424" y="201" class="lab-svg-muted">L3</text><rect x="450" y="180" width="170" height="32" rx="7" class="lab-svg-lane"/><text x="470" y="202" class="lab-svg-bit" data-compression-lane="3">1</text><text x="520" y="201" class="lab-svg-muted">链刺激</text>
+      </g>
+      <path d="M620 76H700M620 116H700M620 156H700M620 196H700" class="lab-svg-wire" marker-end="url(#compression-arrow)"/>
+      <rect x="705" y="55" width="135" height="180" rx="14" class="lab-svg-box"/>
+      <text x="772" y="104" text-anchor="middle" class="lab-svg-title">X-aware</text><text x="772" y="126" text-anchor="middle" class="lab-svg-title">压缩器</text>
+      <text x="772" y="160" text-anchor="middle" class="lab-svg-muted">mask 位门控为 0</text><text x="772" y="185" text-anchor="middle" class="lab-svg-bit" data-compression-field="compact">—</text>
+      <path d="M840 145H890" class="lab-svg-wire" marker-end="url(#compression-arrow)"/><text x="845" y="130" class="lab-svg-label">观察</text>
+      <text x="460" y="270" class="lab-svg-muted">响应：<tspan data-compression-field="response">1011</tspan> · X mask：<tspan data-compression-field="mask">0010</tspan></text>
+      <text x="460" y="294" class="lab-svg-muted">旁路：<tspan data-compression-field="bypass">关闭</tspan></text>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite">
+    <div><small>可行输入候选</small><strong data-compression-field="matches">—</strong></div>
+    <div><small>链刺激 / 未压缩响应</small><strong data-compression-field="stimulus">—</strong></div>
+    <div><small>压缩 / 旁路观察</small><strong data-compression-field="output">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-compression-field="explanation">启用 JavaScript 后，输入约束并点击“应用约束”。`?` 是可选 care 位，X 是未知响应，两者不会自动互换。</p>
+  <noscript><p>静态路径：通道 → 教学解压器 → 多条扫描链 → X-aware 压缩器。交互需要 JavaScript；静态图中的 XOR、X mask 与旁路仅用于概念说明，不代表真实 EDT 实现。</p></noscript>
+</section>
+
+<p>EDT 类压缩结构的价值不只是“把很多位变成更少的位”。测试机提供少量通道，片上解压器把它们展开到许多扫描链；响应端再把多条链压缩到少量观察通道。真正的模式生成器必须同时满足链结构、时钟、故障模型、未知值和可观察性的约束。</p>
+<p>本页的演示是一个<strong>可计算的教学模型</strong>。它用小规模 XOR 分组表示解压和压缩，帮助建立约束与信息丢失的直觉；它不是 Tessent TestKompress、DFTMAX 或任何具体工艺库的实现，也不生成可用于 ATE 的模式。</p>
+<h2 id="_1">先看四个关键词</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>在工程中的问题</th>
+<th>本页如何简化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>care / don't-care</td>
+<td>ATPG 可以自由选择某些位，但必须满足已确定的故障激活与传播条件</td>
+<td>输入串中的 <code>?</code> 表示可以选 0 或 1</td>
+</tr>
+<tr>
+<td>X 源</td>
+<td>未初始化寄存器、三态总线、模拟宏或未约束输入会污染比较结果</td>
+<td>响应串中的 <code>X</code> 显示为未知值</td>
+</tr>
+<tr>
+<td>X mask</td>
+<td>在确认某个链位不可观察时，模式或比较器可以屏蔽它</td>
+<td><code>mask=1</code> 将该链观察门控为 0，并记为 <code>M</code>（观察丢失）；不是修复 X</td>
+</tr>
+<tr>
+<td>bypass</td>
+<td>调试、链路检查或不支持压缩的模式需要绕过压缩网络</td>
+<td><code>bypass</code> 返回完整 4 位未压缩响应</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">交互：约束怎样穿过压缩器</h2>
+<h3 id="_3">玩具模型的计算路径</h3>
+<ol>
+<li>care 串固定为 4 位 <code>0</code>、<code>1</code>、<code>?</code>。<code>?</code> 是约束中的 don't-care，不等于硬件上的 X。</li>
+<li>教学解压矩阵固定为 <code>[a,b,a XOR b,a]</code>。模型枚举 <code>(a,b) ∈ {00,01,10,11}</code>，只保留与 4 位 care 串匹配的候选；没有候选时明确报告无解。</li>
+<li>响应端按奇偶组 XOR：<code>C0=R0⊕R2</code>、<code>C1=R1⊕R3</code>。这是一个固定 4 链小矩阵，不是可变链数的真实 EDT 编码器。</li>
+<li><code>mask=1</code> 的链被门控为 0，并以 <code>M</code> 标记“观察丢失”；未被 mask 的 <code>X</code> 继续传播到所在压缩组，不能被自动当作 0。</li>
+<li>bypass 显示完整 4 位未压缩响应（含 <code>X</code>/<code>M</code>），用于理解链路检查；它不等于把整套 EDT 硬件从芯片上删除。</li>
+</ol>
+<h2 id="_4">约束不是“随便填一个值”</h2>
+<p>真实 ATPG 会根据故障目标、时序、功耗和 DFT DRC 约束决定 care 位。一个 don't-care 可以帮助解压编码满足更多链的要求，也可能因相邻模式、功耗上限或 X 边界而被固定。本演示不是把 <code>?</code> 全部填成 0，而是枚举小矩阵；“无解”表示当前约束不可能由这组教学编码产生。</p>
+<h3 id="x">X 从哪里来</h3>
+<p>常见来源包括没有被当前模式控制的功能逻辑、未初始化存储单元、宏模型的未知输出、跨电源域信号，以及三态或模拟接口。处理方式可能包括 X-bounding、屏蔽、约束源逻辑、增加观察点或改变测试时序；“把 X 显示成 0”不能替代这些工程动作。</p>
+<p>在模式评审时，应把每个被屏蔽的 X 源记录为可追溯的约束，而不是只看最终签名。</p>
+<h3 id="_5">为什么需要旁路</h3>
+<p>压缩模式追求测试数据和时间效率，但工程调试仍需要直接检查链路、单链移位和部分未连接通道。旁路路径通常是设计规格的一部分，必须在 DFT DRC、模式仿真和 ATE 约束下验证。本页的旁路按钮只切换到完整 4 位响应观察，不宣称真实设计已经具备该路径。</p>
+<h2 id="_6">链数、链长、通道数的取舍</h2>
+<p>真实设计中，更多内部链通常可以减少每条链的长度，但会增加解压器扇出、布线、时钟和 X 管理复杂度。更少的外部通道可以降低封装和测试机接口压力，却会提高解压约束；链长不平衡还会让最长链决定移位时间。本页固定 2 个输入、4 条示例链，页面上的 <code>2:4</code> 关系是<strong>教学矩阵</strong>，不代表产品压缩率、覆盖率、ATE 时间或面积收益。</p>
+<p>请改写 care、响应、X mask 和旁路，比较可行输入与观察结果。尤其要注意：压缩输出一致只能说明这个小模型的观察结果一致，不能证明两组原始响应一致，更不能证明芯片无故障。</p>
+<h2 id="_7">常见误区与边界</h2>
+<ul>
+<li><strong>误区：</strong> <code>?</code> 和 X 是同一种值。<strong>边界：</strong> <code>?</code> 表示模式生成时可选，X 表示当前仿真或硬件观察值未知。</li>
+<li><strong>误区：</strong> mask 后得到 0 就代表链值为 0。<strong>边界：</strong> 本页用 <code>M</code> 保留“观察丢失”语义；真实流程必须保留被屏蔽原因和覆盖率影响。</li>
+<li><strong>误区：</strong> 两个通道、八条链就等于 4 倍真实压缩。<strong>边界：</strong> 真实数据量还受模式数量、填充、链长、X 处理、时钟和诊断要求影响。</li>
+<li><strong>误区：</strong> 有了压缩器就不需要链路测试。<strong>边界：</strong> bypass、单链检查、DRC、门级仿真和 ATE 连续性模式仍是独立验证项。</li>
+<li><strong>误区：</strong> 演示里的 XOR 就是 EDT 解压器。<strong>边界：</strong> 真实工具根据目标库、链拓扑和模式生成规则实现并验证压缩结构。</li>
+</ul>
+<h2 id="_8">公开资料</h2>
+<ul>
+<li><a href="https://blogs.sw.siemens.com/tessent/2015/11/11/a-flexible-flow-for-inserting-embedded-compression-logic-in-rtl/">Siemens Tessent：在 RTL 中插入嵌入式压缩逻辑的流程</a>：说明解压器、压缩器、链时钟、lockup 以及未使用通道的工程约束。</li>
+<li><a href="https://www.siemens.com/en-gb/products/ic/tessent/test/testkompress/">Siemens Tessent TestKompress 概览</a>：介绍制造测试中的嵌入式压缩定位；产品能力不等于本页玩具模型。</li>
+<li><a href="https://blogs.sw.siemens.com/tessent/2021/04/29/tessent-wins-best-paper-award-at-ieee-vlsi-test-symposium/">Siemens：EDT 压缩网络的结构说明</a>：介绍解压器向多条内部链提供刺激、压缩器汇聚响应，以及布线取舍。</li>
+</ul>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-edt.html"><small>← 上一主题</small><strong>EDT 基础：并行链与响应压缩</strong></a><a href="../pages/dft-test-power.html"><small>下一主题 →</small><strong>测试功耗与低功耗设计</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">先看四个关键词</a></li>
+<li><a href="#_2">交互：约束怎样穿过压缩器</a><ul>
+<li><a href="#_3">玩具模型的计算路径</a></li>
+</ul>
+</li>
+<li><a href="#_4">约束不是“随便填一个值”</a><ul>
+<li><a href="#x">X 从哪里来</a></li>
+<li><a href="#_5">为什么需要旁路</a></li>
+</ul>
+</li>
+<li><a href="#_6">链数、链长、通道数的取舍</a></li>
+<li><a href="#_7">常见误区与边界</a></li>
+<li><a href="#_8">公开资料</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

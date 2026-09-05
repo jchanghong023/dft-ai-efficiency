@@ -1,0 +1,6 @@
+name	purpose
+scout	快速只读代码调查
+reviewer	代码质量和安全审查（非强制只读隔离）
+security-reviewer	证据驱动的安全调查（提示意图只读）
+task	全能力通用任务委派
+sonic	机械性更新和数据收集

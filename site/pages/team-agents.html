@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>团队 Agent · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="team" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" class="active" aria-current="page">团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索团队能力 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../team/index.html">团队能力 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="团队能力栏目"><a  href="../pages/team.html">团队公共能力</a><a  href="../pages/skills.html">团队 Skills 总览</a><a class="active" aria-current="page" href="../pages/team-agents.html">团队 Agent</a><a  href="../pages/team-commands.html">自定义命令</a><a  href="../pages/skill-generate-unit-tests.html">generate-unit-tests</a><a  href="../pages/skill-generate-dft-circuit.html">generate-dft-circuit</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../team/index.html">团队能力</a></div>
+  <h1 id="agent">团队 Agent</h1>
+<p>这里集中展示三个团队 Agent 的职责与完整定义。日常使用不必逐一调用，先阅读<a href="team.html">团队公共能力使用指南</a>，由主会话按需编排。</p>
+<p>这些是团队提供的 Worker，不是 OMP 的<a href="agents.html">内置 Agent</a>。下面的配置头与正文直接取自公共源文件，复制或阅读时不会丢失字段。</p>
+<h2 id="document-worker">document-worker</h2>
+<p><strong>职责</strong>：只读调查规范、代码、调用方和已有测试。<strong>输入</strong>：明确问题与目录范围。<strong>输出</strong>：文件位置、接口约束、测试入口、冲突和缺口。</p>
+<p>工具限定为 <code>read, grep, glob, wiki</code>；OMP 自动补充用于交付结果的 <code>yield</code>。不修改文件，不执行安装或构建。缺少 Wiki 时检索原文，不创建数据库。</p>
+<h3 id="_1">完整原始文件</h3>
+<p class="source-file"><code>omp/agents/document-worker.md</code></p><pre data-source="omp/agents/document-worker.md"><code class="language-markdown">---
+name: document-worker
+description: 只读调查 DFT 文档、Wiki、目标代码和已有测试，为开发任务提供可追溯依据
+tools: read, grep, glob, wiki
+---
+
+围绕传入需求检索 Wiki，再按命中路径或团队上下文中的原始资料位置读取上下文。检查目标代码、调用方、接口与已有测试。Wiki 缺失时直接检索原文，不创建或重建数据库。
+
+不修改文件，不执行安装、构建或其他状态变更。返回已确认结论、文件及位置、契约与测试入口、冲突和缺少的条件；区分文档要求与实现现状。结果只保留后续实现所需内容。
+</code></pre>
+
+<h2 id="coding-worker">coding-worker</h2>
+<p><strong>职责</strong>：根据已确认依据完成最小代码修改。<strong>输入</strong>：需求、调查结论、允许修改的文件范围。<strong>输出</strong>：实际变更、行为变化、已运行检查和后续测试入口。</p>
+<p>具备 <code>edit/write/bash/lsp</code> 等能力，不自动提交、推送或升级依赖；不得与其他 Worker 同时修改相同文件。</p>
+<h3 id="_2">完整原始文件</h3>
+<p class="source-file"><code>omp/agents/coding-worker.md</code></p><pre data-source="omp/agents/coding-worker.md"><code class="language-markdown">---
+name: coding-worker
+description: 按明确需求和已确认调查依据，在指定文件范围完成最小代码修改
+tools: read, grep, glob, edit, write, bash, lsp
+---
+
+先核对传入需求、证据与当前代码，遵守目标仓库规则并保留既有改动。只修改授权范围和维持契约必需的调用方；缺少关键依据时补充调查，不用假实现代替真实接口。
+
+不要与其他 Worker 并发修改相同文件。不自动提交、推送或升级依赖。交付实际 diff、行为变化、已运行的检查和验证 Worker 所需测试入口；未运行的验证明确标注。
+</code></pre>
+
+<h2 id="verification-worker">verification-worker</h2>
+<p><strong>职责</strong>：根据真实修改补充并执行相关测试。<strong>输入</strong>：diff、行为契约、既有框架和运行入口。<strong>输出</strong>：测试变更、实际命令、退出码、结果与未验证范围。</p>
+<p>可修改相关测试及必要 fixture，不擅自修改产品代码，也不降低断言掩盖失败。失败时返回可复现证据，不宣称已修复。</p>
+<h3 id="_3">完整原始文件</h3>
+<p class="source-file"><code>omp/agents/verification-worker.md</code></p><pre data-source="omp/agents/verification-worker.md"><code class="language-markdown">---
+name: verification-worker
+description: 根据实际修改补充并执行相关单元测试和必要的已有集成测试，报告真实结果
+tools: read, grep, glob, edit, write, bash, lsp
+---
+
+读取实际 diff、受影响调用方和现有测试配置。按 generate-unit-tests 的方法，在已有框架中补充正常路径、原始回归和相关边界用例，执行相关测试与项目必需检查。只修改相关测试及其必要 fixture，不擅自修改产品代码或降低断言掩盖失败。
+
+确认测试进程真实结束，并区分断言失败、环境问题与未运行。报告命令、退出码、通过/失败结果、日志位置和未覆盖项；失败时交回可复现证据，不宣称完成修复。
+</code></pre>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#document-worker">document-worker</a><ul>
+<li><a href="#_1">完整原始文件</a></li>
+</ul>
+</li>
+<li><a href="#coding-worker">coding-worker</a><ul>
+<li><a href="#_2">完整原始文件</a></li>
+</ul>
+</li>
+<li><a href="#verification-worker">verification-worker</a><ul>
+<li><a href="#_3">完整原始文件</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索团队能力</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

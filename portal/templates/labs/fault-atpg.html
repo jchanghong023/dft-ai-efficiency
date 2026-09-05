@@ -1,0 +1,30 @@
+<section class="dft-lab" id="fault-atpg-lab" data-lab="faults-atpg" aria-label="故障模型与 ATPG 互动实验">
+  <header class="lab-header"><span class="demo-tag">LAB 01 / ATPG</span><div><h3>让一个故障变得可检测</h3><p>选择故障与输入模式，分开观察激活、传播和输出差异。</p></div></header>
+  <div class="lab-controls">
+    <label>故障模型 <select data-fault-setting disabled><option value="stuck-at-0">n1 stuck-at-0</option><option value="stuck-at-1">n1 stuck-at-1</option><option value="transition-rise">out transition-rise</option><option value="bridging">a / b bridging</option></select></label>
+    <label>输入模式 <select data-pattern-setting disabled><option value="10">a=1，b=0</option><option value="01">a=0，b=1</option><option value="11">a=1，b=1</option><option value="00">a=0，b=0</option></select></label>
+    <label>前一模式 <select data-previous-setting disabled><option value="00">a=0，b=0</option><option value="10">a=1，b=0</option><option value="01">a=0，b=1</option><option value="11">a=1，b=1</option></select></label>
+    <button type="button" data-action="run" disabled>运行模式</button><button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 760 248" role="img" aria-labelledby="fault-lab-title fault-lab-desc">
+      <title id="fault-lab-title">两输入逻辑电路和故障传播路径</title>
+      <desc id="fault-lab-desc">输入 a、b 经过 OR 与 AND，再由 XOR 产生输出 out。故障可能发生在 n1 或输入桥接。</desc>
+      <defs><marker id="fault-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <path d="M48 78H150M48 174H150M252 78H330M252 174H330M430 126H510M610 126H710" class="lab-wire" marker-end="url(#fault-arrow)"/>
+      <text x="28" y="70" class="lab-label">a</text><text x="28" y="166" class="lab-label">b</text>
+      <rect x="150" y="43" width="102" height="70" rx="10" class="lab-gate"/><text x="201" y="84" text-anchor="middle">OR</text><text x="201" y="101" text-anchor="middle" class="lab-small">n1 = a | b</text>
+      <rect x="150" y="139" width="102" height="70" rx="10" class="lab-gate"/><text x="201" y="180" text-anchor="middle">AND</text><text x="201" y="197" text-anchor="middle" class="lab-small">n2 = a &amp; b</text>
+      <path d="M330 78V126H350M330 174V126H350" class="lab-wire"/>
+      <rect x="350" y="91" width="80" height="70" rx="10" class="lab-gate lab-xor"/><text x="390" y="132" text-anchor="middle">XOR</text>
+      <rect x="510" y="91" width="100" height="70" rx="10" class="lab-observe"/><text x="560" y="125" text-anchor="middle">capture</text><text x="560" y="144" text-anchor="middle" class="lab-small">可观察点</text>
+      <text x="716" y="118" class="lab-label">out</text><text x="716" y="143" class="lab-bit" data-field="out">—</text>
+      <text x="260" y="30" class="lab-small" data-field="fault-badge">当前无注入</text>
+      <circle cx="302" cy="78" r="7" class="lab-node" data-node="n1"/><text x="302" y="67" text-anchor="middle" class="lab-small">n1</text>
+      <circle cx="302" cy="174" r="7" class="lab-node" data-node="n2"/><text x="302" y="202" text-anchor="middle" class="lab-small">n2</text>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite"><div><small>当前 / 前一模式</small><strong data-field="inputs">— / —</strong></div><div><small>激活</small><strong data-field="activated">尚未运行</strong></div><div><small>传播</small><strong data-field="propagated">尚未运行</strong></div><div><small>最终判定</small><strong data-field="result">尚未运行</strong></div></div>
+  <p class="lab-explanation" data-field="explanation">先选择一个故障、当前模式和前一模式。transition 故障是否激活取决于前一捕获值到当前捕获值的变化。</p>
+  <noscript><p>本实验需要 JavaScript 执行固定教学模型。即使没有脚本，也可根据图示理解：a、b 经 OR/AND/XOR 到达 capture；故障需先激活，再沿路径传播到 out。</p></noscript>
+</section>

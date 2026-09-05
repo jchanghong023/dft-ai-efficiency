@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "version": "v18.1.9+fork.170",
+  "revision": "755b392dc4e99bec1415bed12b3a581d1b19643c",
+  "source_hashes": {
+    "packages/coding-agent/src/commands/launch.ts": "32cf4a936485ebd2bef452c6b925920fc21e2ffa545821dc53c4034b6e9813ee",
+    "packages/coding-agent/src/commands/acp.ts": "49a650e49f3ae70a5b405b46d10ab5734f709f52b70a51a861a0b7ac6f6c04c8",
+    "packages/coding-agent/src/commands/auth-broker.ts": "ed41d39cb19caed66876323b47c26d8bfb7659d012babfa06248b5b32019e5de",
+    "packages/coding-agent/src/commands/auth-gateway.ts": "958b2d3107ccbd2d5cbe74a515f35b3270388a62add9a1ddd0f08e27167530e5",
+    "packages/coding-agent/src/commands/agents.ts": "61ec4b015dd4bdd53569f2205efa63643c0471cc26808ef24e4c7729151ef22d",
+    "packages/coding-agent/src/commands/bench.ts": "4ebe0dc0450594e9c3b201a881a6412ba8ebcdb78b66bfe5a9ea8c022d2ba9b1",
+    "packages/coding-agent/src/commands/browser-relay.ts": "e6451d027e3ceb81a4c58837e1756f53f57d381ef67d3b88dace955b57a442a1",
+    "packages/coding-agent/src/commands/cleanse.ts": "c9241effcdb8580d16fcbf266be2d3d3d09c5cfbd5fb1382b9c7eb94e7fde3cb",
+    "packages/coding-agent/src/commands/commit.ts": "9ca25d03a6e136899d2c1f36e42bcfea1d1cc319239df5ffe333c361f8060eb8",
+    "packages/coding-agent/src/commands/completions.ts": "a129764aabc8d917bf0d362207b059e93b34145f57a79b30f109a07db6d023ea",
+    "packages/coding-agent/src/commands/complete.ts": "cdaf9a686d381d353b8e54a9c143c05e4e909a299b8ed9f690abfaf4075c2070",
+    "packages/coding-agent/src/commands/compress.ts": "3a87caada9de381401e8a53305fabe161c45af3c580636de47b19fa287553aeb",
+    "packages/coding-agent/src/commands/config.ts": "73e85eea49b430c6ea7182d9335775fca040bb6e52b2600e9f6588817ee48f01",
+    "packages/coding-agent/src/commands/docs.ts": "698f3bd740e0fb751179a46c696571786745357423b8fb6ac3519fd0a61a9b52",
+    "packages/coding-agent/src/commands/dry-balance.ts": "0d63744f0b29acdab2a680eb52e8aee4f94a32aeb89a405ca8cee58ae33ed34d",
+    "packages/coding-agent/src/commands/gc.ts": "c08cb39762100a813fb2acea0b74f14365041a9b0406a971c3b9a5ab568a0e46",
+    "packages/coding-agent/src/commands/grep.ts": "6b820af3aa6b388b4f2f29aaa967589b6b3850cdb47aa915970d1e69008d74f6",
+    "packages/coding-agent/src/commands/gallery.ts": "2a643838caf03db4d70bd0a0ae3e92a807414a999fd7eaacca423eb151799fc7",
+    "packages/coding-agent/src/commands/git.ts": "6e52d8db99f0a6fbf7817ba6685c3a8d254165a328f82771e58816011fad1e47",
+    "packages/coding-agent/src/commands/grievances.ts": "f187a901f12e2af8dc28e628d3fb68e83dcbc320ee0327ad77b4a2732a1a27ec",
+    "packages/coding-agent/src/commands/images.ts": "d2ee08499f0e05e6feae42ce963d8280b3165adfd95a9686f55cb9a9c6358112",
+    "packages/coding-agent/src/commands/if-bench.ts": "2066247ee0b3546d2ea2d31be9413714a5fa1beeaf7b548fea32d9df790e649b",
+    "packages/coding-agent/src/commands/install.ts": "3d0ca32e86be6d2deab2dbc2fc0dc7fcecb2005c45b6c02e188d2b9fa3c25851",
+    "packages/coding-agent/src/commands/join.ts": "503aac112de9276c3d1939af7eed0557c2f297ba97c8371352bb42eec90e289d",
+    "packages/coding-agent/src/commands/models.ts": "75f7bf0326f09f930aa3941cd78a0e65b2c0a875826f8a2ad37e439f15323efa",
+    "packages/coding-agent/src/commands/plugin.ts": "4ca068420085f0ace5f9f8dff20c69dac92a7ca46696693f3d91233d9543e9d9",
+    "packages/coding-agent/src/commands/ps.ts": "53549de7ded395e842f4b92dfafef47080c14aa2031fe1f0514fc1a38252bce1",
+    "packages/coding-agent/src/commands/say.ts": "28573f88d5dbe60cced96ace78fe83c2e582535fc0f141cfe11eaea3ad11fefe",
+    "packages/coding-agent/src/commands/share.ts": "708dd6e7ab3c17c3c9fa27b5c6edcb944d79871ba837844badcae5620b8e1f96",
+    "packages/coding-agent/src/commands/setup.ts": "cc4040ea63d85f79a3e5cc9ccafe7f315934a7cd008cf42d4ce9f22934210248",
+    "packages/coding-agent/src/commands/shell.ts": "506328e3e3e147bdfee7cab2d3c3a88468864b1b81985383276be149c32bac50",
+    "packages/coding-agent/src/commands/read.ts": "f79422e9ca2679b4d18917b50209c5d45b3b9c8d1bac362b5227c88320924017",
+    "packages/coding-agent/src/commands/render.ts": "fe362bd243a7d95bdc7a931b7d2d41009209b72f1705f3d9bc1e6ed244cd55d1",
+    "packages/coding-agent/src/commands/ssh.ts": "03488dafa2f717b0c0a47607bebd99183f219c9426b5ab1a93881dbae1b026c8",
+    "packages/coding-agent/src/commands/stats.ts": "db21feed9c64ec96053c3596f54c1f98c6c5ceea958d60a2912d7ffe0c0c8ae1",
+    "packages/coding-agent/src/commands/sync-claude.ts": "81b42ea795df97b06b0fc5ce489fb059e02b59709023e6fba48edad03bd5880f",
+    "packages/coding-agent/src/commands/update.ts": "ae01f0a92b4cc9836a468c7137dfb5a4fc6ad790fc63921fd13462252ec5381e",
+    "packages/coding-agent/src/commands/usage.ts": "fb4e74e7a8a49f77e9bcc347bf43cf284052ece14d0dcd8d21e9ce843705bd88",
+    "packages/coding-agent/src/commands/tiny-models.ts": "b2e8d44a68123da88591ec631ca38e77be2b6aba2301b5a2b9543163c0bc2d3d",
+    "packages/coding-agent/src/commands/token.ts": "6385e459aca892aeb381f5d05ba7ef3b706bbb4072339ea3e078d00607e3e675",
+    "packages/coding-agent/src/commands/ttsr.ts": "20acfc0ca9b0a30a086f6149a2e044edf0a8a4724ee13bc7a07d1745840af21e",
+    "packages/coding-agent/src/commands/worktree.ts": "83fd0a81fbfef4c6fe2ee95f40ab4baf5533aa4a580c517ced2480dc3eaa66d3",
+    "packages/coding-agent/src/commands/web-search.ts": "66ed917b14b55788b8184a6191991ec658a33d7ef63a57f5a4728777e8313e8b",
+    "packages/coding-agent/src/commands/launch-help.ts": "6bcb634b56a8927b623391c8fa3cabac34ac9ee8388c7d9c31fdd8c01e3945d4",
+    "packages/coding-agent/src/cli/config-cli.ts": "e089c6b995e9dfee69289ea8f35ee3e059f78c17170ab0b7eeae453aee1b3df9",
+    "packages/coding-agent/src/cli/models-cli.ts": "d69f9ad785cb09e46b1589bcdc3e6cc0c6d05d0144d1f4e88445f5ce4e6ed2da",
+    "packages/coding-agent/src/cli/flag-tables.ts": "d41c3eb5a7cb84b0095301c2f89c728b4cea625dd9c6740f1df96ae445641d58",
+    "packages/coding-agent/src/cli/auth-gateway-cli.ts": "0f88e874c020b8dab81909f3fdc9ff7c2a2d4296aae23c99a46f78365295e5dd",
+    "packages/coding-agent/src/cli/auth-broker-cli.ts": "088ff4a31f809cff4ed67cb98386451677360865d4325af92fe8d7839ea54181",
+    "packages/coding-agent/src/cli/browser-relay-cli.ts": "a6ac45d6605b94f928fec80524c4ddd46d0a3be692f79e0125aa6a88df0fae93"
+  },
+  "entries": {
+    "launch": {
+      "parameters": "`[消息…]` 是启动后发送的内容，`@文件` 可附加文件；`--model <模型>` 选择模型；`--cwd <目录>` 指定工程；`--profile <名称>` 隔离配置；`-p / --print` 非交互处理后退出；`-c / --continue` 继续会话；`-r / --resume [ID或路径]` 恢复会话；`--config <文件>` 可重复叠加配置。默认交互模式会保存会话，`--no-session` 关闭保存。",
+      "examples": "omp --cwd /path/to/project\nomp --continue",
+      "source": "packages/coding-agent/src/commands/launch.ts"
+    },
+    "acp": {
+      "parameters": "不要求独立位置参数，使用启动参数解析器；常用 `--cwd <目录>`、`--model <模型>`、`--profile <名称>`。普通调用强制进入 ACP 标准输入输出模式，应由支持 ACP 的客户端启动；不要把 ACP JSON 当作普通提示词。",
+      "examples": "omp acp --cwd /path/to/project",
+      "source": "packages/coding-agent/src/commands/acp.ts"
+    },
+    "auth-broker": {
+      "parameters": "`action` 选择凭据服务操作；`login/logout` 的第二参数为 provider，`import` 的第二参数为文件或目录。`--bind <host:port>` 指定 serve 监听；`--via <user@host>` 远程登录；`--provider <ID>` 指定导入服务商；`--dry-run` 预览 import、远程 login 或 migrate。`migrate` 要求 `--from-local`；`--include-env` / `--include-oauth` 控制迁移来源。",
+      "examples": "omp auth-broker import /path/to/credentials.json --dry-run",
+      "source": "packages/coding-agent/src/commands/auth-broker.ts"
+    },
+    "auth-gateway": {
+      "parameters": "`action` 选择 serve、token、status 或 check 等入口；`--bind <host:port>` 设置 serve 监听地址；`--json` 用于 token/status/check；`--strict` 使 check 向服务商发送小额探测请求；`--regenerate` 重生成网关令牌；`--no-auth` 关闭入站认证，仅在明确需要该行为时使用。 status 与 token 会显示网关凭据，输出不应复制到共享日志。",
+      "examples": "omp auth-gateway status --json",
+      "source": "packages/coding-agent/src/commands/auth-gateway.ts"
+    },
+    "agents": {
+      "parameters": "`unpack` 导出内置 Agent；不传 action 时显示帮助。默认写用户 Agent 目录；`--project` 写工程 `.omp/agents`；`--dir <目录>` 优先于 user/project；`--force / -f` 覆盖同名文件；`--json` 输出结果。",
+      "examples": "omp agents unpack --dir ./.tmp/bundled-agents --json",
+      "source": "packages/coding-agent/src/commands/agents.ts"
+    },
+    "bench": {
+      "parameters": "`<模型…>` 必需，可给多个选择器。`--profile mix/chat/prefill/generation` 选择负载，默认 mix；`--runs N` 控制请求数；`--par N` 并发默认 4；`--max-tokens N` 限制输出；`--prompt <文本>` 只适用于 chat/generation；`--cache` 启用独立冷暖缓存比较；`--json` 输出数据。此入口会实际调用模型。",
+      "examples": "omp bench actual-model-id --profile chat --runs 1 --par 1 --max-tokens 128 --json",
+      "source": "packages/coding-agent/src/commands/bench.ts"
+    },
+    "browser-relay": {
+      "parameters": "`action` 默认 serve；`--port / -p <端口>` 指定监听端口；`--token <令牌>` 要求扩展认证；install 的 `--dir <目录>` 指定扩展安装位置，默认 `~/.omp/browser-relay/extension`；`--no-group` 不收拢受控标签；`--verbose / -v` 打印流量摘要。",
+      "examples": "omp browser-relay serve --port 9333",
+      "source": "packages/coding-agent/src/commands/browser-relay.ts"
+    },
+    "cleanse": {
+      "parameters": "`[request]` 描述要发现并修复的诊断；`--agents / -n N` 最大并行 Agent 默认 32；`--model / -m <模型>` 默认 `@smol`；`--tests / -t` 同时执行工程测试；`--all / -a` 不经交互选择执行发现的全部检查器。该命令会修改代码，不是只读 lint。",
+      "examples": "omp cleanse \"修复当前模块的类型错误\" --agents 2 --tests",
+      "source": "packages/coding-agent/src/commands/cleanse.ts"
+    },
+    "commit": {
+      "parameters": "无必需位置参数；`--dry-run` 预览而不创建提交；`--no-changelog` 不更新变更日志；`--context / -c <说明>` 提供背景；`--model / -m <模型>` 选择模型；`--legacy` 使用旧确定性流程；`--push` 会在提交后推送，默认不添加该选项。预览仍可能调用模型。",
+      "examples": "omp commit --dry-run --no-changelog",
+      "source": "packages/coding-agent/src/commands/commit.ts"
+    },
+    "completions": {
+      "parameters": "`<shell>` 必需，支持 bash、zsh、fish；输出补全文本，不自动修改 Shell 启动文件。重定向会写入指定文件，加载动作由维护者决定。",
+      "examples": "omp completions bash",
+      "source": "packages/coding-agent/src/commands/completions.ts"
+    },
+    "__complete": {
+      "parameters": "内部协议为 `<kind> [-- <prefix>]`；kind 是 models 或 sessions；prefix 用于筛选。输出每行 `值<TAB>说明`，供生成的 Shell 补全脚本使用，不启动交互会话。",
+      "examples": "omp __complete models -- openai",
+      "source": "packages/coding-agent/src/commands/complete.ts"
+    },
+    "compress": {
+      "parameters": "`<文件或glob…>` 必需，可多个。默认将批准的文本输出到标准输出；`--out / -o <路径>` 仅用于单文件输出；`--inPlace / -i` 覆盖原文件；`--rounds / -r N` 每文件最多草稿数默认 3；`--agents / -n N` 文件并发默认 4；`--model / -m <模型>` 指定模型。",
+      "examples": "omp compress /path/to/prompt.txt --out ./.tmp/prompt.compact.txt --agents 1",
+      "source": "packages/coding-agent/src/commands/compress.ts"
+    },
+    "config": {
+      "parameters": "`[action]` 默认 list，支持 list/get/set/reset/path/init-xdg；`get/reset` 需要 key，`set` 需要 key 和 value；value 中的空格应由 Shell 引号保护。`--json` 输出 JSON。get/list/path 查询，set/reset/init-xdg 涉及个人配置写入。",
+      "examples": "omp config get task.maxConcurrency\nomp config list --json",
+      "source": "packages/coding-agent/src/commands/config.ts"
+    },
+    "docs": {
+      "parameters": "`<action>` 必需：init/reinit/list/status/remove。`init <目录>` 必须给 `--name <唯一索引名>`；`--mode fts/structured` 选择索引模式，`--schema <预设或JSON路径>` 用于 init/reinit。`reinit <名称>` 重建；`status [名称]` 检查；`list` 仅接受 `--json`；`remove <名称>` 必须显式 `--force`，不能混入初始化参数。",
+      "examples": "omp docs list --json\nomp docs status team-docs --json",
+      "source": "packages/coding-agent/src/commands/docs.ts"
+    },
+    "dry-balance": {
+      "parameters": "可选位置参数 `[model]` 也能指定模型，省略时使用已配置的默认模型。`--model <模型>` 选择被模拟解析的模型；`--count N` 随机会话 ID 数默认 100；`--concurrency N` 凭据解析并发默认 32；`--json` 输出数据；只有显式 `--bench` 才为每个 OAuth 账户发送实际基准请求。",
+      "examples": "omp dry-balance --count 20 --concurrency 2 --json",
+      "source": "packages/coding-agent/src/commands/dry-balance.ts"
+    },
+    "gc": {
+      "parameters": "默认 dry-run，不应用清理；`--apply` 才真正执行。`--agent-dir <目录>` 指定维护对象；`--blobs` 清理无引用 blob；`--archive` 归档冷会话；`--wal` 执行 WAL checkpoint；`--cold-archive-after-days N`、`--retain-newest-global N`、`--retain-newest-per-cwd N` 控制保留；`--json` 输出结果。",
+      "examples": "omp gc --json",
+      "source": "packages/coding-agent/src/commands/gc.ts"
+    },
+    "grep": {
+      "parameters": "`[pattern] [path]` 为正则和搜索路径，路径默认当前目录；`--glob / -g <模式>` 筛文件；`--limit / -l N` 默认 20；`--context / -C N` 默认 2 行；`--files / -f` 只列文件；`--count / -c` 输出计数；`--no-gitignore` 包含被忽略文件。",
+      "examples": "omp grep \"reset\" ./src --glob \"*.v\" --limit 30 --context 3",
+      "source": "packages/coding-agent/src/commands/grep.ts"
+    },
+    "gallery": {
+      "parameters": "无必需位置参数；`--surface <类型>` 可重复筛选渲染表面；`--tool / -t <工具>`、`--composer <形态>`、`--segment <片段>` 选择样例；`--width / -w N` 设字符列数；`--plain` 去除 ANSI；`--expanded / -e` 展开；`--screenshot --out <路径>` 通过 VHS 生成 PNG，需要另备 vhs。",
+      "examples": "omp gallery --tool read --width 100 --plain",
+      "source": "packages/coding-agent/src/commands/gallery.ts"
+    },
+    "git": {
+      "parameters": "`[revision]` 可固定到某个提交，例如 HEAD~2；`--dir / -C <目录>` 选择仓库，省略时使用当前目录。界面中的暂存与提交操作会写 Git 状态。",
+      "examples": "omp git HEAD~1 --dir /path/to/project",
+      "source": "packages/coding-agent/src/commands/git.ts"
+    },
+    "grievances": {
+      "parameters": "`[action]` 默认 list，支持 clean/push；list 的 `--limit / -n N` 默认 20；`--tool / -t <工具>` 筛 list/clean；`--json / -j` 输出 JSON；clean 使用 `--id N` 或 `--all` 删除记录；push 会上传报告。",
+      "examples": "omp grievances list --limit 10 --json",
+      "source": "packages/coding-agent/src/commands/grievances.ts"
+    },
+    "images": {
+      "parameters": "`[action]` 默认 status，另有 doctor/probe/purge；`--dir <工程目录>` 默认当前目录；`--json` 输出结果；`--timeout <秒>` 控制外部健康探测。purge 默认 dry-run，`--apply` 才删除，`--all` 将范围扩大到全部发布记录。",
+      "examples": "omp images status --json",
+      "source": "packages/coding-agent/src/commands/images.ts"
+    },
+    "if-bench": {
+      "parameters": "`<模型…>` 必需；`--turns N` 默认 24；`--length N` 数组长度必须为 8–26 的偶数，默认 24；`--max-tokens N` 默认 32768；`--par N` 模型并发默认 4；`--nya-max N` 控制猫叫规则上限，默认 8；`--json` 输出。会实际调用模型。",
+      "examples": "omp if-bench actual-model-id --turns 2 --length 8 --par 1 --json",
+      "source": "packages/coding-agent/src/commands/if-bench.ts"
+    },
+    "install": {
+      "parameters": "`[targets…]` 接受本地路径、npm 包规格或 marketplace 引用；`--dry-run` 预览；`--force` 强制安装；`--json` 输出。marketplace 安装的 `--scope user/project` 默认 user；它是 plugin install/link 的便捷入口，不是团队同步脚本。",
+      "examples": "omp install ./my-extension --dry-run --json",
+      "source": "packages/coding-agent/src/commands/install.ts"
+    },
+    "join": {
+      "parameters": "`<link>` 必需，使用主持人通过 `/collab` 提供的协作链接；没有独立业务选项。此入口连接协作服务，不是导入本地会话文件。",
+      "examples": "omp join \"<主持人提供的协作链接>\"",
+      "source": "packages/coding-agent/src/commands/join.ts"
+    },
+    "models": {
+      "parameters": "`[action]` 默认 ls，支持 find、refresh，也可直接填 provider；`find <pattern>` 需要筛选串；`--json` 输出；`--extension / -e <文件>` 可重复加载扩展；`--no-extensions` 关闭自动发现但保留显式 -e；`--config <文件>` 可重复叠加配置。refresh 会刷新模型目录。",
+      "examples": "omp models --json\nomp models find actual-model",
+      "source": "packages/coding-agent/src/commands/models.ts"
+    },
+    "plugin": {
+      "parameters": "`[action] [targets…]` 支持 list/install/uninstall/link/doctor/features/config/enable/disable/marketplace/discover/upgrade；target 为包、路径或插件名。`--dry-run` 预览；`--scope user/project` 默认 user；`--json` 输出；`--fix` 用于 doctor，`--force` 用于安装；features 的 `--enable/--disable` 控制功能。",
+      "examples": "omp plugin list --json",
+      "source": "packages/coding-agent/src/commands/plugin.ts"
+    },
+    "ps": {
+      "parameters": "`[action] [name]` 默认 list；info/logs/stop/kill/restart 都需要进程名。`--plain` 静态列表，`--json / -j` JSON，`--all / -a` 跨项目；`--dir <目录>` 或 `--global <服务范围>` 选目标；logs 的 `--follow / -f` 跟随、`--lines / -n N` 最多 1000、`--grep <正则>` 筛选；stop 的 `--timeout <秒>` 控制强杀前等待。",
+      "examples": "omp ps list --plain --json",
+      "source": "packages/coding-agent/src/commands/ps.ts"
+    },
+    "say": {
+      "parameters": "`[text]` 或 `--file / -f <文件>` 提供语音文本；`--voice <ID>` 选择音色；`--model <本地模型键>` 选择本地 TTS 模型；`--out / -o <路径>` 写 WAV 而不播放。需要已准备的 TTS 引擎与模型。",
+      "examples": "omp say \"验证完成\" --out ./.tmp/verified.wav",
+      "source": "packages/coding-agent/src/commands/say.ts"
+    },
+    "share": {
+      "parameters": "`<session>` 必需，接受会话 ID 前缀或 `.jsonl` 路径；默认通过分享服务上传，`--gist` 改为 secret GitHub gist。secret gist 不是公司内部存储。仅对已获分享授权且已审查的会话使用。",
+      "examples": "omp share /path/to/approved-public-session.jsonl",
+      "source": "packages/coding-agent/src/commands/share.ts"
+    },
+    "setup": {
+      "parameters": "无 component 时进入首次配置向导，要求交互 TTY。可选 component 是 python 或 speech；`--check / -c` 只检查依赖，`--json` 输出结果，两者必须明确指定 component，不能用于无参数向导。",
+      "examples": "omp setup python --check --json",
+      "source": "packages/coding-agent/src/commands/setup.ts"
+    },
+    "shell": {
+      "parameters": "无必需位置参数；`--cwd / -C <目录>` 指定命令工作目录；`--timeout / -t N` 单条命令超时，单位毫秒；`--no-snapshot` 不加载用户 Shell 快照。它会打开可执行命令的交互控制台。",
+      "examples": "omp shell --cwd /path/to/project --timeout 30000",
+      "source": "packages/coding-agent/src/commands/shell.ts"
+    },
+    "read": {
+      "parameters": "`<path>` 必需，支持文件、URL、内部 URI；路径末尾 `:50-100` 读取行段，`:raw` 使用原始模式。还支持归档成员等 read 工具路径形式；URL 会触发网络读取。",
+      "examples": "omp read ./src/top.v:1-80",
+      "source": "packages/coding-agent/src/commands/read.ts"
+    },
+    "render": {
+      "parameters": "`[session]` 接受会话路径或 ID 前缀，省略时使用当前目录最近会话；`--width / -w N` 和 `--height N` 指定列/行，默认终端尺寸；`--plain` 去 ANSI；`--timing / -t` 输出计时；`--repaint N` 重绘测试；`--quiet / -q` 不打印正文。",
+      "examples": "omp render --width 100 --plain",
+      "source": "packages/coding-agent/src/commands/render.ts"
+    },
+    "ssh": {
+      "parameters": "`[action] [targets…]` 支持 add/remove/list；add 的 `--host <地址>` 指定主机，`--user`、`--port`、`--key <路径>` 指定连接参数；`--scope project/user` 控制配置作用域；`--desc` 描述；`--compat` 兼容模式；`--json` 输出。",
+      "examples": "omp ssh list --json",
+      "source": "packages/coding-agent/src/commands/ssh.ts"
+    },
+    "stats": {
+      "parameters": "无位置参数；`--summary / -s` 只在控制台输出摘要，`--json / -j` 输出数据；不使用这两个选项时启动统计仪表盘，`--host` 默认 127.0.0.1，`--port / -p` 默认 3847。",
+      "examples": "omp stats --summary",
+      "source": "packages/coding-agent/src/commands/stats.ts"
+    },
+    "sync-claude": {
+      "parameters": "读取 `~/.claude/settings.json` 的 `env.ANTHROPIC_BASE_URL` 和 `env.ANTHROPIC_AUTH_TOKEN`，同步到当前 OMP profile 的模型配置；`--provider <ID>` 在多个 Anthropic 兼容 provider 中指定更新对象。不接收团队仓库路径，不等同于 `scripts/sync.py`。",
+      "examples": "omp sync-claude --provider team-anthropic",
+      "source": "packages/coding-agent/src/commands/sync-claude.ts"
+    },
+    "update": {
+      "parameters": "`--check / -c` 只查询、不安装；`--force / -f` 强制更新；`--plugins / -l` 更新插件；`--canary` 切至 canary，`--stable` 切回 stable。它是在线客户端更新，不应替代红区离线同步。",
+      "examples": "omp update --check",
+      "source": "packages/coding-agent/src/commands/update.ts"
+    },
+    "usage": {
+      "parameters": "无 action 时显示当前用量；可用 action 为 invalidate、clients。`--provider / -p <ID>` 筛服务商；`--json / -j` 输出；`--redact / -r` 缩写账户标识；`--history` 查看历史；`--days / -d N` 历史或 clients 窗口默认 7 天。",
+      "examples": "omp usage --history --days 7 --redact --json",
+      "source": "packages/coding-agent/src/commands/usage.ts"
+    },
+    "tiny-models": {
+      "parameters": "`[action] [model]` 支持 download/list；model 为本地小模型键或 all；`--json` 输出。默认 download 会联网下载，离线检查请显式使用 list。",
+      "examples": "omp tiny-models list --json",
+      "source": "packages/coding-agent/src/commands/tiny-models.ts"
+    },
+    "token": {
+      "parameters": "`<provider>` 必需；`--account / -a N` 按存储顺序选择 OAuth 账户，从 1 开始，默认轮转；`--list / -l` 列账户身份后退出；`--force-refresh` 强制刷新；`--raw` 输出未拆解的凭据。普通调用会输出敏感 token，示例只列账户且不保存实际结果。",
+      "examples": "omp token anthropic --list",
+      "source": "packages/coding-agent/src/commands/token.ts"
+    },
+    "ttsr": {
+      "parameters": "`[action] [snippet]`：list 查看规则，test 检查文本，scan 的第二参数是目录；test 的 `--file <路径或->` 从文件/标准输入取文本；`--rule / -r <Markdown>` 独立测一条规则；`--source text/thinking/tool` 指定来源；`--path / -p` 指定候选路径；`--tool` 默认 edit，`--agent` 默认 main；`--json` 输出。",
+      "examples": "omp ttsr list --json",
+      "source": "packages/coding-agent/src/commands/ttsr.ts"
+    },
+    "worktree": {
+      "parameters": "`[action] [path] [commit]` 默认 list，另有 add/clear；add 的 `--cwd / -C` 指仓库，`--branch / -b` 新建分支，`--force-branch / -B` 新建或重置分支，两者互斥；`--detach / -d` 分离 HEAD；clear 的 `--dry-run / -n` 只预览，`--all` 包括活动 PR 工作树；`--json / -j` 输出。",
+      "examples": "omp worktree list --json\nomp worktree clear --dry-run",
+      "source": "packages/coding-agent/src/commands/worktree.ts"
+    },
+    "search": {
+      "parameters": "`[query…]` 为查询文本；`--provider <提供方>` 选择 Web 搜索服务；`--recency day/week/month/year` 筛时间；`--limit / -l N` 限结果数；`--compact` 紧凑输出。这里是联网 Web 搜索，不是本地 Wiki 查询。",
+      "examples": "omp search \"IEEE scan test overview\" --limit 5 --compact",
+      "source": "packages/coding-agent/src/commands/web-search.ts"
+    }
+  }
+}

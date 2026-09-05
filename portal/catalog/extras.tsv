@@ -1,0 +1,4 @@
+name	purpose	scenario	effects	example
+init	根据项目创建或完善 Agent 上下文说明	首次为目标仓库建立工作说明	生成或更新项目上下文文件	/init
+review	启动交互式代码审查	选择改动或提交范围进行审阅	读取本地或远端差异，调用审查模型	/review
+green	生成持续处理 CI 失败的任务提示	明确要求推进分支 CI 到通过	可能修复文件、提交和推送并访问 GitHub	/green

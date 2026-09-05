@@ -1,0 +1,32 @@
+<section class="dft-lab" id="clocks-at-speed-lab" data-lab="clocks-at-speed" aria-label="At-speed LOC 与 LOS 时序实验">
+  <div class="lab-header"><span class="demo-tag">LAB / AT-SPEED</span><strong>让转换在捕获沿之前稳定下来</strong></div>
+  <div class="lab-controls">
+    <label>方式 <select data-field="mode" disabled><option value="LOC">LOC · launch-on-capture</option><option value="LOS">LOS · launch-on-shift</option></select></label>
+    <label>路径延迟 <input data-field="path" type="number" value="6.5" min="0" step="0.5" disabled> ns</label>
+    <label>时钟周期 <input data-field="period" type="number" value="10" min="1" step="1" disabled> ns</label>
+    <label>SE 关闭延迟 <input data-field="se-low" type="number" value="0.2" min="0" step="0.1" disabled> ns</label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 220" role="img" aria-labelledby="at-speed-title at-speed-desc">
+      <title id="at-speed-title">launch 与 capture 时钟沿及路径延迟</title>
+      <desc id="at-speed-desc">转换从 launch 沿出发，经过组合逻辑后必须在 capture 沿前稳定。</desc>
+      <line x1="55" y1="150" x2="750" y2="150" class="lab-axis"/>
+      <path d="M70 150V95H160V150M370 150V95H460V150" class="lab-clock"/>
+      <path d="M70 75H160M370 75H460" class="lab-clock"/>
+      <text x="90" y="48" class="lab-label">launch</text><text x="390" y="48" class="lab-label">capture</text>
+      <path data-visual="path" d="M160 120 C225 75, 295 75, 370 120" class="lab-path"/>
+      <rect x="215" y="88" width="120" height="45" rx="7" class="lab-box"/><text x="275" y="115" text-anchor="middle" class="lab-label">组合路径</text>
+      <path d="M160 185H370" class="lab-window"/><text x="265" y="207" text-anchor="middle" class="lab-small">可用捕获窗口 = 周期 − 建立裕量</text>
+      <circle data-visual="launch" cx="160" cy="120" r="6" class="lab-dot"/><circle data-visual="arrival" cx="295" cy="120" r="6" class="lab-dot lab-arrival"/><circle data-visual="capture" cx="370" cy="120" r="6" class="lab-dot"/>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>路径到达</small><strong data-readout="arrival">—</strong></div>
+    <div><small>剩余裕量</small><strong data-readout="slack">—</strong></div>
+    <div><small>实验判断</small><strong data-readout="result">—</strong></div>
+    <div><small>事件序列</small><strong data-readout="events">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可调整路径延迟，观察采样窗口如何变化。</p>
+  <noscript><p>本实验需要 JavaScript 才能计算参数。概念仍然成立：launch 发起转换，路径延迟加时钟偏斜后必须在 capture 前满足建立时间。</p></noscript>
+</section>

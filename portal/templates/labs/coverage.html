@@ -1,0 +1,14 @@
+<section class="dft-lab" id="coverage-lab" data-lab="faults-coverage" aria-label="覆盖率口径互动实验">
+  <header class="lab-header"><span class="demo-tag">LAB 02 / COVERAGE</span><div><h3>同一组故障，两个分母</h3><p>切换报告口径，观察 detected、untestable 和 aborted 如何改变百分比。</p></div></header>
+  <div class="lab-controls">
+    <label>统计口径 <select data-coverage-setting disabled><option value="all">全目标检测比例</option><option value="excluding-untestable">排除已证明不可测</option></select></label>
+    <button type="button" data-action="coverage-run" disabled>重新计算</button><button type="button" data-action="coverage-reset" disabled>恢复示例</button>
+  </div>
+  <div class="lab-stage coverage-stage">
+    <div class="coverage-bars" aria-label="故障状态计数"><div><span class="bar detected" data-bar="detected"></span><b>detected</b><strong data-count="detected">—</strong></div><div><span class="bar not-detected" data-bar="not-detected"></span><b>not-detected</b><strong data-count="not-detected">—</strong></div><div><span class="bar untestable" data-bar="untestable"></span><b>untestable</b><strong data-count="untestable">—</strong></div><div><span class="bar aborted" data-bar="aborted"></span><b>aborted</b><strong data-count="aborted">—</strong></div></div>
+    <div class="coverage-equation"><span data-field="formula">等待计算</span><strong data-field="percentage">—</strong><small data-field="denominator">—</small></div>
+  </div>
+  <div class="lab-readouts" aria-live="polite"><div><small>目标列表</small><strong data-field="total">—</strong></div><div><small>已检测</small><strong data-field="detected">—</strong></div><div><small>分母</small><strong data-field="denom-count">—</strong></div><div><small>本例结果</small><strong data-field="coverage-result">—</strong></div></div>
+  <p class="lab-explanation" data-field="explanation">覆盖率必须连同故障状态计数、分母和工具口径一起阅读；aborted 是未解决状态，不能当作已证明不可测而排除。</p>
+  <noscript><p>本实验需要 JavaScript 计算示例。静态理解：全目标检测比例的分母保留所有状态；第二种口径只排除已证明不可测，aborted 仍留在分母。</p></noscript>
+</section>

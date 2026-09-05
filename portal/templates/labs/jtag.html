@@ -1,0 +1,55 @@
+<section class="container dft-lab" id="jtag-lab" data-lab="access-jtag" aria-labelledby="jtag-lab-title">
+  <header class="lab-header">
+    <p class="lab-kicker">ACCESS LAB · 01</p>
+    <h2 id="jtag-lab-title">TAP 状态机与 Boundary Scan</h2>
+    <p>用 TMS 逐拍走过 IEEE 1149.1 的 16 个 TAP 状态，再选择一条指令观察 IR/DR 数据路径。示例只模拟数字路径与引脚比较，不代表某家芯片的真实 BSDL 或 ATE 波形。</p>
+  </header>
+  <div class="lab-controls" role="group" aria-label="JTAG 控制">
+    <button type="button" data-access-action="reset" disabled>复位到 Test-Logic-Reset</button>
+    <label>TDI <select data-access-setting="tdi" disabled><option value="0">0</option><option value="1" selected>1</option></select></label>
+    <button type="button" data-access-action="tms0" disabled>送入 TMS=0（打一拍）</button>
+    <button type="button" data-access-action="tms1" disabled>送入 TMS=1（打一拍）</button>
+    <label>待加载指令 <select data-access-setting="instruction" disabled><option value="BYPASS">BYPASS</option><option value="EXTEST">EXTEST</option><option value="SAMPLE">SAMPLE</option></select></label>
+    <button type="button" data-access-action="load-instruction" disabled>生成 IR 序列并更新</button>
+    <label>引脚刺激 <select data-access-setting="pin-stimulus" disabled><option value="0">驱动 0</option><option value="1">驱动 1</option></select></label>
+    <label>连线故障 <select data-access-setting="pin-fault" disabled><option value="none">正常</option><option value="open">开路：固定读 0</option><option value="short">短路：固定读 1</option></select></label>
+    <button type="button" data-access-action="pin-test" disabled>执行引脚测试</button>
+  </div>
+  <div class="lab-stage" aria-live="polite">
+    <div class="lab-tap-map" role="group" aria-label="TAP 十六状态与 TMS 分支，选择节点只查看说明">
+      <div class="tap-node" data-tap-state="Test-Logic-Reset">T-L-R</div>
+      <div class="tap-node" data-tap-state="Run-Test/Idle">Run / Idle</div>
+      <div class="tap-node" data-tap-state="Select-DR-Scan">Select DR</div>
+      <div class="tap-node" data-tap-state="Capture-DR">Capture DR</div>
+      <div class="tap-node" data-tap-state="Shift-DR">Shift DR</div>
+      <div class="tap-node" data-tap-state="Exit1-DR">Exit1 DR</div>
+      <div class="tap-node" data-tap-state="Pause-DR">Pause DR</div>
+      <div class="tap-node" data-tap-state="Exit2-DR">Exit2 DR</div>
+      <div class="tap-node" data-tap-state="Update-DR">Update DR</div>
+      <div class="tap-node" data-tap-state="Select-IR-Scan">Select IR</div>
+      <div class="tap-node" data-tap-state="Capture-IR">Capture IR</div>
+      <div class="tap-node" data-tap-state="Shift-IR">Shift IR</div>
+      <div class="tap-node" data-tap-state="Exit1-IR">Exit1 IR</div>
+      <div class="tap-node" data-tap-state="Pause-IR">Pause IR</div>
+      <div class="tap-node" data-tap-state="Exit2-IR">Exit2 IR</div>
+      <div class="tap-node" data-tap-state="Update-IR">Update IR</div>
+    </div>
+    <div class="lab-wire-card">
+      <div class="lab-flow"><span>TDI</span><i data-access-field="tdi">1</i><b>→</b><span data-access-field="active-path">—</span><b>→</b><i data-access-field="tdo">—</i><span>TDO 本拍采出</span></div>
+      <div class="lab-register"><span>当前 TAP 状态</span><strong data-access-field="state">Test-Logic-Reset</strong></div>
+      <div class="lab-register"><span>IR / 已选指令</span><strong data-access-field="instruction">BYPASS</strong></div>
+      <div class="lab-register"><span>引脚比较（期望 / 实际）</span><strong data-access-field="pin-result">尚未执行</strong></div>
+    </div>
+  </div>
+  <div class="lab-readouts" aria-label="JTAG 读数">
+    <div><small>所选 TCK 拍（每拍含 ↑/↓）</small><strong data-access-field="cycles">0</strong></div>
+    <div><small>当前扫描位</small><strong data-access-field="scan-bits">—</strong></div>
+    <div><small>下一步提示</small><strong data-access-field="hint">保持 TMS=1 可回到复位</strong></div>
+  </div>
+  <p class="access-node-detail" data-access-field="node-detail" aria-live="polite">点击 TAP 节点查看两个 TMS 分支和动作含义，不改变当前 TAP 状态。</p>
+  <div class="access-history-heading"><strong>TCK 逐拍记录</strong><button type="button" data-access-action="latest" disabled>返回最新状态</button></div>
+  <p class="access-view-status" data-access-field="view-status" aria-live="polite">每拍记录前后状态、TDI、采出的 TDO、移位位与下降沿提交。</p>
+  <div class="access-history-scroll" tabindex="0" aria-label="TCK 历史记录，可横向滚动"><table><caption>IR/DR 位序从 TDO 端到 TDI 端；TDO 为本拍采出位，不模拟器件引脚建立保持时间。</caption><thead><tr><th scope="col">TCK 拍</th><th scope="col">TMS</th><th scope="col">TDI</th><th scope="col">TDO 采出</th><th scope="col">↑ 状态迁移</th><th scope="col">移位位前 → 后</th><th scope="col">指令前 → 后</th><th scope="col">↓ 提交</th></tr></thead><tbody data-tck-history></tbody></table></div>
+  <p class="lab-explanation" data-access-field="explanation">TAP 上电后通常从 Test-Logic-Reset 开始。每个 TCK 上升沿采样 TMS，并按状态表选择下一状态；这里先按 TMS=0 进入 Run-Test/Idle。</p>
+  <noscript><p>启用 JavaScript 后可逐拍操作 TMS。静态阅读顺序：Test-Logic-Reset → Run-Test/Idle → Select-DR/IR-Scan → Capture → Shift → Exit → Pause/Update。BYPASS 只经过一位旁路寄存器；EXTEST 驱动外部引脚，SAMPLE 观察引脚。</p></noscript>
+</section>

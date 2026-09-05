@@ -1,0 +1,32 @@
+<section class="dft-demo dft-lab" id="memory-bist-lab" data-lab="bist-memory" aria-label="MBIST、BIRA 与 BISR 内存测试演示">
+  <div class="lab-header demo-heading"><span class="demo-tag">03 / MEMORY TEST</span><strong>一条失败地址，如何经过测试、分析和修复</strong></div>
+  <div class="lab-controls demo-controls">
+    <button type="button" data-action="step" disabled>单步</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <button type="button" data-action="analyze" disabled>执行 BIRA</button>
+    <button type="button" data-action="repair" disabled>加载 BISR</button>
+    <button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <label>故障注入 <select data-setting="fault" disabled><option value="stuck1">地址 3：stuck-at-1</option><option value="two">地址 3、6：两个 stuck-at-1</option><option value="none">无故障</option></select></label>
+  </div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备运行 March</span><span>步骤 <b data-field="cursor">0</b> / <b data-field="total">48</b></span><span>地址 <b data-field="address">—</b></span></div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 438" role="img" aria-labelledby="memory-bist-title memory-bist-desc">
+      <title id="memory-bist-title">MBIST 访问八行内存，BIRA 分配一条冗余行，BISR 加载映射</title>
+      <desc id="memory-bist-desc">左侧测试控制器向八行内存执行读写，中部显示失败地址，右侧显示一条备用行和修复映射。</desc>
+      <defs><marker id="bist-memory-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <rect x="22" y="44" width="154" height="96" rx="10" class="logic-box"/><text x="99" y="78" text-anchor="middle" class="pin-label">MBIST 控制器</text><text x="99" y="103" text-anchor="middle" class="tiny-label">March R / W</text><text x="99" y="124" text-anchor="middle" class="tiny-label" data-field="operation">等待操作</text>
+      <path d="M176 91H222" class="wire" marker-end="url(#bist-memory-arrow)"/><text x="182" y="78" class="tiny-label">地址 + 数据</text>
+      <rect x="226" y="20" width="258" height="370" rx="12" class="logic-box"/><text x="355" y="47" text-anchor="middle" class="pin-label">8 × 1 bit memory</text>
+      {% for i in range(8) %}<g data-row="{{ i }}"><text x="246" y="84" class="tiny-label">A{{ i }}</text><rect x="275" y="63" width="102" height="35" rx="5" class="ff-box"/><text x="292" y="86" class="tiny-label">逻辑</text><text x="350" y="88" text-anchor="middle" class="bit" data-row-value="{{ i }}">0</text><path d="M378 80H414" class="wire"/><rect x="417" y="63" width="45" height="35" rx="5" class="mux-box"/><text x="439" y="87" text-anchor="middle" class="tiny-label" data-row-map="{{ i }}">—</text></g>{% endfor %}
+      <text x="470" y="407" text-anchor="end" class="tiny-label">左：逻辑行　右：物理 / spare 映射</text>
+      <path d="M484 92H523" class="wire" marker-end="url(#bist-memory-arrow)"/><rect x="526" y="45" width="118" height="95" rx="10" class="logic-box"/><text x="585" y="78" text-anchor="middle" class="pin-label">BIRA</text><text x="585" y="102" text-anchor="middle" class="tiny-label">失败地址分析</text><text x="585" y="123" text-anchor="middle" class="tiny-label" data-field="failures">尚无失败</text>
+      <path d="M644 92H678" class="wire" marker-end="url(#bist-memory-arrow)"/><rect x="681" y="45" width="96" height="95" rx="10" class="logic-box"/><text x="729" y="78" text-anchor="middle" class="pin-label">BISR</text><text x="729" y="101" text-anchor="middle" class="tiny-label">加载映射</text><text x="729" y="123" text-anchor="middle" class="tiny-label" data-field="mapping">—</text>
+      <rect x="526" y="184" width="251" height="94" rx="10" class="logic-box"/><text x="651" y="213" text-anchor="middle" class="pin-label">spare row · 1 条资源</text><text x="651" y="240" text-anchor="middle" class="bit" data-field="spare">SPARE 0</text><text x="651" y="262" text-anchor="middle" class="tiny-label" data-field="resource">未分配</text>
+      <path d="M526 231H484" class="wire" marker-end="url(#bist-memory-arrow)"/><text x="488" y="218" class="tiny-label">验证重定向</text>
+      <text x="22" y="424" class="tiny-label">教学模型：读回值与期望值比较；只有验证阶段通过才显示修复有效。</text>
+    </svg>
+  </div>
+  <div class="lab-readouts demo-readouts"><div><small>当前读回 / 期望</small><strong data-field="readout">尚未执行</strong></div><div><small>失败地址</small><strong data-field="failure-list">—</strong></div><div><small>验证结果</small><strong data-field="result">尚未验证</strong></div></div>
+  <p class="lab-explanation demo-explanation" data-field="explanation">先运行 MBIST 的已知 March 序列。发现失败后，再分别执行 BIRA 资源分配和 BISR 映射加载。</p>
+  <noscript><p>动画需要 JavaScript；静态图仍展示 MBIST 控制器、8 行内存、BIRA 失败分析、spare row 与 BISR 映射的关系。实际芯片的修复信息可能写入 eFuse/OTP，本页不操作真实熔丝。</p></noscript>
+</section>

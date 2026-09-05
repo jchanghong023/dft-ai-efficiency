@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>内置工具 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a class="active" aria-current="page" href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="_1">内置工具</h1>
+<p>工具由 Agent 按本会话 schema 调用，不能把 <code>wiki</code> 或 <code>task</code> JSON 当作 Shell 命令。<code>/tools</code> 显示当前实际可见工具；模式、启动参数和本地依赖可能使某些工具不可用。</p>
+<h2 id="_2">文件与代码</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>典型场景 / 输入</th>
+<th>输出与状态影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>read</td>
+<td>读取文件或资源</td>
+<td>读取指定路径、行段、内部 URI</td>
+<td>内容及位置；URL 可联网</td>
+</tr>
+<tr>
+<td>grep</td>
+<td>文本检索</td>
+<td>用信号名、函数名、错误消息限制目录检索</td>
+<td>命中路径和行；只读</td>
+</tr>
+<tr>
+<td>glob</td>
+<td>按模式找文件</td>
+<td>查找 RTL、测试或配置文件</td>
+<td>路径列表；只读</td>
+</tr>
+<tr>
+<td>edit / write</td>
+<td>修改现有文件 / 写入文件</td>
+<td>已确定范围的实现与测试</td>
+<td>文件变更；需要核对 diff</td>
+</tr>
+<tr>
+<td>ast_grep / ast_edit</td>
+<td>语法结构检索 / 编辑</td>
+<td>避免纯文本替换误伤语法</td>
+<td>结构化命中 / 实际代码修改</td>
+</tr>
+<tr>
+<td>lsp</td>
+<td>语言服务</td>
+<td>定义、引用、诊断及重命名等操作</td>
+<td>查询可只读，重命名/格式化可改文件；需语言服务可用</td>
+</tr>
+<tr>
+<td>bash</td>
+<td>执行实际命令</td>
+<td>编译、UT、已有工具入口</td>
+<td>退出码与输出；可能修改文件或运行进程</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="wiki">Wiki：先检索，再读证据</h2>
+<p><code>wiki</code> 读取本机 <code>docs.db</code> 中的索引。公共包不携带公司数据库。FTS 模式仅支持 <code>search</code>、<code>read</code> 和 <code>status</code>；结构化索引还可使用 <code>lookup</code>、<code>relations</code>、<code>conflicts</code>。多个索引并存时查询需指定 <code>index</code>。</p>
+<p>Agent 工具参数示意（索引名须替换为本机真实名称）：</p>
+<pre><code class="language-json">{&quot;op&quot;:&quot;search&quot;,&quot;index&quot;:&quot;team-docs&quot;,&quot;query&quot;:&quot;dft_lgc_rst_n&quot;,&quot;limit&quot;:10}
+</code></pre>
+<p>命中结果含索引、section/evidence 标识和源文件位置。使用返回的标识 <code>read</code>，再从团队上下文中的实际原文目录核对接口和周边约束。FTS 命中不等于语义已证实；不可因零结果编造工具选项。</p>
+<h2 id="task">Task：按职责委派</h2>
+<p><code>task</code> 默认一次调用启动一个 Agent；批量形状只有启用 <code>task.batch</code> 时使用。常用输入是 <code>agent</code> 与 <code>task</code>，必要时传递已有调查摘要。不要照搬其他产品的子 Agent schema。</p>
+<pre><code class="language-json">{&quot;agent&quot;:&quot;document-worker&quot;,&quot;task&quot;:&quot;只读定位当前模块复位约束，返回代码和文档位置及已有测试入口&quot;}
+</code></pre>
+<p>返回的任务结果和日志并不保证成功，应核对退出状态、实际文件和测试证据。仅在独立工作能受益时并行，依赖调查结果的实现与验证顺序执行。参阅<a href="team.html">团队公共能力</a>与<a href="agents.html">内置 Agent</a>。</p>
+<h2 id="_3">其他能力</h2>
+<p><code>eval</code> 提供编程式工具编排；<code>web_search</code> 用于可联网的公开资料；<code>todo</code> 管理任务清单；<code>hub</code> 管理运行中的 Agent/后台工作；<code>security_scan</code> 运行原生安全扫描。只读意图不等于工具隔离，特别是 Shell、eval、hub 和有编辑操作的语言服务。</p>
+<p>以下为该版工具工厂清单；部分工具按配置动态启用，隐藏工具只在相应模式暴露：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+<th>注册类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read</code></td>
+<td>读取文件、URL 和内部资源；检查引用原文</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>security_scan</code></td>
+<td>运行安全扫描及返回证据；会写扫描数据</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>bash</code></td>
+<td>执行 Shell 命令、编译和测试；可改变文件与进程</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>edit</code></td>
+<td>对现有文件执行局部修改</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>ast_grep</code></td>
+<td>按语法结构查找代码</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>ast_edit</code></td>
+<td>按语法结构修改代码</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>ask</code></td>
+<td>向用户请求缺少的信息或选择</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td>诊断 Agent 或工具运行问题；按启用条件提供</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>eval</code></td>
+<td>通过持久执行环境编排工具调用；可产生实际读写</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>github</code></td>
+<td>访问 GitHub 操作入口；取决于实际操作与授权</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>glob</code></td>
+<td>按路径模式查找文件</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>grep</code></td>
+<td>按文本模式检索指定内容</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>lsp</code></td>
+<td>查询语言服务或执行重命名等代码动作；需对应服务</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>wiki</code></td>
+<td>检索和读取本地 Markdown 索引</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td>创建会话上下文检查点；按配置提供</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>rewind</code></td>
+<td>恢复上下文检查点；不是通用 Git 回退</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>task</code></td>
+<td>按 Agent 定义委派任务；可执行代码修改</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>hub</code></td>
+<td>管理 Agent 与运行中工作；控制动作可改变进程</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>todo</code></td>
+<td>维护本会话待办清单</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>web_search</code></td>
+<td>检索外网公开资料；需要可用搜索服务</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td>创建或覆盖指定文件</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>memory_edit</code></td>
+<td>编辑记忆数据</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>retain</code></td>
+<td>保留后续可能需要的记忆信息</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>recall</code></td>
+<td>查找已有记忆</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>reflect</code></td>
+<td>反思和检索相关记忆上下文</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>learn</code></td>
+<td>学习可复用的任务经验；按配置维护记忆</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>manage_skill</code></td>
+<td>管理学习生成的 Skill；可能写入技能文件</td>
+<td>内置 / 可按条件启用</td>
+</tr>
+<tr>
+<td><code>think</code></td>
+<td>隐藏思考工具，仅特定模式提供</td>
+<td>隐藏 / 按模式启用</td>
+</tr>
+<tr>
+<td><code>yield</code></td>
+<td>让出控制或等待任务；按会话模式提供</td>
+<td>隐藏 / 按模式启用</td>
+</tr>
+<tr>
+<td><code>goal</code></td>
+<td>隐藏的持续目标管理工具；仅 goal 模式提供</td>
+<td>隐藏 / 按模式启用</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/tools/index.ts">工具工厂</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/tools/wiki.ts">Wiki schema</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/task/index.ts">Task 实现</a>。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_2">文件与代码</a></li>
+<li><a href="#wiki">Wiki：先检索，再读证据</a></li>
+<li><a href="#task">Task：按职责委派</a></li>
+<li><a href="#_3">其他能力</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

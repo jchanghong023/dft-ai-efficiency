@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>场景使用指南 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a class="active" aria-current="page" href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="_1">场景使用指南</h1>
+<p>已经完成安装同步，接下来怎样用 OMP 做开发？从启动和一个简单任务开始，再按任务需要选择模型、计划或并发分工。本页只讲 OMP 与当前 fork 自带的日常能力；完整参数可查 <a href="cli.html">CLI 与 TUI</a> 和<a href="commands.html">内置命令</a>。尚未安装请先看<a href="quickstart.html">快速开始</a>。</p>
+<p><strong>先分清输入位置：</strong> 标注“终端”的 <code>omp ...</code> 在 Linux Shell 中运行；标注“OMP 输入框”的 <code>/...</code> 和自然语言在启动后的 OMP 中输入。每个代码块是一次独立输入；示例项目路径、文件名、功能和模型名请换成自己的。</p>
+<p><strong>常用操作优先按快捷键，fork 键位以 <a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md">fork.md</a> 为准。</strong> 下表在 OMP 主输入框中使用；按下组合键即可，不要把键名输入或粘贴进去。键位被个人配置修改、或终端拦截时，用 <code>/hotkeys</code> 查看当前绑定。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>想做什么</th>
+<th>默认快捷键</th>
+<th>接下来怎么做</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>切换当前模型</td>
+<td><strong>Ctrl+T</strong></td>
+<td>输入模型名筛选，↑／↓ 选择，Enter 确认</td>
+</tr>
+<tr>
+<td>配置 slow、Advisor 等模型角色</td>
+<td><strong>Alt+M</strong></td>
+<td>打开模型中心，选择角色与模型</td>
+</tr>
+<tr>
+<td>在常用模型间轮换</td>
+<td><strong>Ctrl+P</strong></td>
+<td>按轮换列表切换，查看状态栏确认当前模型</td>
+</tr>
+<tr>
+<td>切换 Plan 模式状态</td>
+<td><strong>Shift+Tab</strong></td>
+<td>依次开启、暂停、关闭；看状态栏确认</td>
+</tr>
+<tr>
+<td>切换 Main／Discuss</td>
+<td><strong>Ctrl+0</strong></td>
+<td>空闲时切换；讨论用 Discuss，实施切回 Main</td>
+</tr>
+<tr>
+<td>显示或隐藏思考内容</td>
+<td><strong>Alt+P</strong></td>
+<td>只改变 thinking blocks 的显示，不改变推理强度</td>
+</tr>
+<tr>
+<td>调整推理强度</td>
+<td><strong>Alt+,</strong>（Alt 加逗号）</td>
+<td>循环切换 thinking level，查看状态栏确认档位</td>
+</tr>
+<tr>
+<td>查看 Agent 工作情况</td>
+<td><strong>Alt+A</strong></td>
+<td>打开 Agent Hub 查看任务和状态</td>
+</tr>
+<tr>
+<td>展开工具调用详情</td>
+<td><strong>Ctrl+O</strong></td>
+<td>阅读执行输出；再次按下收起</td>
+</tr>
+<tr>
+<td>打断当前执行</td>
+<td><strong>Esc</strong></td>
+<td>停止本轮，补充或纠正要求后继续</td>
+</tr>
+</tbody>
+</table></div>
+<p>没有默认快捷键的操作仍使用斜杠命令，例如 Vibe、Advisor 开关、压缩和新会话。</p>
+<h2 id="1-omp">1. 启动 OMP，或继续上次工作</h2>
+<p><strong>什么时候用：</strong> 第一次在一个代码仓工作，或中断后继续之前的任务。</p>
+<p>在<strong>终端</strong>进入目标代码仓再启动：</p>
+<pre><code class="language-bash">cd /path/to/your/project
+omp
+</code></pre>
+<p>如果提示找不到 <code>omp</code>，在同一终端运行 <code>~/.local/bin/omp</code>，或按<a href="quickstart.html">快速开始</a>设置当前 Shell 的 PATH。进入输入框后，先完成下一节的小任务。</p>
+<p>要继续这个目录最近的会话，在<strong>终端</strong>运行：</p>
+<pre><code class="language-bash">omp -c
+</code></pre>
+<p>有多个历史任务，需要自己选择时运行：</p>
+<pre><code class="language-bash">omp -r
+</code></pre>
+<p>选中会话恢复后，先让 OMP 核对工作现场。在 <strong>OMP 输入框</strong>输入：</p>
+<pre><code class="language-text">先检查当前分支和未提交改动，结合上次记录告诉我做到哪里、
+还有哪些步骤未完成，暂不修改文件。
+</code></pre>
+<p>确认恢复的是目标任务，再输入下一步要求。模型服务尚未配置或不可用时，进入<a href="config.html">常用配置</a>中的模型接入步骤。</p>
+<h2 id="2">2. 简单任务，直接说清楚要求</h2>
+<p><strong>什么时候用：</strong> 解释代码、局部小修改，或目标和验收条件都明确的任务。直接在 <strong>OMP 输入框</strong>输入自然语言即可。</p>
+<p>只想理解代码：</p>
+<pre><code class="language-text">只读解释当前项目的命令行入口：
+参数从哪里解析、如何调用主流程、出错时如何退出。
+引用实际文件和函数，不修改代码。
+</code></pre>
+<p>要做一个小功能：</p>
+<pre><code class="language-text">给当前命令行工具增加 --version 参数，输出项目已有版本号后正常退出。
+沿用现有参数解析方式，保留其他参数行为，补充相关测试并运行。
+完成后说明改了什么和验证结果。
+</code></pre>
+<p><strong>下一步：</strong> 阅读实际改动和测试结果；有遗漏就直接补充要求。如果 OMP 发现涉及多个模块或关键需求不明确，转到第 5 节先计划。</p>
+<h2 id="3-slow">3. 切换模型，配置 slow 角色</h2>
+<p><strong>什么时候用：</strong> 日常任务更换主模型，或为复杂推理准备一个更强的模型。</p>
+<p><strong>切换当前模型：</strong> 在 OMP 主输入框按 <strong>Ctrl+T</strong> → 输入模型名筛选 → 用 ↑／↓ 选中 → 按 Enter。查看状态栏确认模型已经改变，再提交任务。只想取消选择就按 Esc。</p>
+<p><strong>配置 slow 角色：</strong> 按 <strong>Alt+M</strong> 打开模型中心，选择需要的模型，按界面提示将它分配给 <code>slow</code> 角色并确认。<code>default</code> 用于默认主模型；<code>slow</code> 是供复杂任务调用的模型角色，不表示自动增加等待时间。为 <code>slow</code> 分配模型会保存角色配置，<strong>不会立即把当前主模型换成它</strong>。保存位置受模型角色的全局／项目设置控制。</p>
+<p>配置好以后，要在当前会话用这个模型，按 <strong>Ctrl+T</strong> 选择刚才分配的模型即可。常用角色已加入轮换列表时，也可在主输入框按 <strong>Ctrl+P</strong> 轮换，看到目标模型后停止。</p>
+<p><strong>下一步：</strong> 复杂步骤完成后，再按 <strong>Ctrl+T</strong> 选回日常模型。模型列表为空时，先按<a href="config.html">常用配置</a>接入模型服务。Ctrl+T 只切换本会话，Alt+M 中的角色分配则会保存配置。</p>
+<p>快捷键不可用时，<code>/switch</code> 打开会话模型选择器，<code>/model</code> 打开模型中心。使用不带参数的入口即可，无需手输模型 ID 或角色别名。</p>
+<h2 id="4-advisor">4. 启用 Advisor，让第二模型检查过程</h2>
+<p><strong>什么时候用：</strong> 希望开发过程中有另一个模型跟进主模型的工作，提示遗漏或问题。</p>
+<p>先在 OMP 主输入框按 <strong>Alt+M</strong>，为 <code>advisor</code> 角色选择一个已接入的模型。基础用法采用这个角色作为第二模型；若本机已有多 Advisor 配置，以状态页列出的实际模型为准。</p>
+<p>然后在 <strong>OMP 输入框</strong>启用：</p>
+<pre><code class="language-text">/advisor on
+</code></pre>
+<p>检查是否启动、使用哪个模型：</p>
+<pre><code class="language-text">/advisor status
+</code></pre>
+<p><strong>下一步：</strong> 状态正常后照常输入开发任务，关注 Advisor 对主流程的建议。如果显示未配置或模型不可用，按 <strong>Alt+M</strong> 检查 <code>advisor</code> 角色；更详细的配置入口是 <code>/advisor configure</code>。不需要时关闭：</p>
+<pre><code class="language-text">/advisor off
+</code></pre>
+<p>Advisor 会产生额外模型调用；它提供检查和建议，不代替测试或用户审阅。<code>on</code>、<code>off</code> 控制本会话，不会持久化修改 <code>advisor.enabled</code>。</p>
+<h2 id="5">5. 新功能较复杂，先澄清再计划</h2>
+<p><strong>什么时候用：</strong> 新功能涉及多个模块、接口或兼容性，或者还没想清楚具体需求。</p>
+<p>在普通会话的 OMP 主输入框按 <strong>Shift+Tab</strong>，确认进入 Plan 模式，再输入需求：</p>
+<pre><code class="language-text">为当前工具增加批量处理功能。
+先阅读现有单文件流程，向我澄清输入格式、失败处理、输出位置和兼容要求；
+再给出实现步骤和测试验收方案，暂不实施代码修改。
+</code></pre>
+<p><strong>接下来按顺序操作：</strong> 回答需求问题 → 阅读方案 → 补充遗漏 → 在计划审阅界面选择执行选项，开始实施。Plan 阶段先调查和形成方案，不直接修改项目代码。</p>
+<p>计划审阅界面关闭后，仍在 Plan 模式时可重新打开：</p>
+<pre><code class="language-text">/plan-review
+</code></pre>
+<p>方案还不完整就继续提出修改意见；执行完成后核对测试和交付结果。<strong>Shift+Tab 依次开启、暂停、关闭 Plan</strong>；已有计划草稿时，离开规划还会要求确认。看到 <code>Plan ⏸</code> 表示暂停，要完全退出需再按一次并确认状态栏不再显示 Plan。切换模式不等于批准计划，开始实施使用计划审阅界面的执行选项。快捷键不可用时，可用 <code>/plan</code> 切换模式。需要多路分工时，在需求或计划中明确可独立的工作项，执行阶段采用第 7 节的并发方式。</p>
+<h2 id="6-vibe-worker">6. Vibe 导演模式，持续指导多个 Worker</h2>
+<p><strong>什么时候用：</strong> 你希望主会话负责安排和检查工作，让持续存在的 Worker 负责调查、编码和运行测试，并可以不断给它们补充要求。</p>
+<p>先完成并退出 Plan 或 Goal 模式；<strong>Vibe 与活动或暂停中的 Plan／Goal 都不能同时使用</strong>。如果状态栏显示 <code>Plan ⏸</code>，再按一次 <strong>Shift+Tab</strong> 完全退出 Plan，然后在普通会话的 <strong>OMP 输入框</strong>输入：</p>
+<pre><code class="language-text">/vibe 按刚才确认的批量处理需求推进实现。
+把参数入口和核心处理拆成边界清楚的工作流，
+为各 Worker 说明负责范围、接口约束和验收要求；
+独立工作并行，结果汇总后检查实际改动和测试。
+</code></pre>
+<p>主会话进入导演模式，负责调度和读取结果；Worker 执行搜索、修改和构建。内置 <code>fast</code> Worker 默认使用 <code>@smol</code>，<code>good</code> Worker 默认使用 <code>@task</code>；可按 <strong>Alt+M</strong> 提前配置这两个角色，不要把 <code>good</code> 默认模型误认为 <code>@slow</code>。</p>
+<p>过程中直接在 <strong>OMP 输入框</strong>继续指导：</p>
+<pre><code class="language-text">补充要求：单个输入失败时继续处理其他输入，最终汇总失败清单。
+请把这个约束传达给相关 Worker，并核对相应测试。
+</code></pre>
+<p>查看进展时输入：</p>
+<pre><code class="language-text">列出各 Worker 当前负责的任务、状态和阻塞项，
+并区分已经验证的结果与尚未验证的结论。
+</code></pre>
+<p><strong>下一步：</strong> 待 Worker 完成并检查结果后，再输入 <code>/vibe</code> 退出。退出会取消仍在进行的 Worker 轮次并结束该模式的 Worker 会话；它不是让 Worker 留在后台继续工作的开关。</p>
+<h2 id="7">7. 大任务分工并发，减少单个上下文负担</h2>
+<p><strong>什么时候用：</strong> 一个任务含有多个可以独立调查或实施的工作项，全部放在主会话中容易累积大量细节。</p>
+<p>在 <strong>OMP 输入框</strong>使用 <code>/orchestrate</code>，把任务边界写清楚：</p>
+<pre><code class="language-text">/orchestrate 按已经确认的批量处理方案实施。
+先划分接口和文件边界，再把独立工作交给子代理并行完成：
+一个负责参数入口，一个负责核心批处理，
+一个只读检查边界用例和验收标准。
+每个子代理接收完整需求、负责范围和交付要求，避免同时修改同一文件。
+依赖前一步结果的工作按顺序推进，主会话整合后运行测试并总结。
+</code></pre>
+<p>子代理分别处理自己的上下文，主会话负责提供充分背景、协调接口和整合证据。无需手工调用 <code>task</code> 工具；可以让 OMP 按任务收益分配子代理。</p>
+<p>如果明确追求最快完成，并接受不限制模型资源成本，在 <strong>OMP 输入框</strong>使用：</p>
+<pre><code class="language-text">/fullsend 完成已确认的批量处理功能并验证。
+优先速度和经验证的质量，在独立工作上充分使用并发子代理，
+依赖项按顺序推进，最后汇总实际改动和测试结果。
+</code></pre>
+<p><strong>下一步：</strong> 按 <strong>Alt+A</strong> 打开 Agent Hub 查看工作情况；用 <code>/jobs</code> 可查询后台任务状态，也可直接要求汇总分工、阻塞项和验证结果。<code>/orchestrate</code> 强调多 Agent 编排；<code>/fullsend</code> 强调速度与验证质量，会按收益直接执行或委派，不保证开满并发，也不会自动修改并发上限。两者的提示效果受 <code>magicKeywords</code> 设置控制；复杂可编排工作流另见 <a href="command-workflowz.html"><code>/workflowz</code></a>。</p>
+<h2 id="8">8. 调整并发上限，或使用不设限模式</h2>
+<p><strong>什么时候用：</strong> 已有足够多的独立任务，希望调整同时运行的子代理数量。</p>
+<p>在<strong>终端</strong>查询并记下当前值：</p>
+<pre><code class="language-bash">omp config get task.maxConcurrency
+</code></pre>
+<p>需要提高到最多 16 个时运行：</p>
+<pre><code class="language-bash">omp config set task.maxConcurrency 16
+</code></pre>
+<p>需要允许尽可能多的独立子任务同时运行时，将上限设为 <code>0</code>：</p>
+<pre><code class="language-bash">omp config set task.maxConcurrency 0
+</code></pre>
+<p><code>0</code> 表示不设限；它不是启动 0 个，也不是固定启动某个“最大数量”。该版默认值为 <code>8</code>。实际并发仍取决于任务能否拆分、模型服务限额和机器资源；提高上限也不保证任务更快。</p>
+<p><strong>下一步：</strong> 这些命令会持久化个人配置。设置后重新启动 OMP，再提交上一节的分工任务；也可在会话内用 <code>/settings</code> 的 Subagents → Max Concurrent Tasks 调整。若项目或启动覆盖层设置了同名值，需查询有效值并检查对应覆盖层。</p>
+<p>任务结束后，如要恢复本次修改前的值，在<strong>终端</strong>将 <code>&lt;原值&gt;</code> 替换为刚才记下的数字：</p>
+<pre><code class="language-bash">omp config set task.maxConcurrency &lt;原值&gt;
+</code></pre>
+<p>仅当要恢复版本默认值时使用：</p>
+<pre><code class="language-bash">omp config reset task.maxConcurrency
+</code></pre>
+<h2 id="9">9. 遇到问题，先诊断或直接修复</h2>
+<p><strong>什么时候用：</strong> 程序报错、测试失败，或者想先知道根因而不修改代码。</p>
+<p>在 <strong>OMP 输入框</strong>给出复现条件和真实报错。先只读诊断：</p>
+<pre><code class="language-text">/jchdiagnose 批量处理遇到一个无效输入后提前退出，其余输入没有执行。
+请检查相关控制流和已有测试，定位根因并给出最小修复边界，暂不修改文件。
+</code></pre>
+<p>诊断结果确认后，要实施修复时输入：</p>
+<pre><code class="language-text">/jchfix 按刚才确认的根因修复批量处理提前退出的问题，
+保留单文件模式原有行为，补充回归测试并运行相关检查。
+</code></pre>
+<p>修复完成后独立验证：</p>
+<pre><code class="language-text">/jchverify uncommitted
+</code></pre>
+<p><strong>下一步：</strong> 按 <strong>Ctrl+O</strong> 展开工具执行输出，阅读验证证据；如果仍有失败，带着真实失败输出继续 <code>/jchfix</code>。<code>/jchverify</code> 验证当前未提交改动，不替你修复产品代码；测试可能生成临时输出。</p>
+<p>如果异常发生在 <strong>OMP 本身</strong>，例如界面或模型请求异常，使用 <code>/debug</code> 打开调试入口；如果 OMP 找不到某个工具，使用 <code>/tools</code> 检查实际可见工具。它们与项目代码的根因诊断用途不同，进一步排查见 <a href="faq.html">FAQ / 最佳实践</a>。</p>
+<h2 id="10">10. 生成单元测试，审查本次改动</h2>
+<p><strong>什么时候用：</strong> 功能已经实现，需要补齐测试，或交付前想再检查功能问题。</p>
+<p>直接在 <strong>OMP 输入框</strong>提出测试任务，无需先记住某个 Skill 名称：</p>
+<pre><code class="language-text">为当前项目的批量处理逻辑补充单元测试。
+先查看已有测试框架和目录约定，覆盖空输入、单个输入失败后继续处理、
+全部成功、全部失败及输出顺序。
+使用现有依赖和测试风格，不修改产品代码。
+运行相关测试，报告通过情况；发现实现问题时说明复现条件，不直接修复。
+</code></pre>
+<p><strong>下一步：</strong> 核对测试是否真的执行、是否覆盖需求，而不只检查有没有新增文件。缺少运行环境或依赖时，让 OMP 说明未执行项；有产品缺陷则按上一节进入修复。</p>
+<p>检查当前未提交改动中的功能问题，在 <strong>OMP 输入框</strong>输入：</p>
+<pre><code class="language-text">/jchfuncreview uncommitted
+</code></pre>
+<p>它进行只读功能审查；需要实际运行检查、收集交付证据时用 <code>/jchverify uncommitted</code>。审查与测试各提供一部分证据，可结合结果决定是否交付。团队预置的测试 Skill 操作另见<a href="team.html">团队能力</a>。</p>
+<h2 id="11">11. 长任务：压缩、交接或重新开始</h2>
+<p><strong>什么时候用：</strong> 对话很长、准备进入新阶段，或需要切换到一个无关任务。以下命令都在 <strong>OMP 输入框</strong>输入。</p>
+<p>先查看上下文占用：</p>
+<pre><code class="language-text">/context
+</code></pre>
+<p>同一任务还要继续，但历史细节太多时，保留约束并压缩：</p>
+<pre><code class="language-text">/compact soft 保留批量处理的接口约定、失败处理规则、
+已修改文件、测试结果和未完成事项。
+</code></pre>
+<p>阶段结束，想带着必要信息转入新会话时交接：</p>
+<pre><code class="language-text">/handoff 保留已确认方案、实现进度、关键文件、未通过的测试和下一步验收要求。
+</code></pre>
+<p>要开始完全无关的任务时：</p>
+<pre><code class="language-text">/new
+</code></pre>
+<p><strong>下一步：</strong> 压缩或交接后先核对关键约束是否保留，再继续任务。<code>/new</code> 创建新会话，不会删除或回滚代码；要恢复之前的工作，使用 <code>/resume</code> 或在终端运行 <code>omp -r</code>。</p>
+<h2 id="_2">版本与进一步查阅</h2>
+<p>本页依据手册参考版本 <strong>v18.1.9+fork.170</strong>；本机可用命令、模型和配置以实际安装为准。这里只精选常用操作，全量参考见<a href="commands.html">内置命令</a>，配置字段见<a href="config.html">常用配置</a>。</p>
+<p>核对依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/settings.md">模型与设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/modes/controllers/selector-controller.ts">模型角色选择实现</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/advisor-watchdog.md">Advisor</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/prompts/system/plan-mode-active.md">Plan 流程</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/vibe-mode.md">Vibe 模式</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/config/settings-schema.ts">并发设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/task/parallel.ts">并发调度实现</a>。</p>
+<p>快捷键首要依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/docs-zh-CN/fork.md">fork.md 的快捷键与状态栏、代理行为与 Discuss</a>。其中未列出的通用键位补充核对<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.10%2Bfork.172/packages/coding-agent/src/config/keybindings.ts">同版本键位定义</a>；本机自定义绑定以 <code>/hotkeys</code> 为准。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#1-omp">1. 启动 OMP，或继续上次工作</a></li>
+<li><a href="#2">2. 简单任务，直接说清楚要求</a></li>
+<li><a href="#3-slow">3. 切换模型，配置 slow 角色</a></li>
+<li><a href="#4-advisor">4. 启用 Advisor，让第二模型检查过程</a></li>
+<li><a href="#5">5. 新功能较复杂，先澄清再计划</a></li>
+<li><a href="#6-vibe-worker">6. Vibe 导演模式，持续指导多个 Worker</a></li>
+<li><a href="#7">7. 大任务分工并发，减少单个上下文负担</a></li>
+<li><a href="#8">8. 调整并发上限，或使用不设限模式</a></li>
+<li><a href="#9">9. 遇到问题，先诊断或直接修复</a></li>
+<li><a href="#10">10. 生成单元测试，审查本次改动</a></li>
+<li><a href="#11">11. 长任务：压缩、交接或重新开始</a></li>
+<li><a href="#_2">版本与进一步查阅</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

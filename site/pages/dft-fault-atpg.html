@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>故障模型与 ATPG · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a class="active" aria-current="page" href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="atpg">故障模型与 ATPG</h1>
+<section class="dft-lab" id="fault-atpg-lab" data-lab="faults-atpg" aria-label="故障模型与 ATPG 互动实验">
+  <header class="lab-header"><span class="demo-tag">LAB 01 / ATPG</span><div><h3>让一个故障变得可检测</h3><p>选择故障与输入模式，分开观察激活、传播和输出差异。</p></div></header>
+  <div class="lab-controls">
+    <label>故障模型 <select data-fault-setting disabled><option value="stuck-at-0">n1 stuck-at-0</option><option value="stuck-at-1">n1 stuck-at-1</option><option value="transition-rise">out transition-rise</option><option value="bridging">a / b bridging</option></select></label>
+    <label>输入模式 <select data-pattern-setting disabled><option value="10">a=1，b=0</option><option value="01">a=0，b=1</option><option value="11">a=1，b=1</option><option value="00">a=0，b=0</option></select></label>
+    <label>前一模式 <select data-previous-setting disabled><option value="00">a=0，b=0</option><option value="10">a=1，b=0</option><option value="01">a=0，b=1</option><option value="11">a=1，b=1</option></select></label>
+    <button type="button" data-action="run" disabled>运行模式</button><button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 760 248" role="img" aria-labelledby="fault-lab-title fault-lab-desc">
+      <title id="fault-lab-title">两输入逻辑电路和故障传播路径</title>
+      <desc id="fault-lab-desc">输入 a、b 经过 OR 与 AND，再由 XOR 产生输出 out。故障可能发生在 n1 或输入桥接。</desc>
+      <defs><marker id="fault-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <path d="M48 78H150M48 174H150M252 78H330M252 174H330M430 126H510M610 126H710" class="lab-wire" marker-end="url(#fault-arrow)"/>
+      <text x="28" y="70" class="lab-label">a</text><text x="28" y="166" class="lab-label">b</text>
+      <rect x="150" y="43" width="102" height="70" rx="10" class="lab-gate"/><text x="201" y="84" text-anchor="middle">OR</text><text x="201" y="101" text-anchor="middle" class="lab-small">n1 = a | b</text>
+      <rect x="150" y="139" width="102" height="70" rx="10" class="lab-gate"/><text x="201" y="180" text-anchor="middle">AND</text><text x="201" y="197" text-anchor="middle" class="lab-small">n2 = a &amp; b</text>
+      <path d="M330 78V126H350M330 174V126H350" class="lab-wire"/>
+      <rect x="350" y="91" width="80" height="70" rx="10" class="lab-gate lab-xor"/><text x="390" y="132" text-anchor="middle">XOR</text>
+      <rect x="510" y="91" width="100" height="70" rx="10" class="lab-observe"/><text x="560" y="125" text-anchor="middle">capture</text><text x="560" y="144" text-anchor="middle" class="lab-small">可观察点</text>
+      <text x="716" y="118" class="lab-label">out</text><text x="716" y="143" class="lab-bit" data-field="out">—</text>
+      <text x="260" y="30" class="lab-small" data-field="fault-badge">当前无注入</text>
+      <circle cx="302" cy="78" r="7" class="lab-node" data-node="n1"/><text x="302" y="67" text-anchor="middle" class="lab-small">n1</text>
+      <circle cx="302" cy="174" r="7" class="lab-node" data-node="n2"/><text x="302" y="202" text-anchor="middle" class="lab-small">n2</text>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite"><div><small>当前 / 前一模式</small><strong data-field="inputs">— / —</strong></div><div><small>激活</small><strong data-field="activated">尚未运行</strong></div><div><small>传播</small><strong data-field="propagated">尚未运行</strong></div><div><small>最终判定</small><strong data-field="result">尚未运行</strong></div></div>
+  <p class="lab-explanation" data-field="explanation">先选择一个故障、当前模式和前一模式。transition 故障是否激活取决于前一捕获值到当前捕获值的变化。</p>
+  <noscript><p>本实验需要 JavaScript 执行固定教学模型。即使没有脚本，也可根据图示理解：a、b 经 OR/AND/XOR 到达 capture；故障需先激活，再沿路径传播到 out。</p></noscript>
+</section>
+
+<p>ATPG（Automatic Test Pattern Generation，自动测试图形生成）不是“把随机 0/1 塞进扫描链”。它从一个明确的故障模型出发，寻找能够激活故障、传播差异并在可观测点捕获的测试模式；随后还要经过故障仿真、时序/功耗约束和 ATE 格式转换。</p>
+<h2 id="_1">先区分缺陷、故障模型与测试模式</h2>
+<ul>
+<li><strong>物理缺陷</strong>是制造过程中的开路、短路、参数偏差等真实原因。</li>
+<li><strong>故障模型</strong>是为了可计算而对缺陷的抽象，例如某个节点永久为 0 的 stuck-at-0。</li>
+<li><strong>测试模式</strong>是施加到输入、扫描寄存器、时钟和模式控制上的一组时序值。</li>
+<li><strong>检测</strong>意味着无故障模型与有故障模型在某个观测点产生可区分的响应，不等于已经定位物理缺陷。</li>
+</ul>
+<p>同一物理缺陷可能需要多个模型近似；一个模型被检测，也不表示所有相关缺陷都被检测。工具版本、库模型、约束和故障折叠规则都会影响故障列表。</p>
+<h2 id="_2">常见模型</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>抽象</th>
+<th>适合说明什么</th>
+<th>边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stuck-at-0/1</td>
+<td>节点恒为固定值</td>
+<td>逻辑值被永久拉低/拉高</td>
+<td>不描述延迟或电气强度</td>
+</tr>
+<tr>
+<td>transition rise/fall</td>
+<td>0→1 或 1→0 的转换受阻</td>
+<td>速度相关的时序缺陷</td>
+<td>需要 launch/capture 与时钟约束</td>
+</tr>
+<tr>
+<td>bridging</td>
+<td>两个网络发生耦合</td>
+<td>短路/桥接的逻辑后果</td>
+<td>具体行为取决于桥接模型与驱动关系</td>
+</tr>
+<tr>
+<td>path-delay</td>
+<td>一条路径的延迟超限</td>
+<td>路径级时序缺陷</td>
+<td>需要时序数据，不能只看静态逻辑</td>
+</tr>
+<tr>
+<td>cell-aware</td>
+<td>单元内部缺陷的模型</td>
+<td>标准单元内部开短路等</td>
+<td>依赖库/版图与专用模型</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="atpg_1">ATPG 的四个问题</h2>
+<ol>
+<li><strong>能否控制</strong>：把起点输入或扫描寄存器设成需要的值。</li>
+<li><strong>能否激活</strong>：让好电路在故障位置产生与故障值不同的值。</li>
+<li><strong>能否传播</strong>：沿逻辑路径把差异传到输出、扫描捕获寄存器或压缩器。</li>
+<li><strong>能否观察</strong>：在合法的 capture/shift 协议下读出差异。</li>
+</ol>
+<p>下面的小实验把这四步拆开显示。它是一个固定的教学组合电路，不是某个工艺库或 ATPG 工具的替代品。</p>
+<h2 id="_3">读懂实验结果</h2>
+<p>“未检测到”至少有两种含义：本次模式没有激活/传播该故障，或者故障在当前约束下不可测试。工具报告通常还会区分 aborted、untestable、possibly-detected 和因 X 值造成的未知结果；不能把它们都简单当作“通过”。</p>
+<p>实验选择的是单个模式和单个故障，按钮显示的 detected 只表示本例的输出可区分。真实 ATPG 还要生成模式集合，进行全故障列表仿真，并检查扫描规则、时钟、复位、X 处理、功耗和测试时间。</p>
+<h2 id="_4">常见误区</h2>
+<ul>
+<li><strong>随机模式多，不等于覆盖率高</strong>：难测故障可能需要特定控制/观察条件。</li>
+<li><strong>测试模式能跑，不等于硅片一定能测</strong>：ATE 时序、电压、负载、IR drop 和噪声仍需验证。</li>
+<li><strong>stuck-at 覆盖率高，不等于 transition 覆盖率高</strong>：二者的激励和捕获时序不同。</li>
+<li><strong>一个 failing pattern 不等于故障定位完成</strong>：诊断需要多模式响应、候选故障分析和物理证据。</li>
+</ul>
+<h2 id="_5">工程上如何读一条失败记录</h2>
+<p>先记录故障模型和实例路径，再确认模式是否满足测试协议；随后分别检查故障点的好/坏值、差异传播路径和最终 capture 位。若中间出现 X，应区分“未知掩盖了差异”和“逻辑上没有差异”。修复 DFT 约束后，必须重新生成或重新仿真模式，不应手工改一位后继续使用旧模式。</p>
+<p>对于 transition 故障，还要把 launch、capture 时钟沿、周期时间和时钟门控记录下来。只在低速 shift 阶段看到 0/1 正确，不能证明高速 capture 没有延迟故障。</p>
+<h2 id="_6">本实验的边界</h2>
+<p>实验固定了一个两输入组合电路和一个简化桥接模型；没有模拟扫描寄存器、X、时序延迟、功耗、约束传播或 ATE 电气条件。它展示“激活 → 传播 → 观察”的推理顺序，不能输出真实模式文件、覆盖率或 Sailor/商业工具插入结果。</p>
+<h2 id="_7">公开参考</h2>
+<p><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html">Synopsys TestMAX ATPG 官方介绍</a>列出 stuck-at、transition、bridging、path-delay、cell-aware 等模型及功耗感知模式生成能力。<a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT 官方介绍</a>说明 DFT 插入与 ATPG 是相互衔接而不是同一阶段。本文实验数值为独立构造的教学模型，不代表这些工具的运行结果。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-overview.html"><small>← 上一主题</small><strong>DFT 概念地图</strong></a><a href="../pages/dft-coverage.html"><small>下一主题 →</small><strong>覆盖率与测试质量</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">先区分缺陷、故障模型与测试模式</a></li>
+<li><a href="#_2">常见模型</a></li>
+<li><a href="#atpg_1">ATPG 的四个问题</a></li>
+<li><a href="#_3">读懂实验结果</a></li>
+<li><a href="#_4">常见误区</a></li>
+<li><a href="#_5">工程上如何读一条失败记录</a></li>
+<li><a href="#_6">本实验的边界</a></li>
+<li><a href="#_7">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>IJTAG：让片内仪器按需接入 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/access.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a class="active" aria-current="page" href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="ijtag">IJTAG：让片内仪器按需接入</h1>
+<section class="container dft-lab" id="ijtag-lab" data-lab="access-ijtag" aria-labelledby="ijtag-lab-title">
+  <header class="lab-header">
+    <p class="lab-kicker">ACCESS LAB · 02</p>
+    <h2 id="ijtag-lab-title">IJTAG：打开一条片内仪器路径</h2>
+    <p>改变 SIB（Segment Insertion Bit）后，扫描链的长度和可见仪器都会改变。这个小模型用于理解 ICL 描述连接、PDL 描述操作与 retarget 的分工，不是 Tessent 或其他工具的实现。</p>
+  </header>
+  <div class="lab-controls" role="group" aria-label="IJTAG 控制">
+    <button type="button" data-access-action="reset" disabled>重置路径</button>
+    <button type="button" data-access-action="shift-sib" disabled>Shift SIB 位</button>
+    <button type="button" data-access-action="update-sib" disabled>Update SIB（应用路径）</button>
+    <button type="button" data-access-action="shift" disabled>Shift 完整路径</button>
+    <button type="button" data-access-action="update-instrument" disabled>Update 仪器值</button>
+    <label>片内仪器 <select data-access-setting="instrument" disabled><option value="bist">Memory BIST · 8 bit</option><option value="sensor">温度传感器 · 4 bit</option></select></label>
+    <label>输入位 <select data-access-setting="bit" disabled><option value="1">1</option><option value="0">0</option></select></label>
+  </div>
+  <div class="lab-stage ijtag-stage">
+    <div class="ijtag-chain" aria-label="IJTAG 动态链">
+      <span class="chain-pin">TDI</span><i class="chain-box">SIB</i><b class="chain-arrow">→</b><i class="chain-box" data-access-field="instrument-box">仪器</i><b class="chain-arrow">→</b><span class="chain-pin">TDO</span>
+    </div>
+    <div class="lab-wire-card">
+      <div class="lab-register"><span>SIB 状态（已更新 / 待更新）</span><strong data-access-field="sib">关闭 / 0</strong></div>
+      <div class="lab-register"><span>当前目标</span><strong data-access-field="instrument">Memory BIST</strong></div>
+      <div class="lab-register"><span>访问范围</span><strong data-access-field="range">1 bit（旁路）</strong></div>
+      <div class="lab-register"><span>完整链（SIB + 仪器段）</span><strong data-access-field="shifted">—</strong></div>
+    </div>
+  </div>
+  <div class="lab-readouts" aria-label="IJTAG 读数">
+    <div><small>当前扫描长度</small><strong data-access-field="length">1 bit</strong></div>
+    <div><small>仪器观察值</small><strong data-access-field="instrument-value">不可见</strong></div>
+    <div><small>路径事件</small><strong data-access-field="event">等待操作</strong></div>
+  </div>
+  <p class="lab-explanation" data-access-field="explanation">SIB 关闭时，仪器段被旁路，测试访问端口只需经过一个控制位。打开后，目标段插入扫描路径；实际设计可能有多个嵌套 SIB 与不同的数据寄存器。</p>
+  <noscript><p>启用 JavaScript 后可打开/关闭 SIB 并切换仪器。静态阅读：ICL 描述网络连接，PDL 描述仪器动作，retarget 把仪器操作转换为当前芯片可执行的扫描序列。</p></noscript>
+</section>
+
+<p>IEEE 1687（通常称 IJTAG）关注的是片内嵌入式仪器的访问网络。它把“网络如何连接”和“仪器如何操作”分开描述，并支持把面向仪器的操作重新定位（retarget）到当前芯片可执行的扫描序列。</p>
+<blockquote>
+<p><strong>范围声明</strong>：本页的 SIB、链长和位序列是一个单段教学模型，不是任何 EDA 工具的实现，也不产生真实的 ICL/PDL 文件、ATPG 模式或仪器测量结果。</p>
+</blockquote>
+<h2 id="_1">为什么需要动态路径</h2>
+<p>如果所有 MBIST、传感器、调试寄存器永远串在一条链上，普通的访问会变长、测试时间增加，也更难隔离未使用的仪器。IJTAG 用可控的段插入位（SIB）决定一个数据段是否进入当前扫描路径：</p>
+<pre><code class="language-text">TDI → SIB=0 → 旁路位 → TDO
+TDI → SIB=1 → 目标仪器寄存器 → TDO
+</code></pre>
+<p>真实网络可能有多个嵌套 SIB、并行段和不同层级的访问寄存器；访问协议仍需要遵守具体实现的扫描时序。</p>
+<h2 id="iclpdl-retarget">ICL、PDL 与 retarget</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>回答的问题</th>
+<th>在流程中的位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ICL（Instrument Connectivity Language）</td>
+<td>哪些仪器、寄存器、SIB 和端口如何连接？</td>
+<td>描述结构与可达路径</td>
+</tr>
+<tr>
+<td>PDL（Procedural Description Language）</td>
+<td>如何复位、写入、触发、读取某个仪器？</td>
+<td>描述仪器操作意图</td>
+</tr>
+<tr>
+<td>Retarget</td>
+<td>如何把仪器级操作映射到芯片顶层扫描入口？</td>
+<td>根据当前 SIB 配置生成访问序列</td>
+</tr>
+</tbody>
+</table></div>
+<p>因此，PDL 中“写入某寄存器”不是直接对 TDI/TDO 的魔法调用。工具需要结合 ICL 找到路径，插入打开 SIB 的操作，完成数据寄存器扫描，再按需要关闭或保留路径。没有 ICL/PDL 和对应工具链时，不应声称已经完成 retarget。</p>
+<h2 id="_2">动手改变链长</h2>
+<p>交互默认关闭 SIB，完整当前路径只有一位 SIB；先用 <code>Shift SIB 位</code> 准备控制位，再用 <code>Update SIB</code> 提交开闭，选择的仪器段才会插入扫描路径。打开后，<code>Shift 完整路径</code> 同时经过 SIB 与仪器寄存器，<code>Update 仪器值</code> 才提交仪器段。<code>Memory BIST</code> 示例为 8 位仪器段，<code>温度传感器</code> 示例为 4 位；SIB 关闭时的移位不会改变仪器值。</p>
+<p>这里的“仪器观察值”只是对当前演示数组的格式化显示。它没有启动存储器测试，没有采集温度，也不会给出通过/失败结论。真实仪器的状态、数据宽度、读写副作用和时钟要求由 ICL/PDL 及芯片文档定义。</p>
+<h3 id="_3">读懂一次访问</h3>
+<p>可以把一次访问拆成四个动作：先复位网络，再把 SIB 控制位移到目标值；接着在段已插入的路径中扫描仪器寄存器；最后按仪器定义的顺序更新或读取。每一步都可能有额外的 Capture、Update 或等待周期。</p>
+<p>在多级网络中，外层 SIB 打开后，内层 SIB 才可能被看到。关闭外层段会让内层路径暂时不可达，但不代表内层仪器丢失配置；具体保持还是复位同样由实现定义。</p>
+<h2 id="_4">设计时要注意什么</h2>
+<ul>
+<li><strong>复位与默认路径</strong>：SIB 上电值、系统复位和测试复位必须明确，否则工具可能访问到错误的层级。</li>
+<li><strong>链长变化</strong>：打开段后，后续位的位序和总长度都改变；模式生成必须使用当前网络配置。</li>
+<li><strong>X 与副作用</strong>：未初始化仪器、时钟域和模拟输出可能产生未知值，不能只用理想 0/1 推断硅上结果。</li>
+<li><strong>可复用性</strong>：块级 ICL/PDL 需要在芯片级重定向后验证，嵌套网络的命名和端口映射必须保持一致。</li>
+</ul>
+<h2 id="jtag">与 JTAG 的关系</h2>
+<p>IJTAG 描述的是片内仪器网络和访问抽象；JTAG/1149.1 是常见的外部串行入口之一，但不是 IJTAG 的全部。一个芯片也可能通过其他测试控制器或调试入口访问片内仪器。不要把 SIB 当作 TAP 的第 17 个状态，也不要把 PDL 当作测试向量覆盖率报告。</p>
+<p>页面中的链长数字故意保持很小，便于把 SIB 的动态插入看清楚。</p>
+<h2 id="_5">资料与继续阅读</h2>
+<ul>
+<li><a href="https://standards.ieee.org/ieee/1687/">IEEE 1687 标准页面</a>：IJTAG 的规范入口。</li>
+<li><a href="https://www.siemens.com/en-gb/products/ic/tessent/test/ijtag/">Siemens Tessent IJTAG</a>：片内仪器访问与工具流程资料。</li>
+<li><a href="https://www.accellera.org/activities/working-groups/ijtag">Accellera IJTAG 资源</a>：相关标准化工作与公开资源入口。</li>
+</ul>
+<p>资料中的术语可能使用不同工具的命名方式；学习时应先确认网络结构，再确认操作语义。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-jtag.html"><small>← 上一主题</small><strong>JTAG / Boundary Scan</strong></a><a href="../pages/dft-wrapper.html"><small>下一主题 →</small><strong>Wrapper 与分层 DFT</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">为什么需要动态路径</a></li>
+<li><a href="#iclpdl-retarget">ICL、PDL 与 retarget</a></li>
+<li><a href="#_2">动手改变链长</a><ul>
+<li><a href="#_3">读懂一次访问</a></li>
+</ul>
+</li>
+<li><a href="#_4">设计时要注意什么</a></li>
+<li><a href="#jtag">与 JTAG 的关系</a></li>
+<li><a href="#_5">资料与继续阅读</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

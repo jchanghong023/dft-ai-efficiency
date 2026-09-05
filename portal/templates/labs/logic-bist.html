@@ -1,0 +1,27 @@
+<section class="dft-demo dft-lab" id="logic-bist-lab" data-lab="bist-logic" aria-label="LBIST 的 LFSR 与 MISR 演示">
+  <div class="lab-header demo-heading"><span class="demo-tag">04 / LOGIC TEST</span><strong>从伪随机激励到最终签名</strong></div>
+  <div class="lab-controls demo-controls">
+    <button type="button" data-action="step" disabled>单步</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <label>响应场景 <select data-setting="fault" disabled><option value="none">无故障</option><option value="stuck">DUT 响应 bit1 stuck-at-0</option></select></label>
+  </div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备产生第一个模式</span><span>拍数 <b data-field="cycle">0</b> / 8</span><span>状态 <b data-field="state">0001</b></span></div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 340" role="img" aria-labelledby="logic-bist-title logic-bist-desc">
+      <title id="logic-bist-title">LFSR 产生四位激励，DUT 输出响应，MISR 计算四位签名</title>
+      <desc id="logic-bist-desc">数据从左向右经过 LFSR、教学 DUT 和 MISR；下方列出反馈多项式与固定已知序列。</desc>
+      <defs><marker id="bist-logic-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <rect x="28" y="58" width="180" height="108" rx="12" class="logic-box"/><text x="118" y="88" text-anchor="middle" class="pin-label">LFSR / PRPG</text><text x="118" y="114" text-anchor="middle" class="tiny-label">x⁴ + x + 1</text><text x="118" y="145" text-anchor="middle" class="bit" data-field="lfsr">0001</text>
+      <path d="M208 112H292" class="wire" marker-end="url(#bist-logic-arrow)"/><text x="224" y="96" class="tiny-label">激励</text>
+      <rect x="296" y="58" width="208" height="108" rx="12" class="logic-box"/><text x="400" y="88" text-anchor="middle" class="pin-label">DUT · 教学逻辑</text><text x="400" y="114" text-anchor="middle" class="tiny-label">r = f(pattern)</text><text x="400" y="145" text-anchor="middle" class="bit" data-field="response">0000</text>
+      <path d="M504 112H588" class="wire" marker-end="url(#bist-logic-arrow)"/><text x="521" y="96" class="tiny-label">响应</text>
+      <rect x="592" y="58" width="180" height="108" rx="12" class="logic-box"/><text x="682" y="88" text-anchor="middle" class="pin-label">MISR</text><text x="682" y="114" text-anchor="middle" class="tiny-label">LSB-first · shift/XOR 0011</text><text x="682" y="145" text-anchor="middle" class="bit" data-field="misr">0000</text>
+      <path d="M118 167V217H682V167" class="clock-wire"/><text x="400" y="239" text-anchor="middle" class="pin-label">每拍：采样 DUT 响应 → 更新 MISR → LFSR 进入下一状态</text>
+      <rect x="28" y="263" width="744" height="45" rx="8" class="logic-box"/><text x="42" y="291" class="tiny-label">已知序列：0001 → 0010 → 0100 → 1001 → …　无故障期望签名：</text><text x="735" y="291" text-anchor="end" class="bit" data-field="expected">----</text>
+    </svg>
+  </div>
+  <div class="lab-readouts demo-readouts"><div><small>本拍激励 / 响应</small><strong data-field="pair">尚未执行</strong></div><div><small>当前 MISR 签名</small><strong data-field="signature">0000</strong></div><div><small>最终比较</small><strong data-field="result">尚未完成</strong></div></div>
+  <p class="lab-explanation demo-explanation" data-field="explanation">这是一个固定 8 拍的教学序列。签名比较只表示本模型、本位序和本组模式的结果，不是 ATPG 覆盖率或量产测试结论。</p>
+  <noscript><p>动画需要 JavaScript；静态图仍展示 LFSR、DUT、MISR 的数据流，以及本例的反馈多项式和位序约定。相同签名可能来自不同响应序列（混叠）。</p></noscript>
+</section>

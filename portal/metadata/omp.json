@@ -1,0 +1,1940 @@
+{
+  "schema": 1,
+  "version": "v18.1.9+fork.170",
+  "revision": "755b392dc4e99bec1415bed12b3a581d1b19643c",
+  "repository": "https://github.com/jchanghong023/oh-my-pi",
+  "commands": [
+    {
+      "name": "security",
+      "description": "Plan, run, inspect, import, and compare OMP-native security scans",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 152,
+      "subcommands": [
+        {
+          "name": "plan",
+          "description": "Create an immutable security scan plan",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 159
+        },
+        {
+          "name": "scan",
+          "description": "Start a planned or newly planned native scan",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 160
+        },
+        {
+          "name": "status",
+          "description": "Show native scan operation status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 161
+        },
+        {
+          "name": "cancel",
+          "description": "Cancel a running native scan",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 162
+        },
+        {
+          "name": "scans",
+          "description": "List stored project security scans",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 163
+        },
+        {
+          "name": "show",
+          "description": "Render a scan or security:// resource",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 164
+        },
+        {
+          "name": "import",
+          "description": "Import SARIF or a Codex Security bundle",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 165
+        },
+        {
+          "name": "export",
+          "description": "Export a canonical bundle, SARIF, or report",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 166
+        },
+        {
+          "name": "validate",
+          "description": "Validate one finding with OMP-native tools",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 167
+        },
+        {
+          "name": "compare",
+          "description": "Compare finding lineage across two scans",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 168
+        },
+        {
+          "name": "disposition",
+          "description": "Set a finding disposition with rationale",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 169
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "description": "Open settings menu",
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 173
+    },
+    {
+      "name": "setup",
+      "aliases": [
+        "providers"
+      ],
+      "description": "Open provider setup",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 182,
+      "subcommands": [
+        {
+          "name": "providers",
+          "description": "Configure sign-in and web search providers",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "name": "plan",
+      "description": "Toggle plan mode (agent plans before executing)",
+      "inlineHint": "[prompt]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 200
+    },
+    {
+      "name": "plan-review",
+      "description": "Re-open the plan review for the latest plan (plan mode only)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 222
+    },
+    {
+      "name": "vibe",
+      "description": "Toggle vibe mode (direct persistent fast/good worker sessions; read-only toolset)",
+      "inlineHint": "[prompt]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 233
+    },
+    {
+      "name": "goal",
+      "description": "Toggle goal mode (persistent autonomous objective for this session)",
+      "inlineHint": "[objective]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 252,
+      "subcommands": [
+        {
+          "name": "set",
+          "description": "Set or replace the goal",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 257
+        },
+        {
+          "name": "show",
+          "description": "Show current goal details",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 258
+        },
+        {
+          "name": "pause",
+          "description": "Pause the current goal",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 259
+        },
+        {
+          "name": "resume",
+          "description": "Resume a paused goal",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 260
+        },
+        {
+          "name": "drop",
+          "description": "Drop the current goal",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 261
+        },
+        {
+          "name": "budget",
+          "description": "Adjust the token budget",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 262
+        }
+      ]
+    },
+    {
+      "name": "guided-goal",
+      "description": "Have the agent interview you in chat, then set up goal mode",
+      "inlineHint": "[rough objective]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 279
+    },
+    {
+      "name": "loop",
+      "description": "Toggle loop mode. While enabled, the next prompt you send re-submits after every yield. Esc cancels the current iteration; /loop again to disable.",
+      "inlineHint": "[count|duration] [prompt]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 291
+    },
+    {
+      "name": "queue",
+      "description": "Queue a message for after the agent yields",
+      "inlineHint": "<message>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 313
+    },
+    {
+      "name": "model",
+      "aliases": [
+        "models"
+      ],
+      "description": "Switch model for this session",
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 323
+    },
+    {
+      "name": "switch",
+      "description": "Switch model for this session (same as ctrl+t); accepts fuzzy ids, provider/id, @role, :level",
+      "inlineHint": "[model]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 367
+    },
+    {
+      "name": "fast",
+      "description": "Toggle priority service tier (OpenAI service_tier=priority, Anthropic speed=fast)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 416,
+      "subcommands": [
+        {
+          "name": "on",
+          "description": "Enable fast mode",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 423
+        },
+        {
+          "name": "off",
+          "description": "Disable fast mode",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 424
+        },
+        {
+          "name": "status",
+          "description": "Show fast mode status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 425
+        }
+      ]
+    },
+    {
+      "name": "skillful",
+      "description": "Toggle listing available skills in the system prompt (session only)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 486,
+      "subcommands": [
+        {
+          "name": "on",
+          "description": "List skills in the prompt for this session",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 493
+        },
+        {
+          "name": "off",
+          "description": "Omit the skills listing for this session",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 494
+        },
+        {
+          "name": "status",
+          "description": "Show skill listing status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 495
+        }
+      ]
+    },
+    {
+      "name": "extended-context",
+      "description": "Toggle premium long-context windows",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 542,
+      "subcommands": [
+        {
+          "name": "on",
+          "description": "Enable premium long-context windows",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 549
+        },
+        {
+          "name": "off",
+          "description": "Use standard-pricing context windows",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 550
+        },
+        {
+          "name": "status",
+          "description": "Show extended context status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 551
+        }
+      ]
+    },
+    {
+      "name": "computer",
+      "description": "Toggle the native computer-use eval prelude for this session",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 569,
+      "subcommands": [
+        {
+          "name": "on",
+          "description": "Enable computer use for this session",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 576
+        },
+        {
+          "name": "off",
+          "description": "Disable computer use for this session",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 577
+        },
+        {
+          "name": "status",
+          "description": "Show computer use status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+          "line": 578
+        }
+      ]
+    },
+    {
+      "name": "prewalk",
+      "description": "Switch to a fast/cheap model at the next action (works even without --prewalk)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-modes.ts",
+      "line": 614
+    },
+    {
+      "name": "advisor",
+      "description": "Toggle the advisor (a second model that reviews each turn and injects notes)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 54,
+      "subcommands": [
+        {
+          "name": "on",
+          "description": "Enable the advisor",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 61
+        },
+        {
+          "name": "off",
+          "description": "Disable the advisor",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 62
+        },
+        {
+          "name": "status",
+          "description": "Show advisor status",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 63
+        },
+        {
+          "name": "dump",
+          "description": "Copy the advisor's transcript to clipboard",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 64
+        },
+        {
+          "name": "configure",
+          "description": "Open the advisor configuration editor (TUI)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 65
+        }
+      ]
+    },
+    {
+      "name": "export",
+      "description": "Export session to HTML file",
+      "inlineHint": "[--themes] [path]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 171
+    },
+    {
+      "name": "trace",
+      "description": "Open this session's trace in the stats dashboard",
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 195
+    },
+    {
+      "name": "dump",
+      "description": "Copy session transcript to clipboard (and write LLM request JSON to tmp)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 222
+    },
+    {
+      "name": "share",
+      "description": "Share session via an encrypted link (share server or secret gist)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 255
+    },
+    {
+      "name": "collab",
+      "description": "Share this session live via a relay",
+      "inlineHint": "[start|view|stop|status] [relayUrl]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 281,
+      "subcommands": [
+        {
+          "name": "view",
+          "description": "Share a read-only link (guests can watch, not prompt)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 287
+        },
+        {
+          "name": "status",
+          "description": "Show link + participants",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 288
+        },
+        {
+          "name": "stop",
+          "description": "Stop sharing",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 289
+        }
+      ]
+    },
+    {
+      "name": "join",
+      "description": "Join a shared collab session",
+      "inlineHint": "<link>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 368
+    },
+    {
+      "name": "leave",
+      "description": "Leave the collab session",
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 397
+    },
+    {
+      "name": "browser",
+      "description": "Toggle browser eval-prelude headless vs visible mode",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 421,
+      "subcommands": [
+        {
+          "name": "headless",
+          "description": "Switch to headless mode",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 427
+        },
+        {
+          "name": "visible",
+          "description": "Switch to visible mode",
+          "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+          "line": 428
+        }
+      ]
+    },
+    {
+      "name": "copy",
+      "description": "Pick text or code from the conversation to copy",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 491
+    },
+    {
+      "name": "open",
+      "description": "Open the last link from the conversation in your browser (or pick one with /copy)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-collaboration.ts",
+      "line": 543
+    },
+    {
+      "name": "todo",
+      "description": "View or modify the agent's todo list",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 140,
+      "subcommands": [
+        {
+          "name": "edit",
+          "description": "Open todos in $EDITOR (Markdown round-trip)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 147
+        },
+        {
+          "name": "copy",
+          "description": "Copy todos as Markdown to clipboard",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 148
+        },
+        {
+          "name": "expand",
+          "description": "Show every phase and task in the HUD",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 149
+        },
+        {
+          "name": "collapse",
+          "description": "Restore the bounded HUD preview",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 150
+        },
+        {
+          "name": "export",
+          "description": "Write todos as Markdown to a file (default: TODO.md)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 151
+        },
+        {
+          "name": "import",
+          "description": "Replace todos from a Markdown file (default: TODO.md)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 152
+        },
+        {
+          "name": "append",
+          "description": "Append a task; phase fuzzy-matched or auto-created",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 153
+        },
+        {
+          "name": "start",
+          "description": "Mark task in_progress (fuzzy-matched)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 158
+        },
+        {
+          "name": "done",
+          "description": "Mark task/phase/all completed (fuzzy-matched)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 159
+        },
+        {
+          "name": "drop",
+          "description": "Mark task/phase/all abandoned (fuzzy-matched)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 160
+        },
+        {
+          "name": "rm",
+          "description": "Remove task/phase/all (fuzzy-matched)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 161
+        }
+      ]
+    },
+    {
+      "name": "session",
+      "description": "Session management commands",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 178,
+      "subcommands": [
+        {
+          "name": "info",
+          "description": "Show session info and stats",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 185
+        },
+        {
+          "name": "delete",
+          "description": "Delete current session and return to selector",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 186
+        },
+        {
+          "name": "pin",
+          "description": "Pin the current provider to a stored OAuth account",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 187
+        }
+      ]
+    },
+    {
+      "name": "jobs",
+      "description": "Show async background jobs status",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 256
+    },
+    {
+      "name": "usage",
+      "description": "Show provider usage and limits",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 298,
+      "subcommands": [
+        {
+          "name": "show",
+          "description": "Show provider usage and limits",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 305
+        },
+        {
+          "name": "reset",
+          "description": "Spend a saved Codex rate-limit reset",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 306
+        }
+      ]
+    },
+    {
+      "name": "stats",
+      "description": "Launch the local stats dashboard",
+      "inlineHint": "[--port <port>] [--host <host>]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 341
+    },
+    {
+      "name": "changelog",
+      "description": "Show changelog entries",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 361,
+      "subcommands": [
+        {
+          "name": "full",
+          "description": "Show complete changelog",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 367
+        }
+      ]
+    },
+    {
+      "name": "hotkeys",
+      "description": "Show all keyboard shortcuts",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 387
+    },
+    {
+      "name": "tools",
+      "description": "Show tools currently visible to the agent",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 396
+    },
+    {
+      "name": "context",
+      "description": "Show estimated context usage breakdown",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 425
+    },
+    {
+      "name": "extensions",
+      "aliases": [
+        "status"
+      ],
+      "description": "Open Extension Control Center dashboard",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 444
+    },
+    {
+      "name": "agents",
+      "description": "Open the agents hub (per-agent model, prewalk, and advisor)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 454
+    },
+    {
+      "name": "docs",
+      "description": "Open the document index hub",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 463
+    },
+    {
+      "name": "git",
+      "description": "Open the git UI (split diff viewer, staging, commit composer)",
+      "inlineHint": "[revision]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 472
+    },
+    {
+      "name": "hub",
+      "description": "Open the live Agent Hub",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 483
+    },
+    {
+      "name": "branch",
+      "aliases": [
+        "rewind"
+      ],
+      "description": "Rewind to a previous message, keeping the old path as a branch",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 492
+    },
+    {
+      "name": "fork",
+      "description": "Create a new fork from a previous message",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 502
+    },
+    {
+      "name": "tree",
+      "description": "Navigate session tree (switch branches)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 511
+    },
+    {
+      "name": "login",
+      "description": "Login with OAuth provider",
+      "inlineHint": "[provider|redirect URL]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 520
+    },
+    {
+      "name": "logout",
+      "description": "Logout from OAuth provider",
+      "inlineHint": "[provider]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 573
+    },
+    {
+      "name": "mcp",
+      "description": "Manage MCP servers (add, list, remove, test)",
+      "inlineHint": "<subcommand>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+      "line": 596,
+      "subcommands": [
+        {
+          "name": "add",
+          "description": "Add a new MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 603
+        },
+        {
+          "name": "list",
+          "description": "List all configured MCP servers",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 608
+        },
+        {
+          "name": "remove",
+          "description": "Remove an MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 609
+        },
+        {
+          "name": "test",
+          "description": "Test connection to a server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 610
+        },
+        {
+          "name": "reauth",
+          "description": "Reauthorize OAuth for a server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 611
+        },
+        {
+          "name": "unauth",
+          "description": "Remove OAuth auth from a server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 612
+        },
+        {
+          "name": "enable",
+          "description": "Enable an MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 613
+        },
+        {
+          "name": "disable",
+          "description": "Disable an MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 614
+        },
+        {
+          "name": "smithery-search",
+          "description": "Search Smithery registry and deploy an MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 615
+        },
+        {
+          "name": "smithery-login",
+          "description": "Login to Smithery and cache API key",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 620
+        },
+        {
+          "name": "smithery-logout",
+          "description": "Remove cached Smithery API key",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 621
+        },
+        {
+          "name": "reconnect",
+          "description": "Reconnect to a specific MCP server",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 622
+        },
+        {
+          "name": "reload",
+          "description": "Force reload MCP runtime tools",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 623
+        },
+        {
+          "name": "resources",
+          "description": "List available resources from connected servers",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 624
+        },
+        {
+          "name": "prompts",
+          "description": "List available prompts from connected servers",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 625
+        },
+        {
+          "name": "notifications",
+          "description": "Show notification capabilities and subscriptions",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 626
+        },
+        {
+          "name": "help",
+          "description": "Show help message",
+          "source": "packages/coding-agent/src/slash-commands/builtin-session.ts",
+          "line": 627
+        }
+      ]
+    },
+    {
+      "name": "ssh",
+      "description": "Manage SSH hosts (add, list, remove)",
+      "inlineHint": "<subcommand>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 149,
+      "subcommands": [
+        {
+          "name": "add",
+          "description": "Add an SSH host",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 156
+        },
+        {
+          "name": "list",
+          "description": "List all configured SSH hosts",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 161
+        },
+        {
+          "name": "remove",
+          "description": "Remove an SSH host",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 162
+        },
+        {
+          "name": "help",
+          "description": "Show help message",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "name": "new",
+      "description": "Start a new session",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 172
+    },
+    {
+      "name": "fresh",
+      "description": "Reset provider stream state without changing the local transcript",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 181
+    },
+    {
+      "name": "clear",
+      "description": "Clear the conversation context in place, keeping the session",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 203
+    },
+    {
+      "name": "drop",
+      "description": "Delete the current session and start a new one",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 214
+    },
+    {
+      "name": "compact",
+      "description": "Manually compact the session context",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 223,
+      "subcommands": [
+        {
+          "name": "soft",
+          "description": "Summarize locally with the active model (skip server compaction)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 228
+        },
+        {
+          "name": "remote",
+          "description": "Summarize via OpenAI-compatible server compaction, then fall back to a local summary",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 228
+        },
+        {
+          "name": "snapcompact",
+          "description": "Archive history onto dense bitmap images the model reads back (no LLM call)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "name": "shake",
+      "description": "Drop heavy content from context (tool results, large blocks)",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 289,
+      "subcommands": [
+        {
+          "name": "elide",
+          "description": "Strip tool results + large blocks (default)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 295
+        },
+        {
+          "name": "images",
+          "description": "Strip image blocks",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 296
+        },
+        {
+          "name": "thinking",
+          "description": "Drop all thinking blocks",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 297
+        }
+      ]
+    },
+    {
+      "name": "handoff",
+      "description": "Hand off session context to a new session",
+      "inlineHint": "[focus instructions]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 318
+    },
+    {
+      "name": "resume",
+      "description": "Resume a different session",
+      "inlineHint": "[session id|@claude|@codex]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 385
+    },
+    {
+      "name": "pin",
+      "description": "Pin or unpin a session at the top of the resume list",
+      "inlineHint": "[session id]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 416
+    },
+    {
+      "name": "btw",
+      "description": "Ask an ephemeral side question using the current session context",
+      "inlineHint": "<question>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 447
+    },
+    {
+      "name": "tan",
+      "description": "Run a full background agent on tangential work",
+      "inlineHint": "<work>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 459
+    },
+    {
+      "name": "omfg",
+      "description": "Forge a TTSR rule from a complaint to stop a recurring behavior",
+      "inlineHint": "<complaint>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 471
+    },
+    {
+      "name": "cleanse",
+      "description": "Detect and fix project diagnostics with weighted parallel subagents",
+      "inlineHint": "[request] [--all]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 483
+    },
+    {
+      "name": "retry",
+      "description": "Retry the last failed agent turn",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 495
+    },
+    {
+      "name": "debug",
+      "description": "Open debug tools selector",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 530
+    },
+    {
+      "name": "memory",
+      "description": "Inspect and operate memory maintenance",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 539,
+      "subcommands": [
+        {
+          "name": "view",
+          "description": "Show current memory injection payload",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 546
+        },
+        {
+          "name": "stats",
+          "description": "Show memory backend statistics",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 547
+        },
+        {
+          "name": "diagnose",
+          "description": "Run memory backend diagnostics",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 548
+        },
+        {
+          "name": "queue",
+          "description": "Show pending memory deltas awaiting consolidation",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 549
+        },
+        {
+          "name": "sync",
+          "description": "Run memory consolidation now",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 550
+        },
+        {
+          "name": "clear",
+          "description": "Clear persisted memory data and artifacts",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 551
+        },
+        {
+          "name": "reset",
+          "description": "Alias for clear",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 552
+        },
+        {
+          "name": "enqueue",
+          "description": "Enqueue memory consolidation maintenance",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 553
+        },
+        {
+          "name": "rebuild",
+          "description": "Alias for enqueue",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 554
+        },
+        {
+          "name": "mm list",
+          "description": "List mental models on the active bank",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 555
+        },
+        {
+          "name": "mm show",
+          "description": "Show one mental model (id required)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 556
+        },
+        {
+          "name": "mm refresh",
+          "description": "Refresh auto-refresh models bank-wide, or one model by id",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 557
+        },
+        {
+          "name": "mm history",
+          "description": "Diff the change history of a mental model",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 561
+        },
+        {
+          "name": "mm seed",
+          "description": "Create any built-in mental models that are missing",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 562
+        },
+        {
+          "name": "mm delete",
+          "description": "Delete a mental model from the bank (id required)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 563
+        },
+        {
+          "name": "mm reload",
+          "description": "Re-pull the cached <mental_models> block",
+          "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+          "line": 564
+        }
+      ]
+    },
+    {
+      "name": "rename",
+      "description": "Rename the current session",
+      "inlineHint": "<title>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 628
+    },
+    {
+      "name": "move",
+      "description": "Move the current session to a different directory",
+      "inlineHint": "[<path>]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 656
+    },
+    {
+      "name": "wt",
+      "aliases": [
+        "worktree"
+      ],
+      "description": "Move this session into a new worktree, changes included",
+      "inlineHint": "[<branch>]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 686
+    },
+    {
+      "name": "add-dir",
+      "description": "Add a workspace directory to this session (multi-root)",
+      "inlineHint": "<path>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 721
+    },
+    {
+      "name": "remove-dir",
+      "description": "Remove a workspace directory from this session",
+      "inlineHint": "<path>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 753
+    },
+    {
+      "name": "dirs",
+      "description": "List this session's workspace directories",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 782
+    },
+    {
+      "name": "exit",
+      "description": "Exit the application",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 791
+    },
+    {
+      "name": "restart",
+      "description": "Restart omp with the same launch flags, resuming this session",
+      "source": "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts",
+      "line": 796
+    },
+    {
+      "name": "marketplace",
+      "description": "Manage marketplace plugin sources and installed plugins",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+      "line": 43,
+      "subcommands": [
+        {
+          "name": "add",
+          "description": "Add a marketplace source",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 50
+        },
+        {
+          "name": "remove",
+          "description": "Remove a marketplace source",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 51
+        },
+        {
+          "name": "update",
+          "description": "Update marketplace catalog(s)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 52
+        },
+        {
+          "name": "list",
+          "description": "List configured marketplaces",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 53
+        },
+        {
+          "name": "discover",
+          "description": "Browse available plugins",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 54
+        },
+        {
+          "name": "install",
+          "description": "Install a plugin (interactive browser if no args)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 55
+        },
+        {
+          "name": "uninstall",
+          "description": "Uninstall a plugin (selector if no args)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 60
+        },
+        {
+          "name": "installed",
+          "description": "List installed marketplace plugins",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 61
+        },
+        {
+          "name": "upgrade",
+          "description": "Upgrade outdated plugins",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 62
+        },
+        {
+          "name": "help",
+          "description": "Show usage guide",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 63
+        }
+      ]
+    },
+    {
+      "name": "plugins",
+      "description": "View and manage installed plugins",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+      "line": 423,
+      "subcommands": [
+        {
+          "name": "list",
+          "description": "List all installed plugins (npm + marketplace)",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 430
+        },
+        {
+          "name": "enable",
+          "description": "Enable a marketplace plugin",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 431
+        },
+        {
+          "name": "disable",
+          "description": "Disable a marketplace plugin",
+          "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+          "line": 432
+        }
+      ]
+    },
+    {
+      "name": "reload-plugins",
+      "description": "Reload all plugins (skills, commands, hooks, tools, agents, MCP)",
+      "source": "packages/coding-agent/src/slash-commands/builtin-marketplace.ts",
+      "line": 554
+    },
+    {
+      "name": "ultrathink",
+      "description": "Send the ultrathink magic keyword",
+      "inlineHint": "[task]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-magic-keywords.ts",
+      "line": 5
+    },
+    {
+      "name": "orchestrate",
+      "description": "Send the orchestrate magic keyword",
+      "inlineHint": "[task]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-magic-keywords.ts",
+      "line": 5
+    },
+    {
+      "name": "workflowz",
+      "description": "Send the workflowz magic keyword",
+      "inlineHint": "[task]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-magic-keywords.ts",
+      "line": 5
+    },
+    {
+      "name": "fullsend",
+      "description": "Send the fullsend magic keyword",
+      "inlineHint": "[task]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-magic-keywords.ts",
+      "line": 5
+    },
+    {
+      "name": "jchfix",
+      "description": "JCH：定位根因、修复问题并验证",
+      "inlineHint": "<问题、错误或失败现象>",
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 85
+    },
+    {
+      "name": "jchdiagnose",
+      "description": "JCH：只读定位问题根因与修复边界",
+      "inlineHint": "<问题、错误或失败现象>",
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 92
+    },
+    {
+      "name": "jchfuncreview",
+      "description": "JCH：只读审查高置信、现实可达的功能问题",
+      "inlineHint": "<uncommitted|commit <ref>|path <path>>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 99,
+      "subcommands": [
+        {
+          "name": "uncommitted",
+          "description": "只读 Review 当前未提交修改",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 105
+        },
+        {
+          "name": "commit",
+          "description": "只读 Review 指定 commit",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 106
+        },
+        {
+          "name": "path",
+          "description": "只读 Review 指定路径",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 107
+        }
+      ]
+    },
+    {
+      "name": "jchfuncreviewfix",
+      "description": "JCH：审查高置信功能问题并在复核后修复",
+      "inlineHint": "<uncommitted|commit <ref>|repo>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 115,
+      "subcommands": [
+        {
+          "name": "uncommitted",
+          "description": "Review 并修复当前未提交修改",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 121
+        },
+        {
+          "name": "commit",
+          "description": "Review 并修复指定 commit",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 122
+        },
+        {
+          "name": "repo",
+          "description": "Review 并修复整个代码仓库",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 123
+        }
+      ]
+    },
+    {
+      "name": "jchverify",
+      "description": "JCH：独立验证指定修改并报告是否可交付",
+      "inlineHint": "<uncommitted|commit <ref>|path <path>>",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 131,
+      "subcommands": [
+        {
+          "name": "uncommitted",
+          "description": "验证当前未提交修改",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 137
+        },
+        {
+          "name": "commit",
+          "description": "验证指定 commit",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 138
+        },
+        {
+          "name": "path",
+          "description": "验证指定路径",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 139
+        }
+      ]
+    },
+    {
+      "name": "jchci",
+      "description": "JCH：只读检查当前分支与关联 PR 的 GitHub Actions",
+      "inlineHint": "[workflow 或关注点]",
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 147
+    },
+    {
+      "name": "jchcifix",
+      "description": "JCH：修复、提交并推送当前分支 CI，最多验证三轮",
+      "inlineHint": "[workflow=<name> 或关注点]",
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 153
+    },
+    {
+      "name": "jchcatchup",
+      "description": "JCH：快速摘要工作现场；full 深度恢复",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+      "line": 165,
+      "subcommands": [
+        {
+          "name": "full",
+          "description": "通过代理深度恢复工作现场",
+          "source": "packages/coding-agent/src/jch-commands/workflow.ts",
+          "line": 169
+        }
+      ]
+    },
+    {
+      "name": "jchgs",
+      "description": "JCH Git：刷新远端引用并显示简短分支状态",
+      "source": "packages/coding-agent/src/jch-commands/git.ts",
+      "line": 63
+    },
+    {
+      "name": "jchgitpull",
+      "description": "JCH Git：直接拉取当前分支",
+      "source": "packages/coding-agent/src/jch-commands/git.ts",
+      "line": 69
+    },
+    {
+      "name": "jchgitdiscardall",
+      "description": "JCH Git：刷新、重置到 upstream 并清理全部本地内容",
+      "source": "packages/coding-agent/src/jch-commands/git.ts",
+      "line": 74
+    },
+    {
+      "name": "force",
+      "aliases": [
+        "force:"
+      ],
+      "description": "Force next turn to use a specific tool",
+      "inlineHint": "<tool-name> [prompt]",
+      "allowArgs": true,
+      "source": "packages/coding-agent/src/slash-commands/builtin-control.ts",
+      "line": 7
+    },
+    {
+      "name": "live",
+      "description": "Start Codex-backed realtime voice mode",
+      "source": "packages/coding-agent/src/slash-commands/builtin-control.ts",
+      "line": 57
+    },
+    {
+      "name": "pause",
+      "description": "Freeze all agents (main, subagents, advisor) until resumed",
+      "source": "packages/coding-agent/src/slash-commands/builtin-control.ts",
+      "line": 66
+    },
+    {
+      "name": "quit",
+      "aliases": [
+        "q"
+      ],
+      "description": "Quit the application",
+      "source": "packages/coding-agent/src/slash-commands/builtin-control.ts",
+      "line": 75
+    }
+  ],
+  "cli": [
+    {
+      "name": "launch",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 23
+    },
+    {
+      "name": "acp",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 24
+    },
+    {
+      "name": "auth-broker",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 29
+    },
+    {
+      "name": "auth-gateway",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 34
+    },
+    {
+      "name": "agents",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 39
+    },
+    {
+      "name": "bench",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 44
+    },
+    {
+      "name": "browser-relay",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 49
+    },
+    {
+      "name": "cleanse",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 54
+    },
+    {
+      "name": "commit",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 59
+    },
+    {
+      "name": "completions",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 64
+    },
+    {
+      "name": "__complete",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 69
+    },
+    {
+      "name": "compress",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 74
+    },
+    {
+      "name": "config",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 79
+    },
+    {
+      "name": "docs",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 84
+    },
+    {
+      "name": "dry-balance",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 89
+    },
+    {
+      "name": "gc",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 94
+    },
+    {
+      "name": "grep",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 99
+    },
+    {
+      "name": "gallery",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 104
+    },
+    {
+      "name": "git",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 109
+    },
+    {
+      "name": "grievances",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 114
+    },
+    {
+      "name": "images",
+      "aliases": [
+        "img"
+      ],
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 119
+    },
+    {
+      "name": "if-bench",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 125
+    },
+    {
+      "name": "install",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 130
+    },
+    {
+      "name": "join",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 135
+    },
+    {
+      "name": "models",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 140
+    },
+    {
+      "name": "plugin",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 145
+    },
+    {
+      "name": "ps",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 150
+    },
+    {
+      "name": "say",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 155
+    },
+    {
+      "name": "share",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 160
+    },
+    {
+      "name": "setup",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 165
+    },
+    {
+      "name": "shell",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 170
+    },
+    {
+      "name": "read",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 175
+    },
+    {
+      "name": "render",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 180
+    },
+    {
+      "name": "ssh",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 185
+    },
+    {
+      "name": "stats",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 190
+    },
+    {
+      "name": "sync-claude",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 195
+    },
+    {
+      "name": "update",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 203
+    },
+    {
+      "name": "usage",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 208
+    },
+    {
+      "name": "tiny-models",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 213
+    },
+    {
+      "name": "token",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 218
+    },
+    {
+      "name": "ttsr",
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 223
+    },
+    {
+      "name": "worktree",
+      "aliases": [
+        "wt"
+      ],
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 228
+    },
+    {
+      "name": "search",
+      "aliases": [
+        "q"
+      ],
+      "source": "packages/coding-agent/src/cli-commands.ts",
+      "line": 234
+    }
+  ],
+  "agents": [
+    {
+      "source": "packages/coding-agent/src/task/agents.ts",
+      "line": 44,
+      "name": "scout",
+      "tools": "read, grep, glob, web_search"
+    },
+    {
+      "source": "packages/coding-agent/src/task/agents.ts",
+      "line": 45,
+      "name": "reviewer",
+      "tools": "read, grep, glob, bash, lsp, web_search, ast_grep"
+    },
+    {
+      "source": "packages/coding-agent/src/task/agents.ts",
+      "line": 46,
+      "name": "security-reviewer",
+      "tools": "read, grep, glob, lsp, ast_grep"
+    },
+    {
+      "source": "packages/coding-agent/src/task/agents.ts",
+      "line": 47,
+      "name": "task",
+      "tools": "all available tools"
+    },
+    {
+      "source": "packages/coding-agent/src/task/agents.ts",
+      "line": 62,
+      "name": "sonic",
+      "tools": "all available tools"
+    }
+  ],
+  "templates": [
+    {
+      "name": "init",
+      "source": "packages/coding-agent/src/task/commands.ts",
+      "line": 13
+    }
+  ],
+  "modules": [
+    {
+      "name": "green",
+      "description": "Generate a prompt to iterate on CI failures until the branch is green",
+      "source": "packages/coding-agent/src/extensibility/custom-commands/bundled/ci-green/index.ts",
+      "line": 46
+    },
+    {
+      "name": "review",
+      "description": "Launch interactive code review",
+      "source": "packages/coding-agent/src/extensibility/custom-commands/bundled/review/index.ts",
+      "line": 475
+    }
+  ],
+  "tools": [
+    {
+      "name": "read",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "security_scan",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "bash",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "edit",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "ast_grep",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "ast_edit",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "ask",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "debug",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "eval",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "github",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "glob",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "grep",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "lsp",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "wiki",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "checkpoint",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "rewind",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "task",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "hub",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "todo",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "web_search",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "write",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "memory_edit",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "retain",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "recall",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "reflect",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "learn",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "manage_skill",
+      "hidden": false,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "think",
+      "hidden": true,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "yield",
+      "hidden": true,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    },
+    {
+      "name": "goal",
+      "hidden": true,
+      "source": "packages/coding-agent/src/tools/index.ts"
+    }
+  ],
+  "source_hashes": {
+    "packages/coding-agent/src/slash-commands/builtin-registry.ts": "5a513a4d6d436f214acf14d35947f95970d5eee250a56f44e70d62912acfc632",
+    "packages/coding-agent/src/slash-commands/builtin-modes.ts": "fc714d344843800451215ebc0c0ecd25cef79c3e1c4334b59d429704af0e2928",
+    "packages/coding-agent/src/slash-commands/builtin-collaboration.ts": "cb877dbf33a54c93c1795ae22db44d63adadd2561a07b594a6c829c8fa9dabe9",
+    "packages/coding-agent/src/slash-commands/builtin-session.ts": "0db63b7e4989e9d66cc23780f51f1a731f0dcc52520778f229e60add2fa28ae5",
+    "packages/coding-agent/src/slash-commands/builtin-lifecycle.ts": "8290a22c4acebb35a89fad911c5f61d5e28a108fc18029d87ec7a66951f2ab1d",
+    "packages/coding-agent/src/session/compact-modes.ts": "a13ce5b4b0eca6b6bdabf8c40765b7f270b7abb7d0b3b37bb1456f275ccc8d38",
+    "packages/coding-agent/src/slash-commands/builtin-marketplace.ts": "7b446cf53a4469f0c81c55eb70c6d3cb7598dd2b3fa62df55ac7a9bba47ff0c4",
+    "packages/coding-agent/src/slash-commands/builtin-magic-keywords.ts": "6a991732bb77918d16f7937b114b84eb3c0ad6f8fbd27f00c5ba88dcbffd7130",
+    "packages/coding-agent/src/jch-commands/index.ts": "7d21ccd379a4caf43811f28380816ecd24b20ab392eb08d3315c6355ce138b66",
+    "packages/coding-agent/src/jch-commands/workflow.ts": "ca544ca5480496829d4be612731e7e3950b0cadf6596eb7601ec5ab2bcc141e5",
+    "packages/coding-agent/src/jch-commands/git.ts": "31b49114071720d3c8ab4d0d19e4892dcc715cf63e981e0026010dca4faf8d3c",
+    "packages/coding-agent/src/slash-commands/builtin-control.ts": "83f586c5c88fda137786e10fa0256573f7c91635f6a42d491195278ed6d71d57",
+    "packages/coding-agent/src/cli-commands.ts": "56771dc7164145db3f18123be17553a8a854fa921d26a523791261e4dd41f479",
+    "packages/coding-agent/src/task/agents.ts": "c6ed83e6ff9b090c35c357cfe4615b3d7f9d74c0b421cf83987768d941d91e97",
+    "packages/coding-agent/src/task/commands.ts": "80c4b053a5dca89143d83ecac20d387e4b96f167c02412a9310e2d25a3343a35",
+    "packages/coding-agent/src/prompts/agents/scout.md": "c65a6e928a80009acac0510c17bd70dc5cdc688121ffd30976c7e6b0e8ce58fe",
+    "packages/coding-agent/src/prompts/agents/reviewer.md": "35a3e220e7ab8297c0ef7a9c1bc2d437b7119c087c91f9135d6cfa2bded48694",
+    "packages/coding-agent/src/prompts/agents/security-reviewer.md": "fc82255d3d6e7275ab1601cdf482ea5b02973fab52c7c474589bcd7f41ba4c96",
+    "packages/coding-agent/src/prompts/agents/task.md": "126179d30f986fb7cf1c4b04a4cee30d535cb3f571bbf83835f9fe704002e8c5",
+    "packages/coding-agent/src/extensibility/custom-commands/loader.ts": "4211200dd5abd0177d7e0f8b0b5acfc7c436bccc48ac98e9d49ed212381a1d7e",
+    "packages/coding-agent/src/extensibility/custom-commands/bundled/ci-green/index.ts": "0e3a6213c4567e7d71d36faf5b372948e11a4ad5b74bddabb3fca4033fcf5c94",
+    "packages/coding-agent/src/extensibility/custom-commands/bundled/review/index.ts": "17b09ca69c0a310c330fd04da5d0460606d1dc3ca21b502ca73fc654365e7eac",
+    "packages/coding-agent/src/tools/index.ts": "15e244e83b8253c69c4f6af916208931dbc139028898a4d5854158be74181535"
+  }
+}

@@ -1,0 +1,45 @@
+<section class="dft-lab power-lab" id="test-power-lab" data-lab="power" aria-label="DFT 测试功耗与低功耗调度交互演示">
+  <div class="lab-header">
+    <div><span class="lab-kicker">LAB 04 · TEST POWER</span><h2>把测试翻转安排在可控窗口</h2><p>分开观察 shift、capture、电源域隔离和并行/错峰调度的相对活动。</p></div>
+    <span class="lab-badge">翻转计数 · 非功率测量</span>
+  </div>
+  <div class="lab-controls">
+    <label>Shift 序列 <input data-power-input="shift" value="10110011" maxlength="32" disabled></label>
+    <label>Capture 新状态 <input data-power-input="capture" value="110010100011" minlength="12" maxlength="12" disabled></label>
+    <span class="lab-control-title">电源域状态</span>
+    <label class="lab-check"><input data-power-domain="0" type="checkbox" checked disabled> D0 开</label>
+    <label class="lab-check"><input data-power-domain="1" type="checkbox" checked disabled> D1 开</label>
+    <label class="lab-check"><input data-power-domain="2" type="checkbox" checked disabled> D2 开</label>
+    <label>测试调度 <select data-power-input="schedule" disabled><option value="parallel">并行捕获</option><option value="staggered">错峰捕获</option></select></label>
+    <label class="lab-check"><input data-power-input="isolation" type="checkbox" checked disabled> 启用跨域隔离</label>
+    <button type="button" data-power-action="apply" disabled>重新计算</button>
+    <button type="button" data-power-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 920 320" role="img" aria-labelledby="power-title power-desc">
+      <title id="power-title">多电源域测试活动与调度示意</title>
+      <desc id="power-desc">shift 和 capture 序列经过三个电源域；并行或错峰调度改变同一窗口的相对翻转数量，隔离控制跨域可见性。</desc>
+      <text x="26" y="38" class="lab-svg-label">测试时序</text>
+      <line x1="28" y1="78" x2="865" y2="78" class="lab-svg-axis"/><line x1="28" y1="235" x2="865" y2="235" class="lab-svg-axis"/>
+      <text x="30" y="66" class="lab-svg-muted">shift</text><rect x="85" y="51" width="225" height="36" rx="8" class="lab-svg-shift"/><text x="100" y="75" class="lab-svg-bit" data-power-field="shiftView">10110011</text>
+      <text x="330" y="66" class="lab-svg-muted">capture</text><rect x="390" y="51" width="225" height="36" rx="8" class="lab-svg-capture"/><text x="405" y="75" class="lab-svg-bit" data-power-field="captureView">110010100011</text>
+      <g class="power-domains">
+        <rect x="86" y="112" width="225" height="34" rx="8" class="lab-svg-domain" data-power-domain-box="0"/><text x="102" y="134" class="lab-svg-title">VDD-A · D0</text><text x="226" y="134" class="lab-svg-bit" data-power-domain-value="0">—</text>
+        <rect x="330" y="112" width="225" height="34" rx="8" class="lab-svg-domain" data-power-domain-box="1"/><text x="346" y="134" class="lab-svg-title">VDD-B · D1</text><text x="470" y="134" class="lab-svg-bit" data-power-domain-value="1">—</text>
+        <rect x="574" y="112" width="225" height="34" rx="8" class="lab-svg-domain" data-power-domain-box="2"/><text x="590" y="134" class="lab-svg-title">VDD-C · D2</text><text x="714" y="134" class="lab-svg-bit" data-power-domain-value="2">—</text>
+      </g>
+      <path d="M200 146V188M444 146V188M688 146V188" class="lab-svg-wire"/>
+      <rect x="110" y="188" width="680" height="40" rx="10" class="lab-svg-box"/><text x="450" y="213" text-anchor="middle" class="lab-svg-title">隔离边界 / 测试时钟调度</text>
+      <text x="125" y="255" class="lab-svg-muted">跨域输出：</text><text x="220" y="255" class="lab-svg-bit" data-power-field="boundary">—</text>
+      <text x="30" y="275" class="lab-svg-muted">活动窗口：</text><text x="130" y="275" class="lab-svg-bit" data-power-field="window">—</text><text x="30" y="300" class="lab-svg-muted">模型边界：</text><text x="130" y="300" class="lab-svg-warn">没有电压、电流或 IR drop 求解</text>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite">
+    <div><small>Shift 翻转</small><strong data-power-field="shiftFlips">—</strong></div>
+    <div><small>Capture 翻转</small><strong data-power-field="captureFlips">—</strong></div>
+    <div><small>峰值并发翻转</small><strong data-power-field="peak">—</strong></div>
+    <div><small>隔离边界计数</small><strong data-power-field="isolated">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-power-field="explanation">启用 JavaScript 后，选择调度方式并重新计算。所有数值是相对活动指标，不能换算为瓦特或真实 IR drop。</p>
+  <noscript><p>静态图展示 shift、capture、三个电源域和隔离边界。交互需要 JavaScript；翻转计数仅用于教学，不能代表真实功耗、供电电压或 IR drop。</p></noscript>
+</section>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>LBIST：LFSR 激励、MISR 签名与混叠 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/bist.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a class="active" aria-current="page" href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="lbistlfsr-misr">LBIST：LFSR 激励、MISR 签名与混叠</h1>
+<section class="dft-demo dft-lab" id="logic-bist-lab" data-lab="bist-logic" aria-label="LBIST 的 LFSR 与 MISR 演示">
+  <div class="lab-header demo-heading"><span class="demo-tag">04 / LOGIC TEST</span><strong>从伪随机激励到最终签名</strong></div>
+  <div class="lab-controls demo-controls">
+    <button type="button" data-action="step" disabled>单步</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <label>响应场景 <select data-setting="fault" disabled><option value="none">无故障</option><option value="stuck">DUT 响应 bit1 stuck-at-0</option></select></label>
+  </div>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备产生第一个模式</span><span>拍数 <b data-field="cycle">0</b> / 8</span><span>状态 <b data-field="state">0001</b></span></div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 340" role="img" aria-labelledby="logic-bist-title logic-bist-desc">
+      <title id="logic-bist-title">LFSR 产生四位激励，DUT 输出响应，MISR 计算四位签名</title>
+      <desc id="logic-bist-desc">数据从左向右经过 LFSR、教学 DUT 和 MISR；下方列出反馈多项式与固定已知序列。</desc>
+      <defs><marker id="bist-logic-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+      <rect x="28" y="58" width="180" height="108" rx="12" class="logic-box"/><text x="118" y="88" text-anchor="middle" class="pin-label">LFSR / PRPG</text><text x="118" y="114" text-anchor="middle" class="tiny-label">x⁴ + x + 1</text><text x="118" y="145" text-anchor="middle" class="bit" data-field="lfsr">0001</text>
+      <path d="M208 112H292" class="wire" marker-end="url(#bist-logic-arrow)"/><text x="224" y="96" class="tiny-label">激励</text>
+      <rect x="296" y="58" width="208" height="108" rx="12" class="logic-box"/><text x="400" y="88" text-anchor="middle" class="pin-label">DUT · 教学逻辑</text><text x="400" y="114" text-anchor="middle" class="tiny-label">r = f(pattern)</text><text x="400" y="145" text-anchor="middle" class="bit" data-field="response">0000</text>
+      <path d="M504 112H588" class="wire" marker-end="url(#bist-logic-arrow)"/><text x="521" y="96" class="tiny-label">响应</text>
+      <rect x="592" y="58" width="180" height="108" rx="12" class="logic-box"/><text x="682" y="88" text-anchor="middle" class="pin-label">MISR</text><text x="682" y="114" text-anchor="middle" class="tiny-label">LSB-first · shift/XOR 0011</text><text x="682" y="145" text-anchor="middle" class="bit" data-field="misr">0000</text>
+      <path d="M118 167V217H682V167" class="clock-wire"/><text x="400" y="239" text-anchor="middle" class="pin-label">每拍：采样 DUT 响应 → 更新 MISR → LFSR 进入下一状态</text>
+      <rect x="28" y="263" width="744" height="45" rx="8" class="logic-box"/><text x="42" y="291" class="tiny-label">已知序列：0001 → 0010 → 0100 → 1001 → …　无故障期望签名：</text><text x="735" y="291" text-anchor="end" class="bit" data-field="expected">----</text>
+    </svg>
+  </div>
+  <div class="lab-readouts demo-readouts"><div><small>本拍激励 / 响应</small><strong data-field="pair">尚未执行</strong></div><div><small>当前 MISR 签名</small><strong data-field="signature">0000</strong></div><div><small>最终比较</small><strong data-field="result">尚未完成</strong></div></div>
+  <p class="lab-explanation demo-explanation" data-field="explanation">这是一个固定 8 拍的教学序列。签名比较只表示本模型、本位序和本组模式的结果，不是 ATPG 覆盖率或量产测试结论。</p>
+  <noscript><p>动画需要 JavaScript；静态图仍展示 LFSR、DUT、MISR 的数据流，以及本例的反馈多项式和位序约定。相同签名可能来自不同响应序列（混叠）。</p></noscript>
+</section>
+
+<p>LBIST（Logic Built-In Self-Test）把逻辑测试所需的一部分激励和响应比较结构放进芯片。常见教学框图是 PRPG/LFSR 产生伪随机模式，扫描链或组合逻辑产生响应，再由 MISR 压缩成一个签名。芯片只需比较最终签名是否等于已知的无故障签名，但签名相同并不证明所有内部响应都相同。</p>
+<p>LBIST 的“自测”仍然依赖设计约束：测试时钟、复位、扫描链控制、屏蔽未知值和比较时点都需要在工程中定义。本页把这些边界留在说明文字中，不把小模型包装成插入工具或硅后测试结果。</p>
+<h2 id="_1">四个概念先对齐</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>作用</th>
+<th>本页约定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LFSR</td>
+<td>由线性反馈产生可重复的伪随机状态序列</td>
+<td>4 位、非零种子 0001、固定多项式位序</td>
+</tr>
+<tr>
+<td>激励</td>
+<td>将 LFSR 状态施加到待测逻辑</td>
+<td>直接把 4 位状态送进教学 DUT</td>
+</tr>
+<tr>
+<td>MISR</td>
+<td>将每拍响应累积到多位寄存器</td>
+<td>4 位、逐位 LSB-first 更新</td>
+</tr>
+<tr>
+<td>签名</td>
+<td>测试结束时的压缩状态</td>
+<td>只与本页固定序列比较</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">动手观察一个已知序列</h2>
+<p>点击“单步”执行一拍：先显示 LFSR 状态，再计算 DUT 响应，最后更新 MISR。默认种子 0001 的前几个状态是 <code>0001 → 0010 → 0100 → 1001</code>；序列循环长度和最终签名取决于位宽、反馈抽头、初始状态和更新位序。</p>
+<p>本页把 <code>LFSR → DUT → MISR</code> 的计算完整写在本地 JavaScript 中，并提供一个固定 8 拍的无故障签名作为已知序列验证。选择示例故障后，DUT 的一个响应位被钳位，最终签名通常发生变化；这是教学模型的差异，不是实际电路的故障仿真或 ATPG 报告。</p>
+<h3 id="_3">每一拍发生什么</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>顺序</th>
+<th>数据</th>
+<th>观察点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>保存当前 LFSR 状态</td>
+<td>本拍激励可重复</td>
+</tr>
+<tr>
+<td>2</td>
+<td>计算教学 DUT 响应</td>
+<td>选择故障时只改变模型响应</td>
+</tr>
+<tr>
+<td>3</td>
+<td>按约定位序更新 MISR</td>
+<td>响应被压缩进签名</td>
+</tr>
+<tr>
+<td>4</td>
+<td>推进 LFSR</td>
+<td>下一拍获得新的模式</td>
+</tr>
+</tbody>
+</table></div>
+<p>先单步几拍，再播放完整 8 拍，能看到同一个本地模型同时提供“可重复输入”和“压缩输出”。</p>
+<h2 id="_4">多项式和位序不能含糊</h2>
+<p>本例的 LFSR 采用向量 <code>[b3 b2 b1 b0]</code>：每拍变为 <code>[b2 b1 b0 (b3 XOR b2)]</code>，所以新 bit0=<code>old b3 XOR old b2</code>；若把输出序列记为 <code>y[t]</code>，可得 <code>y[t+4]=y[t+1] XOR y[t]</code>，对应特征多项式 <code>x^4 + x + 1</code>。MISR 是独立的固定教学压缩递推，不声称与 LFSR 使用同一硬件多项式：对响应的 bit0 到 bit3 依次处理，令 <code>f=s3 XOR input</code>，先左移为 <code>s=[s2 s1 s0 0]</code>，再在 <code>f=1</code> 时 XOR <code>0011</code>。也就是说，反馈位不是直接 OR 进最低位；例如从签名 <code>0000</code> 注入响应 <code>0001</code> 后，四个串行输入位的结果是 <code>1011</code>，最低位可以为 1。换一种寄存器画法、移位方向或输入位序，得到的数值就会改变；工程规格必须明确这些约定。</p>
+<p>如果把最高位改成最低位反馈、把响应从 bit3 开始输入，或采用 Galois 而不是 Fibonacci 结构，序列和签名都会不同。页面显示的 <code>0001 → 0010 → 0100 → 1001</code> 是当前实现的已知序列，不是所有 LFSR 的通用答案。</p>
+<h2 id="_5">签名比较和混叠</h2>
+<p>不同响应序列可能经过线性压缩后得到相同签名，这叫 aliasing（混叠）。因此签名比较是筛选机制，不是逐位保留的证据。真实 LBIST 还需要考虑 X 值、时钟控制、测试点、功耗、随机难测故障和诊断需求。本页没有计算或宣称真实覆盖率、混叠概率、测试时间收益或安全等级。</p>
+<p>为了让边界可复现，故障选项只钳位教学 DUT 的 response bit1。它没有改变 LFSR 或 MISR，也没有模拟 X 值、时钟竞争、功耗下降或布局布线寄生；这些内容需要真实网表、约束和仿真环境。</p>
+<h2 id="lbist-atpg">LBIST 与确定性 ATPG 的边界</h2>
+<p>ATPG 根据指定故障模型寻找确定性模式和期望响应；LBIST 依靠芯片内伪随机序列，硬件开销和模式数、随机难测故障之间需要权衡。实际流程可能组合 LBIST、压缩扫描、测试点和确定性补充模式，不能把本页的 8 拍示例当成完整制造测试方案。</p>
+<h3 id="_6">看结果时问三个问题</h3>
+<ul>
+<li>使用的种子、位宽、抽头和输入位序是否相同？</li>
+<li>比较的是最终签名，还是逐周期的原始响应？</li>
+<li>失败是否需要诊断、补充 ATPG 模式或测试点，而不只是重跑随机序列？</li>
+</ul>
+<p>这三个问题能避免把“签名不一致”直接等同为某一个物理缺陷，也避免把“签名一致”误解为穷尽了所有故障。</p>
+<h2 id="_7">公开参考</h2>
+<p>Siemens 的 <a href="https://static.sw.cdn.siemens.com/siemens-disw-assets/public/7kVdJZfTR9JCxdNplREEpY/en-US/Siemens-SW-tessent-logicbist-FS-82711-C2.pdf">Tessent LogicBIST 官方资料</a>介绍 LogicBIST 的伪随机测试、响应压缩和面向系统测试的应用边界；<a href="https://blogs.sw.siemens.com/xcelerator-academy/2024/01/30/enhance-test-time-and-quality-with-tessent-hybrid-testkompress-logicbist/">Siemens Xcelerator Academy 文章</a>说明混合 TK/LBIST 中可共享解压、扫描链和 MISR 等资源。本文的位宽、序列和签名是独立教学示例。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-memory-bist.html"><small>← 上一主题</small><strong>MBIST / BIRA / BISR</strong></a><a href="../pages/dft-flow.html"><small>下一主题 →</small><strong>DFT 工程流程与调试</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">四个概念先对齐</a></li>
+<li><a href="#_2">动手观察一个已知序列</a><ul>
+<li><a href="#_3">每一拍发生什么</a></li>
+</ul>
+</li>
+<li><a href="#_4">多项式和位序不能含糊</a></li>
+<li><a href="#_5">签名比较和混叠</a></li>
+<li><a href="#lbist-atpg">LBIST 与确定性 ATPG 的边界</a><ul>
+<li><a href="#_6">看结果时问三个问题</a></li>
+</ul>
+</li>
+<li><a href="#_7">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

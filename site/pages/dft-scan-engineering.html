@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>Scan 工程结构：划分、平衡与 lock-up · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/clocks.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a class="active" aria-current="page" href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="scan-lock-up">Scan 工程结构：划分、平衡与 lock-up</h1>
+<section class="dft-lab" id="clocks-scan-engineering-lab" data-lab="clocks-scan-engineering" aria-label="扫描链划分、平衡与 lock-up 实验">
+  <div class="lab-header"><span class="demo-tag">LAB / SCAN ENGINEERING</span><strong>链长平衡与跨时钟保持裕量</strong></div>
+  <div class="lab-controls">
+    <label>各链长度 <input data-field="lengths" value="8,8,7,9" disabled aria-label="各扫描链长度，逗号分隔"></label>
+    <label>目标沿偏移 <input data-field="edge" type="number" value="0.3" step="0.1" disabled> ns</label>
+    <label class="lab-check"><input type="checkbox" data-field="lockup" disabled> 插入 lock-up</label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 245" role="img" aria-labelledby="scan-eng-title scan-eng-desc">
+      <title id="scan-eng-title">四条扫描链的长度平衡与 lock-up</title>
+      <desc id="scan-eng-desc">四条链可以按时钟域和物理区域划分；跨域边界的 lock-up 用于改善保持裕量。</desc>
+      <text x="35" y="32" class="lab-label">clk_A</text><text x="35" y="174" class="lab-label">clk_B</text>
+      <path d="M100 45H675M100 100H675M100 187H675M100 232H675" class="lab-wire"/>
+      <rect data-visual="bar-0" x="450" y="32" width="298" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-1" x="450" y="87" width="298" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-2" x="450" y="174" width="267" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-3" x="450" y="219" width="298" height="6" rx="3" class="lab-bar"/>
+      <circle cx="160" cy="45" r="10" class="lab-cell"/><circle cx="250" cy="45" r="10" class="lab-cell"/><circle cx="340" cy="45" r="10" class="lab-cell"/><circle cx="430" cy="45" r="10" class="lab-cell"/><text x="685" y="50" class="lab-small">chain 1</text>
+      <circle cx="160" cy="100" r="10" class="lab-cell"/><circle cx="250" cy="100" r="10" class="lab-cell"/><circle cx="340" cy="100" r="10" class="lab-cell"/><circle cx="430" cy="100" r="10" class="lab-cell"/><text x="685" y="105" class="lab-small">chain 2</text>
+      <circle cx="160" cy="187" r="10" class="lab-cell lab-b"/><circle cx="250" cy="187" r="10" class="lab-cell lab-b"/><circle cx="340" cy="187" r="10" class="lab-cell lab-b"/><text x="685" y="192" class="lab-small">chain 3</text>
+      <circle cx="160" cy="232" r="10" class="lab-cell lab-b"/><circle cx="250" cy="232" r="10" class="lab-cell lab-b"/><circle cx="340" cy="232" r="10" class="lab-cell lab-b"/><circle cx="430" cy="232" r="10" class="lab-cell lab-b"/><text x="685" y="237" class="lab-small">chain 4</text>
+      <rect data-visual="lockup" x="505" y="150" width="88" height="32" rx="6" class="lab-lockup"/><text x="549" y="171" text-anchor="middle" class="lab-small">lock-up</text>
+      <line data-visual="edge" x1="494" y1="135" x2="494" y2="185" class="lab-edge"/>
+      <path d="M505 166H430M593 166H635" class="lab-control"/>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>链长</small><strong data-readout="balance">—</strong></div>
+    <div><small>最长−最短</small><strong data-readout="spread">—</strong></div>
+    <div><small>移位周期</small><strong data-readout="cycles">—</strong></div>
+    <div><small>跨沿判断</small><strong data-readout="timing">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可调整链长与 lock-up。示意只解释工程权衡，不替代 CTS、STA 或 DFT DRC。</p>
+  <noscript><p>本实验需要 JavaScript 才能计算链长差异。实际扫描链还需依据时钟域、电源域、物理区域与 DFT 规则进行划分，并对跨沿保持问题插入适合的 lock-up 结构。</p></noscript>
+</section>
+
+<p>四个寄存器串成一条链可以解释 Scan 原理，但工程上的链要面对时钟域、电源域、物理区域、链长、功耗和时序。好的结构让测试数据可达、可观测，也让后续 ATPG 和物理实现有可管理的约束。</p>
+<h2 id="_1">为什么要划分扫描链</h2>
+<p>把所有寄存器放在一条链里会增加移位时间和跨区域连线。工程通常把寄存器分到多条链，再由测试通道或压缩结构并行驱动。划分时可能考虑：</p>
+<ul>
+<li>时钟域和时钟沿，减少不安全的跨沿连接；</li>
+<li>电源域、隔离策略和 level shifter；</li>
+<li>物理区域与布线拥塞；</li>
+<li>链长接近程度，避免短链空等最长链；</li>
+<li>功耗与测试模式下的同时翻转。</li>
+</ul>
+<p>本页输入 <code>8,8,7,9</code> 代表四条教学链的寄存器数量。模型计算最长链、最短链和差异，不声称这是某个芯片的最优划分。</p>
+<h2 id="_2">链长平衡与移位时间</h2>
+<p>若并行链的长度为 <code>L1 ... Ln</code>，不考虑协议和压缩开销时，一组模式的移位周期至少受 <code>max(Li)</code> 约束。长度差异越大，短链越早结束、剩余周期只能等待。</p>
+<p>实验把“最长 − 最短 ≤ 1”作为易读的平衡提示。真实方案还要考虑每条链的通道分配、压缩比、模式数量、测试功耗和物理时序，因此“平衡”不是只追求每条链字面上相等。</p>
+<h2 id="lock-up">跨时钟沿为什么需要 lock-up</h2>
+<p>当扫描链从一个时钟域或时钟沿进入另一个域时，源寄存器的输出可能在目标寄存器保持窗口附近变化。若目标沿来得太早，可能违反保持时间。lock-up 元件在链边界暂存数据，为跨沿路径增加保持裕量。</p>
+<p>实验用一个简化的不等式表达这个风险。模型把源沿后的最早数据到达时间与目标沿之后的保持窗口比较：</p>
+<pre><code class="language-text">源沿 + 数据最小延迟 + lock-up 暂存窗口 ≥ 目标沿 + 保持窗口
+</code></pre>
+<p>勾选 lock-up 后，模型给数据到达时间加入一个教学用的暂存窗口；它不会移动目标时钟沿。这只说明“为什么结构有帮助”，不是库单元延迟、CTS 或 STA 计算。lock-up 的实际类型、时钟相位、插入位置和约束必须由实现工具与工艺库决定。</p>
+<h2 id="_3">动手顺序</h2>
+<ol>
+<li>把链长改为 <code>8,8,8,8</code>，观察差异降为 0；再改成 <code>4,8,12,16</code>，理解等待最长链的代价。</li>
+<li>把目标沿偏移设为 <code>0.3 ns</code>，保持窗口为模型内部的 <code>0.5 ns</code>，观察未加 lock-up 时数据到达裕量为负。</li>
+<li>勾选 lock-up，观察教学模型给数据到达增加暂存窗口；目标时钟沿没有被移动，这不是“自动修复了真实时序”。</li>
+</ol>
+<h2 id="_4">常见误区</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>误区</th>
+<th>更准确的说法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>链越短越好</td>
+<td>还要看通道数、压缩架构、功耗和布线代价</td>
+</tr>
+<tr>
+<td>所有跨域连接都只需加 lock-up</td>
+<td>要先分析时钟相位、沿、域边界和工具 DRC</td>
+</tr>
+<tr>
+<td>平衡链长等于测试时间已经最优</td>
+<td>模式数量、压缩效率与 ATE 协议也影响总测试时间</td>
+</tr>
+<tr>
+<td>lock-up 是功能数据路径的普通寄存器</td>
+<td>它是特定测试时序结构，接入方式需遵守 DFT 规则</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_5">工程边界</h2>
+<p>扫描链工程通常还需要 scan reorder、链路连通性检查、时钟门控测试使能、跨电源域控制、X 处理以及与 ATPG/压缩配置一致的测试模型。结构画完不代表模式已经生成，更不代表覆盖率、功耗和物理时序达标。</p>
+<p>Siemens 的 <a href="https://www.siemens.com/en-us/products/ic/tessent/test/scanpro/">ScanPro 官方介绍</a>明确提到可按时钟域、电源域和物理集群划分扫描链；其公开的 <a href="https://blogs.sw.siemens.com/tessent/2017/04/24/scan-insertion-for-better-atpg/">Scan insertion 文章</a>也提到跨时钟域/边沿合并及 lock-up cell。Synopsys 的 <a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">TestMAX DFT 官方介绍</a>则把 location-aware scan chain reordering、分层扫描和一致 DRC 列为完整 DFT 流程的一部分。</p>
+<p>本页的数字和图形是可重复的教学模型；最终结构应以目标工艺库、RTL/网表、时钟约束和实际 DFT 工具报告为准。</p>
+<h2 id="_6">复核清单</h2>
+<p>工程评审至少应留下链路连通性、链长统计、跨域结构、时钟/电源域约束、DFT DRC、ATPG 模式仿真和物理时序检查的可追溯结果；本页只帮助建立检查顺序。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-scan.html"><small>← 上一主题</small><strong>Scan 基础：移入、捕获、移出</strong></a><a href="../pages/dft-at-speed.html"><small>下一主题 →</small><strong>At-speed 与 LOC / LOS</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">为什么要划分扫描链</a></li>
+<li><a href="#_2">链长平衡与移位时间</a></li>
+<li><a href="#lock-up">跨时钟沿为什么需要 lock-up</a></li>
+<li><a href="#_3">动手顺序</a></li>
+<li><a href="#_4">常见误区</a></li>
+<li><a href="#_5">工程边界</a></li>
+<li><a href="#_6">复核清单</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

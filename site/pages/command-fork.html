@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>/fork · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="command" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a class="active" aria-current="location" href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="fork">/fork</h1>
+<p>从早期消息创建新会话分叉。</p>
+<h2 id="_1">示例</h2>
+<pre><code class="language-text">/fork
+</code></pre>
+<h2 id="_2">功能与场景</h2>
+<p>从早期消息创建新会话分叉。</p>
+<p>典型场景：保留旧上下文尝试另一方案。</p>
+<h2 id="_3">主要参数</h2>
+<p>无必需位置参数；需要交互选择的命令会打开对应面板。</p>
+<h2 id="_4">文件与状态影响</h2>
+<p>创建新会话记录，不自动回滚代码。</p>
+<p>示例中的路径、链接与名称须按实际任务替换；涉及写入或远端操作时，请先确认操作对象与影响。</p>
+<h2 id="_5">版本依据</h2>
+<p>v18.1.9+fork.170 · <a href="https://github.com/jchanghong023/oh-my-pi/blob/755b392dc4e99bec1415bed12b3a581d1b19643c/packages/coding-agent/src/slash-commands/builtin-session.ts#L502">对应注册源码</a>。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">示例</a></li>
+<li><a href="#_2">功能与场景</a></li>
+<li><a href="#_3">主要参数</a></li>
+<li><a href="#_4">文件与状态影响</a></li>
+<li><a href="#_5">版本依据</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

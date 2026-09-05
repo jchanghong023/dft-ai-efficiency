@@ -1,0 +1,44 @@
+name	purpose	scenario	effects	example
+launch	启动 OMP 会话（默认入口）	进入目标代码仓开始任务	会话内的工具可修改代码	omp
+acp	通过标准输入输出运行 ACP 服务	编辑器集成	启动 Agent 服务	omp acp --help
+auth-broker	管理凭据托管服务	部署统一认证	可能管理凭据及服务	omp auth-broker --help
+auth-gateway	启动认证转发网关	连接既有 broker	启动转发服务并访问 broker	omp auth-gateway --help
+agents	导出内置任务 Agent 定义	将内置 Agent 解包到指定目录供定制	unpack 写 Agent 文件，--force 覆盖已有定义	omp agents --help
+bench	测量模型延迟与吞吐	外围模型性能评估	发送模型请求并产生测试输出	omp bench --help
+browser-relay	启动浏览器 CDP relay	连接已授权的本地浏览器	启动服务并可控制浏览器	omp browser-relay --help
+cleanse	检测并修复项目诊断	处理已有诊断问题	修改代码并运行子 Agent	omp cleanse --help
+commit	生成提交信息并更新变更记录	明确的提交准备工作	可写变更记录及 Git 提交	omp commit --help
+completions	输出 Shell 补全脚本	手动配置命令补全	输出文本，重定向时写文件	omp completions bash
+__complete	内部动态补全入口	Shell 补全脚本调用	内部查询，不建议直接调用	omp __complete --help
+compress	压缩文本文件为紧凑提示表达	整理已审查的提示词文本	调用模型并可能重写文件	omp compress --help
+config	读取和修改配置	查询并发或模型相关配置	get/list 读取；set/reset 写个人配置	omp config get task.maxConcurrency
+docs	管理 Markdown Wiki 索引	检查已同步数据库	list/status 查询；init/reinit/remove 修改数据库	omp docs list
+dry-balance	模拟 OAuth 账户负载分配	外围认证策略诊断	读取账户信息并产生模拟输出	omp dry-balance --help
+gc	清理存储中的无用数据	明确的本地存储维护	会删除符合清理条件的数据	omp gc --help
+grep	单独测试 grep 工具	检查检索模式和结果	读取指定文件	omp grep --help
+gallery	展示确定性的 TUI 组件预览	维护界面时检查渲染	运行本地预览	omp gallery --help
+git	打开全屏 Git 界面	查看 diff、暂存、准备提交	面板动作可修改暂存区及提交	omp git
+grievances	查看、清理或推送工具问题报告	外围反馈工具问题	清理可删除记录，push 可上传报告	omp grievances --help
+images	检查和管理图片发布后端	诊断图片输出	探测可能联网，purge 可删除发布数据	omp images --help
+if-bench	测试指令遵循与工作记忆	外围模型评估	调用模型并写测试输出	omp if-bench --help
+install	安装或链接扩展包	维护公共扩展	写插件目录并可能联网	omp install --help
+join	加入实时协作会话	已有授权协作链接	连接 relay	omp join --help
+models	列出、搜索或刷新模型	检查模型是否可用	刷新时可能联网并更新缓存	omp models --help
+plugin	管理插件安装与卸载	外围维护插件	写配置或插件文件并可能联网	omp plugin --help
+ps	查看与控制托管后台进程	诊断后台任务	stop/kill/restart 可影响进程	omp ps --help
+say	使用本地 TTS 引擎合成并播放语音	已安装本地 TTS 模型时	合成音频并通过扬声器播放	omp say --help
+share	生成会话分享链接	已审查并明确允许分享会话	向分享服务上传数据	omp share --help
+setup	首次配置模型服务	设置可用 provider	写配置和认证信息	omp setup
+shell	交互式 Shell 控制台	需要在选定目录运行命令	执行 Shell 命令；cwd 和 timeout 控制目录与超时	omp shell --help
+read	显示 read 工具对指定资源的输出	核对文件/内部 URI 的读取结果	读取本地内容；URL 输入可能联网	omp read README.md
+render	通过真实渲染管线绘制会话线程	维护 TUI 渲染	读取会话并输出渲染结果	omp render --help
+ssh	管理远程主机与连接	操作已授权主机	写连接配置，远程动作影响目标主机	omp ssh --help
+stats	启动本地统计仪表盘	查看使用情况	启动本地 HTTP 服务	omp stats --help
+sync-claude	同步 Claude 配置相关数据	明确需要客户端配置互通时	写配置；不是本仓库的团队 sync.py	omp sync-claude --help
+update	更新 OMP 客户端	仅在外网维护机器更新	联网下载并替换客户端	omp update --help
+usage	查看模型提供方用量	检查账户额度	可能访问服务	omp usage --help
+tiny-models	下载会话标题和记忆用的本地小模型	外围准备可离线运行的小模型	默认 download 会联网写模型文件；list 查询	omp tiny-models list
+token	获取提供方的 API key 或 OAuth token	明确需要访问凭据的集成操作	会输出敏感凭据；不把实际结果复制到共享日志	omp token --help
+ttsr	检查和测试时间回溯流规则	验证行为纠正规则的匹配	读取规则，测试时可能产生本地输出	omp ttsr --help
+worktree	管理 Git 工作树	隔离开发任务	创建或改变工作树及分支	omp worktree --help
+search	从 CLI 调用 Web 搜索	外围公开资料调查	联网检索；不用于内部资料外发	omp search --help

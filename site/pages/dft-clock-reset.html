@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>OCC、测试时钟与复位 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/clocks.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a class="active" aria-current="page" href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="occ">OCC、测试时钟与复位</h1>
+<section class="dft-lab" id="clocks-occ-lab" data-lab="clocks-occ" aria-label="OCC、门控与复位实验">
+  <div class="lab-header"><span class="demo-tag">LAB / CLOCK CONTROL</span><strong>哪些源时钟沿真正到达扫描触发器？</strong></div>
+  <div class="lab-controls">
+    <label>模式 <select data-field="mode" disabled><option value="shift">Shift · 低速移位</option><option value="capture">Capture · at-speed 捕获</option></select></label>
+    <label class="lab-check"><input type="checkbox" data-field="se" checked disabled> Scan Enable</label>
+    <label class="lab-check"><input type="checkbox" data-field="test" checked disabled> Test Enable</label>
+    <label class="lab-check"><input type="checkbox" data-field="functional" disabled> 功能时钟源</label>
+    <label class="lab-check"><input type="checkbox" data-field="reset" disabled> 复位有效</label>
+    <button type="button" data-action="step" disabled>单步源时钟沿</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <label>速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 230" role="img" aria-labelledby="occ-title occ-desc">
+      <title id="occ-title">OCC 门控功能时钟和测试时钟</title>
+      <desc id="occ-desc">测试使能、Scan Enable 和复位共同决定 OCC 是否能够输出移位或捕获时钟。</desc>
+      <rect x="45" y="80" width="130" height="58" rx="8" class="lab-box"/><text x="110" y="105" text-anchor="middle" class="lab-label">功能 / 测试</text><text x="110" y="124" text-anchor="middle" class="lab-small">clock source</text>
+      <path d="M175 109H285" class="lab-wire" marker-end="url(#occ-arrow)"/>
+      <rect x="285" y="65" width="180" height="88" rx="12" class="lab-box lab-occ"/><text x="375" y="98" text-anchor="middle" class="lab-label">OCC</text><text x="375" y="121" text-anchor="middle" class="lab-small">门控 · 计数 · 复位保护</text>
+      <path d="M465 109H570" class="lab-wire" marker-end="url(#occ-arrow)"/><rect x="570" y="80" width="175" height="58" rx="8" class="lab-box"/><text x="657" y="105" text-anchor="middle" class="lab-label">scan flops</text><text x="657" y="124" text-anchor="middle" class="lab-small">shift / capture</text>
+      <path d="M375 153V190H650V138" class="lab-control"/><text x="505" y="214" text-anchor="middle" class="lab-small">SE、Test Enable、Reset 是控制条件，不是数据位</text>
+      <circle data-visual="pulse" cx="510" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="530" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="550" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="570" cy="109" r="7" class="lab-dot"/>
+      <defs><marker id="occ-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>已放行 / 本组预计输出沿</small><strong data-readout="edges">—</strong></div>
+    <div><small>所选源沿 / 本组源沿数</small><strong data-readout="cycle">—</strong></div>
+    <div><small>所选沿类型</small><strong data-readout="pulses">—</strong></div>
+    <div><small>所选沿门控</small><strong data-readout="result">—</strong></div>
+    <div><small>请求还需放行的沿数</small><strong data-readout="remaining">—</strong></div>
+  </div>
+  <p class="access-node-detail" data-occ-detail>OCC 选择时钟来源、门控和计数；输入时钟、控制条件和输出沿不是同一件事。</p>
+  <div class="access-history-heading"><strong>源时钟与门控记录</strong><button type="button" data-action="latest" disabled>返回最新状态</button></div>
+  <p class="access-view-status" data-occ-view aria-live="polite">每组最多观察四个源沿，改变条件会重新开始。</p>
+  <div class="access-history-scroll" tabindex="0" aria-label="OCC 逐源沿记录，可横向滚动"><table><caption>↑ 只表示源时钟沿序号，不表示脉宽、频率、毛刺或传播延迟；图中圆点表示累计放行次数。</caption><thead><tr><th>源沿</th><th>来源</th><th>SE</th><th>TE</th><th>RST</th><th>门控</th><th>输出</th><th>计数前 → 后</th><th>还需</th></tr></thead><tbody data-occ-history></tbody></table></div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可改变门控条件。复位有效或测试使能关闭时，模型会保持时钟关闭。</p>
+  <noscript><p>本实验需要 JavaScript 才能切换状态。OCC 的教学要点是把移位时钟与高速捕获脉冲分开控制，并在复位或模式不安全时禁止输出。</p></noscript>
+</section>
+
+<p>扫描测试不只是把 <code>CLK</code> 接到所有寄存器。移位、捕获、复位和功能模式需要彼此可控，否则一次测试脉冲可能在错误的时刻推进状态，甚至让复位释放顺序失去定义。</p>
+<h2 id="occ_1">OCC 在做什么</h2>
+<p>OCC（On-Chip Clock Controller）是测试时钟控制结构。教学模型把它抽象成一个安全门控器：</p>
+<ul>
+<li>在 <strong>Shift</strong> 模式放行受控的扫描沿；</li>
+<li>在 <strong>Capture</strong> 模式从功能时钟源沿中放行 launch/capture；</li>
+<li>在测试使能关闭、模式不一致或复位有效时保持输出关闭。</li>
+</ul>
+<p>真实 OCC 还要处理功能时钟源、测试时钟源、脉冲选择、门控时序、时钟域和约束。这里的两个捕获脉冲只是说明状态机含义，不代表某家 IP 的固定脉冲数量。</p>
+<p>本页为了让“复位保护”可观察，明确选择了 <code>resetBlocksClock=true</code> 的教学策略：复位有效时关闭模型输出。复位并不天然意味着所有真实 OCC 都必须关闭时钟；实际芯片应按 OCC 规格、复位同步方式和测试协议决定。</p>
+<h2 id="shift-capture">Shift 与 Capture 的边界</h2>
+<p>Shift 的目标是把数据稳定地推进扫描链，通常关注扫描时钟频率、链长、功耗和 <code>SE</code> 保持时间。Capture 的目标是让功能逻辑产生响应并在目标时刻采样，可能需要 at-speed 功能时钟。</p>
+<p>在实验中切换到 Capture 后，必须关闭 <code>SE</code>、保持 <code>Test Enable</code> 并打开“功能时钟源”。每次单步送入一个源沿；第一个被允许的沿标为 launch，第二个标为 capture，后续两个源沿被计数门控挡住。<strong>请求 capture</strong>与<strong>确实存在一个可用时钟源</strong>不是同一件事；没有源沿时不会伪造输出，单步和播放禁用。</p>
+<p>每组只观察四个源沿。逐沿表记录 SE、TE、RST、放行与否、脉冲角色、计数前后值和还需输出的沿数。选择历史沿会暂停，图中累计圆点、读数与讲解同步回看；继续操作仍从最新状态前进。修改控制条件会重新开始本组，不把新条件套在旧记录上。</p>
+<p>“已放行 / 本组预计输出沿”不是频率或物理脉宽。所有边沿序号、圆点间距及播放速度都只是教学表达；本模型不验证无毛刺切换、真实高速波形或扫描触发器的数据捕获值。</p>
+<h2 id="_1">门控、测试使能和复位</h2>
+<ul>
+<li><code>Test Enable</code> 决定测试时钟请求是否进入 OCC；它不是扫描数据。</li>
+<li><code>Scan Enable</code> 决定扫描寄存器选择移位路径还是功能路径；它必须在捕获边界满足时序。</li>
+<li><code>Reset</code> 有效时，实验模型安全关闭输出，避免复位中的寄存器被测试沿部分推进。</li>
+</ul>
+<p>真实芯片可能有同步或异步复位、复位同步器、多个电源域和不同的复位控制策略。复位极性、释放沿和跨域顺序必须以 RTL、库单元和 DFT 约束为准；本页不替用户选择这些实现。</p>
+<h2 id="_2">动手顺序</h2>
+<ol>
+<li>选择 Shift，保持 <code>SE</code> 和 <code>Test Enable</code>，单步四次观察计数 <code>0→1→2→3→4</code>。</li>
+<li>选择 Capture，关闭 <code>SE</code> 并打开“功能时钟源”，单步四次观察计数 <code>0→1→2→2→2</code>；最后两次有源沿，但没有输出沿。</li>
+<li>勾选“复位有效”后开始新一组，确认即使送入源沿，输出计数仍为 0。</li>
+<li>选择一个旧记录，观察门控和计数回到同一时刻；回看不会改变当前实验。</li>
+<li>关闭 <code>SE</code> 后回到 Shift，观察模式不一致使请求被拒绝。这不表示实际芯片的正常功能时钟也被关闭。</li>
+</ol>
+<h2 id="_3">常见误区</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>误区</th>
+<th>更准确的说法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OCC 是一个简单的 AND 门</td>
+<td>OCC 还需要模式控制、脉冲协议和时序约束</td>
+</tr>
+<tr>
+<td>复位有效时多打几个时钟没关系</td>
+<td>复位期间的时钟可能造成部分状态推进或不确定行为</td>
+</tr>
+<tr>
+<td>Capture 有请求就一定有 at-speed 脉冲</td>
+<td>还需要选定时钟源、门控条件和合法时序</td>
+</tr>
+<tr>
+<td>Shift 与 Capture 可以共用同一组约束</td>
+<td>二者的频率、<code>SE</code> 边界、功耗和时序目标不同</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_4">工程边界</h2>
+<p>OCC 只是测试基础设施的一部分。多时钟域、集成时钟门控（ICG）、PLL/分频器、低功耗电源状态和异步复位都可能改变测试协议。需要实际项目时，应从 DFT 规格、时钟约束、复位策略和工具 DRC 一起核对，而不是从示意动画生成插入命令。</p>
+<p>Siemens 公开资料指出，Tessent ScanPro 包含 OCC 插入与自动化，并支持按时钟域、电源域和物理集群划分扫描链；参阅 <a href="https://www.siemens.com/en-us/products/ic/tessent/test/scanpro/">Tessent ScanPro 官方介绍</a>。Synopsys 的 <a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">TestMAX DFT 官方介绍</a>也将扫描链、测试点、压缩和一致 DRC 放在完整 DFT 流程中讨论。</p>
+<p>本页模型只展示门控状态与输出沿的因果关系，不表示已经完成真实 OCC 插入、时钟树收敛或芯片测试签核。</p>
+<h2 id="_5">复核清单</h2>
+<p>真实项目应把 OCC 输出与时钟约束、复位约束、测试协议和 DFT DRC 一起复核；尤其要记录复位断言与释放的时序证据，并确认每个时钟域的 shift/capture 规则都已覆盖。</p>
+<p>如果一个设计同时包含多个测试时钟源，应分别记录选择条件与互斥关系，避免把不同源的脉冲混在同一个简化波形里。</p>
+<p>复位检查也应覆盖上电、测试模式切换和异常中断路径，而不只看一个复位复选框。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-at-speed.html"><small>← 上一主题</small><strong>At-speed 与 LOC / LOS</strong></a><a href="../pages/dft-edt.html"><small>下一主题 →</small><strong>EDT 基础：并行链与响应压缩</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#occ_1">OCC 在做什么</a></li>
+<li><a href="#shift-capture">Shift 与 Capture 的边界</a></li>
+<li><a href="#_1">门控、测试使能和复位</a></li>
+<li><a href="#_2">动手顺序</a></li>
+<li><a href="#_3">常见误区</a></li>
+<li><a href="#_4">工程边界</a></li>
+<li><a href="#_5">复核清单</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

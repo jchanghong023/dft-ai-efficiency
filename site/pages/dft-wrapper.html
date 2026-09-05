@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>Wrapper 与分层 DFT：隔离、串接、复用 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/access.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a class="active" aria-current="page" href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="wrapper-dft">Wrapper 与分层 DFT：隔离、串接、复用</h1>
+<section class="container dft-lab" id="wrapper-lab" data-lab="access-wrapper" aria-labelledby="wrapper-lab-title">
+  <header class="lab-header">
+    <p class="lab-kicker">ACCESS LAB · 03</p>
+    <h2 id="wrapper-lab-title">Wrapper：让层级测试各走各的路径</h2>
+    <p>在一个可复用核周围，Wrapper Cell 可以隔离核心、串接边界或旁路。切换模式观察同一输入如何到达核心与输出；它与芯片 PAD 上的 Boundary Scan Cell 是相关但不同的工程结构。</p>
+  </header>
+  <div class="lab-controls" role="group" aria-label="Wrapper 控制">
+    <button type="button" data-access-action="reset" disabled>重置</button>
+    <button type="button" data-access-action="apply" disabled>应用数据路径</button>
+    <label>测试模式 <select data-access-setting="mode" disabled><option value="internal">Internal Test · 内测</option><option value="external">External Test · 外测</option><option value="bypass">Bypass · 旁路</option></select></label>
+    <label>输入 <select data-access-setting="input" disabled><option value="0">0</option><option value="1">1</option></select></label>
+    <label>外部互连 <select data-access-setting="link" disabled><option value="normal">正常：link(input)</option><option value="invert">反相：link(!input)</option><option value="stuck0">故障：固定 0</option><option value="stuck1">故障：固定 1</option></select></label>
+  </div>
+  <div class="lab-stage wrapper-stage" aria-label="Wrapper 数据路径示意">
+    <div class="wrapper-ports"><span>测试输入</span><strong data-access-field="input">0</strong></div>
+    <div class="wrapper-box">
+      <div class="wrapper-row" data-wrapper-row="external"><span>边界 Cell · 外测角色</span><b data-access-field="external-cell">—</b></div>
+      <div class="wrapper-core"><span>CORE：Y = NOT X</span><strong data-access-field="core">—</strong><small data-access-field="core-input">输入 —</small></div>
+      <div class="wrapper-row" data-wrapper-row="internal"><span>边界 Cell · 内测角色</span><b data-access-field="internal-cell">—</b></div>
+    </div>
+    <div class="wrapper-ports"><span>测试输出</span><strong data-access-field="output">—</strong></div>
+  </div>
+  <div class="lab-readouts" aria-label="Wrapper 读数">
+    <div><small>当前模式</small><strong data-access-field="mode">Internal Test</strong></div>
+    <div><small>核心是否隔离</small><strong data-access-field="isolation">否</strong></div>
+    <div><small>路径结果</small><strong data-access-field="result">尚未应用</strong></div>
+    <div><small>外部互连简化值 / 旁路寄存器</small><strong><span data-access-field="neighbor">—</span> / <span data-access-field="bypass-reg">—</span></strong></div>
+  </div>
+  <p class="lab-explanation" data-access-field="explanation">Internal Test 把测试刺激送入核内部，外部边界保持安静；External Test 通过外部 Wrapper 观察或驱动核边界；Bypass 绕过核心，适合层级串接。</p>
+  <noscript><p>启用 JavaScript 后可切换三种模式。Wrapper 是层级 DFT 的隔离与串接结构；Boundary Scan 是芯片 I/O 边界上的另一层结构，两者不要混为同一个单元。</p></noscript>
+</section>
+
+<p>大型 SoC 往往先分别验证可复用核，再把多个核集成到芯片。Wrapper 是围绕核的测试结构：它可以把内部测试数据送到核边界、观察外部连接，也可以在不访问核内部时直接旁路。这样做的核心是控制测试边界，不是把一条普通功能总线换个名字。</p>
+<blockquote>
+<p><strong>范围声明</strong>：本页交互只展示三种数据路径的逻辑关系。实际 Wrapper Cell 数量、控制信号、时钟域、协议和插入结果必须由目标工艺库、核交付物与 DFT 工具共同确定。</p>
+</blockquote>
+<h2 id="_1">三种层级模式</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>数据路径</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internal Test</td>
+<td>测试端口 → 边界 Cell 的内测角色 → CORE → 边界 Cell → 测试端口</td>
+<td>在隔离外部连接的条件下测试核内部</td>
+</tr>
+<tr>
+<td>External Test</td>
+<td>测试端口 → 边界 Cell 的外测角色 → 简化互连 → 边界 Cell 捕获 → 测试端口</td>
+<td>观察/驱动外部互连；核心逻辑保持隔离</td>
+</tr>
+<tr>
+<td>Bypass</td>
+<td>测试端口 → 旁路通路 → 测试端口</td>
+<td>不访问当前核，缩短分层访问路径</td>
+</tr>
+</tbody>
+</table></div>
+<p>点击“应用数据路径”再观察核心与输出，模式改变后先不会自动宣称结果，提醒读者区分“选择控制”与“实际时钟更新”。</p>
+<h2 id="wrapper-cell">Wrapper Cell 做什么</h2>
+<p>一个常见的 Wrapper Cell 可能包含并行捕获、移位寄存器、更新寄存器和多路选择控制；同一组边界 Cell 可以在模式控制下复用为内测角色、外测角色或旁路角色，并不意味着工艺库里固定存在两种名为“内部/外部”的单元。内测时，边界 Cell 可以把芯片级信号隔离，避免外部未知值污染核测试。外测时，它可以把核边界暴露出来，支持核间互连测试。旁路时，访问链越过当前核，继续到下一个层级。</p>
+<p>这些是逻辑意图，不等于某个工具已经插入了单元。实现阶段仍需要 DFT 规则检查、时序/功耗约束、模式仿真和与核交付的端口映射。</p>
+<h3 id="_2">模式切换不是瞬间完成</h3>
+<p>工程里通常要在测试控制器的规定时刻更新模式位，再经过必要的时钟沿让多路选择器和寄存器生效。切换期间还要处理输出使能，避免两个来源同时驱动同一网络。交互将“选择模式”和“应用数据”分成两个动作，帮助区分控制寄存器更新与数据传播。</p>
+<p>当核包含多个时钟域、异步复位或低功耗电源域时，Wrapper 的隔离值和更新时机更需要单独约束。只看理想 RTL 的 0/1 路径，不能替代门级仿真、STA 或硅上测试。交互的 External Test 只计算外部 <code>link(input)</code>（可选正常、反相或固定故障）并由边界 Cell 捕获，不把 CORE 的反相功能冒充成外测结果。</p>
+<h2 id="wrapper-boundary-scan">Wrapper 与 Boundary Scan 不同</h2>
+<p>二者都可能拥有捕获、移位和更新等结构，所以容易混淆：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>主要位置</th>
+<th>主要服务对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrapper</td>
+<td>可复用核的边界、层级集成接口</td>
+<td>核级内测、外测、旁路和层级复用</td>
+</tr>
+<tr>
+<td>Boundary Scan Cell</td>
+<td>芯片 I/O PAD 附近的边界寄存器</td>
+<td>芯片/板级引脚与互连测试</td>
+</tr>
+</tbody>
+</table></div>
+<p>JTAG TAP 可以成为二者的访问入口，但 TAP、Wrapper 和 Boundary Cell 是三个不同层次的概念。芯片可能把多个结构串进同一测试链，也可能使用其他控制网络。</p>
+<h2 id="_3">集成时的检查清单</h2>
+<ol>
+<li>核的测试端口、时钟、复位和 Wrapper 控制是否在顶层有明确连接？</li>
+<li>Internal/External/Bypass 的优先级是否没有造成组合环路或不受控驱动？</li>
+<li>多个核串接时，旁路长度、位序和更新时机是否与模式生成配置一致？</li>
+<li>隔离值是否满足低功耗电源域和上电顺序要求？</li>
+<li>DFT DRC、门级模式仿真和必要的 STA 是否覆盖了这些模式？</li>
+</ol>
+<h2 id="_4">一个常见误区</h2>
+<p>“加入 Wrapper”不等于“核已经可测”。可测性还依赖内部状态的可控/可观测程度、扫描链、时钟控制、约束和 ATPG。反过来，Boundary Scan 也不能替代核内部的测试结构；它主要提供外部边界访问。</p>
+<h2 id="_5">资料与继续阅读</h2>
+<ul>
+<li><a href="https://standards.ieee.org/ieee/1500/">IEEE 1500 标准页面</a>：可复用核测试 Wrapper 的规范入口。</li>
+<li><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT</a>：层级 DFT、Wrapper 与实现流程的产品资料。</li>
+<li><a href="https://www.siemens.com/en-us/products/ic/tessent/test/boundaryscan/">Siemens Tessent BoundaryScan</a>：Boundary Scan 的实现背景，便于对照 Wrapper 与 PAD 边界的差异。</li>
+</ul>
+<p>三页实验使用同一组公共控件名称，但每个模型只描述自己的教学边界；它们不共享真实芯片配置。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-ijtag.html"><small>← 上一主题</small><strong>IJTAG 与片内仪器</strong></a><a href="../pages/dft-memory-bist.html"><small>下一主题 →</small><strong>MBIST / BIRA / BISR</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">三种层级模式</a></li>
+<li><a href="#wrapper-cell">Wrapper Cell 做什么</a><ul>
+<li><a href="#_2">模式切换不是瞬间完成</a></li>
+</ul>
+</li>
+<li><a href="#wrapper-boundary-scan">Wrapper 与 Boundary Scan 不同</a></li>
+<li><a href="#_3">集成时的检查清单</a></li>
+<li><a href="#_4">一个常见误区</a></li>
+<li><a href="#_5">资料与继续阅读</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

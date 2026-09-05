@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>CLI 与 TUI · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="start" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" class="active" aria-current="page">开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索开始使用 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/usage-guide.html">场景使用指南</a><a class="active" aria-current="page" href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
+  <h1 id="cli-tui">CLI 与 TUI</h1>
+<p>CLI 是终端中的 <code>omp ...</code>；TUI 命令是在已经启动的 OMP 输入框中键入 <code>/...</code>。工具如 <code>wiki</code>、<code>task</code> 由 Agent 调用，不是 Shell 命令。</p>
+<h2 id="_1">日常启动参数</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+<th>主要参数与影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>omp</code></td>
+<td>在当前项目交互开发</td>
+<td>默认可调用本会话可见工具</td>
+</tr>
+<tr>
+<td><code>omp --cwd /path/to/project</code></td>
+<td>指定项目目录</td>
+<td>不搬移项目文件</td>
+</tr>
+<tr>
+<td><code>omp --model &lt;模型或角色&gt;</code></td>
+<td>使用已配置模型</td>
+<td>模糊模型名、提供方/模型名按本地可用配置解析</td>
+</tr>
+<tr>
+<td><code>omp -c</code></td>
+<td>继续上一次会话</td>
+<td>恢复该目录相关会话</td>
+</tr>
+<tr>
+<td><code>omp -r</code></td>
+<td>选择并恢复会话</td>
+<td>也可接会话 ID 前缀或路径</td>
+</tr>
+<tr>
+<td><code>omp -p "只读解释这个模块"</code></td>
+<td>非交互执行后退出</td>
+<td><code>-p</code> 不自动限制工具为只读</td>
+</tr>
+<tr>
+<td><code>omp --config /path/to/overlay.yml</code></td>
+<td>本次启动叠加配置</td>
+<td>不持久化覆盖层，可重复传入</td>
+</tr>
+<tr>
+<td><code>omp --no-tools -p "解释所给文本"</code></td>
+<td>只用所给文本回答</td>
+<td>关闭内置工具，不读取代码仓</td>
+</tr>
+<tr>
+<td><code>omp --approval-mode always-ask</code></td>
+<td>覆盖本会话工具审批策略</td>
+<td>自动允许读工具，写/执行按策略确认</td>
+</tr>
+<tr>
+<td><code>omp --help</code></td>
+<td>查该版帮助</td>
+<td>无需模型推理</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="tui">常用 TUI 操作</h2>
+<p><code>/model</code> 切换模型；<code>/settings</code> 调整设置；<code>/docs</code> 查看索引；<code>/agents</code> 查看 Agent；<code>/tools</code> 查看当前工具；<code>/context</code> 查看上下文占用；<code>/compact soft</code> 压缩；<code>/resume</code> 恢复；<code>/hotkeys</code> 查看当前键位。</p>
+<p>完整 TUI 清单在<a href="commands.html">内置命令</a>。每个命令页分别说明状态影响；不要仅根据名字推断其只读性。</p>
+<h2 id="cli">CLI 注册入口</h2>
+<p>下面清单由固定版本 <code>cli-commands.ts</code> 提取。各入口的详细参数以该版 <code>omp &lt;入口&gt; --help</code> 为准；以下逐页给出用途、影响及入口示例。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="cli-launch.html">omp launch</a></td>
+<td>启动 OMP 会话（默认入口）</td>
+</tr>
+<tr>
+<td><a href="cli-acp.html">omp acp</a></td>
+<td>通过标准输入输出运行 ACP 服务</td>
+</tr>
+<tr>
+<td><a href="cli-auth-broker.html">omp auth-broker</a></td>
+<td>管理凭据托管服务</td>
+</tr>
+<tr>
+<td><a href="cli-auth-gateway.html">omp auth-gateway</a></td>
+<td>启动认证转发网关</td>
+</tr>
+<tr>
+<td><a href="cli-agents.html">omp agents</a></td>
+<td>导出内置任务 Agent 定义</td>
+</tr>
+<tr>
+<td><a href="cli-bench.html">omp bench</a></td>
+<td>测量模型延迟与吞吐</td>
+</tr>
+<tr>
+<td><a href="cli-browser-relay.html">omp browser-relay</a></td>
+<td>启动浏览器 CDP relay</td>
+</tr>
+<tr>
+<td><a href="cli-cleanse.html">omp cleanse</a></td>
+<td>检测并修复项目诊断</td>
+</tr>
+<tr>
+<td><a href="cli-commit.html">omp commit</a></td>
+<td>生成提交信息并更新变更记录</td>
+</tr>
+<tr>
+<td><a href="cli-completions.html">omp completions</a></td>
+<td>输出 Shell 补全脚本</td>
+</tr>
+<tr>
+<td><a href="cli-__complete.html">omp __complete</a></td>
+<td>内部动态补全入口</td>
+</tr>
+<tr>
+<td><a href="cli-compress.html">omp compress</a></td>
+<td>压缩文本文件为紧凑提示表达</td>
+</tr>
+<tr>
+<td><a href="cli-config.html">omp config</a></td>
+<td>读取和修改配置</td>
+</tr>
+<tr>
+<td><a href="cli-docs.html">omp docs</a></td>
+<td>管理 Markdown Wiki 索引</td>
+</tr>
+<tr>
+<td><a href="cli-dry-balance.html">omp dry-balance</a></td>
+<td>模拟 OAuth 账户负载分配</td>
+</tr>
+<tr>
+<td><a href="cli-gc.html">omp gc</a></td>
+<td>清理存储中的无用数据</td>
+</tr>
+<tr>
+<td><a href="cli-grep.html">omp grep</a></td>
+<td>单独测试 grep 工具</td>
+</tr>
+<tr>
+<td><a href="cli-gallery.html">omp gallery</a></td>
+<td>展示确定性的 TUI 组件预览</td>
+</tr>
+<tr>
+<td><a href="cli-git.html">omp git</a></td>
+<td>打开全屏 Git 界面</td>
+</tr>
+<tr>
+<td><a href="cli-grievances.html">omp grievances</a></td>
+<td>查看、清理或推送工具问题报告</td>
+</tr>
+<tr>
+<td><a href="cli-images.html">omp images</a></td>
+<td>检查和管理图片发布后端</td>
+</tr>
+<tr>
+<td><a href="cli-if-bench.html">omp if-bench</a></td>
+<td>测试指令遵循与工作记忆</td>
+</tr>
+<tr>
+<td><a href="cli-install.html">omp install</a></td>
+<td>安装或链接扩展包</td>
+</tr>
+<tr>
+<td><a href="cli-join.html">omp join</a></td>
+<td>加入实时协作会话</td>
+</tr>
+<tr>
+<td><a href="cli-models.html">omp models</a></td>
+<td>列出、搜索或刷新模型</td>
+</tr>
+<tr>
+<td><a href="cli-plugin.html">omp plugin</a></td>
+<td>管理插件安装与卸载</td>
+</tr>
+<tr>
+<td><a href="cli-ps.html">omp ps</a></td>
+<td>查看与控制托管后台进程</td>
+</tr>
+<tr>
+<td><a href="cli-say.html">omp say</a></td>
+<td>使用本地 TTS 引擎合成并播放语音</td>
+</tr>
+<tr>
+<td><a href="cli-share.html">omp share</a></td>
+<td>生成会话分享链接</td>
+</tr>
+<tr>
+<td><a href="cli-setup.html">omp setup</a></td>
+<td>首次配置模型服务</td>
+</tr>
+<tr>
+<td><a href="cli-shell.html">omp shell</a></td>
+<td>交互式 Shell 控制台</td>
+</tr>
+<tr>
+<td><a href="cli-read.html">omp read</a></td>
+<td>显示 read 工具对指定资源的输出</td>
+</tr>
+<tr>
+<td><a href="cli-render.html">omp render</a></td>
+<td>通过真实渲染管线绘制会话线程</td>
+</tr>
+<tr>
+<td><a href="cli-ssh.html">omp ssh</a></td>
+<td>管理远程主机与连接</td>
+</tr>
+<tr>
+<td><a href="cli-stats.html">omp stats</a></td>
+<td>启动本地统计仪表盘</td>
+</tr>
+<tr>
+<td><a href="cli-sync-claude.html">omp sync-claude</a></td>
+<td>同步 Claude 配置相关数据</td>
+</tr>
+<tr>
+<td><a href="cli-update.html">omp update</a></td>
+<td>更新 OMP 客户端</td>
+</tr>
+<tr>
+<td><a href="cli-usage.html">omp usage</a></td>
+<td>查看模型提供方用量</td>
+</tr>
+<tr>
+<td><a href="cli-tiny-models.html">omp tiny-models</a></td>
+<td>下载会话标题和记忆用的本地小模型</td>
+</tr>
+<tr>
+<td><a href="cli-token.html">omp token</a></td>
+<td>获取提供方的 API key 或 OAuth token</td>
+</tr>
+<tr>
+<td><a href="cli-ttsr.html">omp ttsr</a></td>
+<td>检查和测试时间回溯流规则</td>
+</tr>
+<tr>
+<td><a href="cli-worktree.html">omp worktree</a></td>
+<td>管理 Git 工作树</td>
+</tr>
+<tr>
+<td><a href="cli-search.html">omp search</a></td>
+<td>从 CLI 调用 Web 搜索</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/commands/launch-help.ts">启动参数</a>。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">日常启动参数</a></li>
+<li><a href="#tui">常用 TUI 操作</a></li>
+<li><a href="#cli">CLI 注册入口</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<section class="dft-demo" id="scan-demo" data-demo="scan" aria-label="四级 Scan 交互演示">
+  <div class="demo-heading"><span class="demo-tag">01 / SCAN</span><strong>让内部状态沿着扫描链移动</strong></div>
+  <div class="demo-controls"><button type="button" data-action="step" disabled>单步</button><button type="button" data-action="play" disabled>播放</button><button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><label>电路场景 <select data-setting="fault" disabled><option value="none">无故障</option><option value="stuck">功能 D3 stuck-at-0</option></select></label></div>
+  <fieldset class="scan-stimulus"><legend>移入刺激 · 左边的位先进入 SI（修改后重新开始）</legend>{% for bit in [1,0,1,1] %}<label>第 {{ loop.index }} 位 <select data-stimulus="{{ loop.index0 }}" disabled>{% for value in [0,1] %}<option value="{{ value }}"{% if value == bit %} selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>{% endfor %}</fieldset>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备移入</span><span>SE = <b data-field="se">1</b></span><span>查看时钟沿 <b data-field="cycle">0</b> / 9</span></div>
+  <svg viewBox="0 0 800 330" role="img" aria-labelledby="scan-svg-title scan-svg-desc">
+    <title id="scan-svg-title">SI 经过四个扫描触发器到达 SO，捕获时切换到功能逻辑</title><desc id="scan-svg-desc">SE 为 1 时沿水平通路移位；SE 为 0 时从上方组合逻辑同时捕获 D1 到 D4。</desc>
+    <defs><marker id="scan-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    <rect x="158" y="20" width="484" height="50" rx="8" class="logic-box"/><text x="400" y="51" text-anchor="middle" data-component="logic">示例功能组合逻辑 · D = f(Q)</text>
+    <g class="functional-wires">
+      {% for i in range(4) %}<path d="M{{ 190+i*140 }} 70V140H{{ 176+i*140 }}V160" class="wire" marker-end="url(#scan-arrow)"/><text x="{{ 193+i*140 }}" y="104" class="pin-label">D{{ i+1 }}</text>{% endfor %}
+    </g>
+    <g class="scan-wires">
+      <path d="M35 196H154" class="wire" marker-end="url(#scan-arrow)"/>
+      {% for i in range(3) %}<path d="M{{ 232+i*140 }} 196H{{ 294+i*140 }}" class="wire" marker-end="url(#scan-arrow)"/>{% endfor %}
+      <path d="M652 196H766" class="wire" marker-end="url(#scan-arrow)"/>
+    </g>
+    <text x="35" y="170" class="pin-label" data-component="io">SI</text><text x="78" y="185" class="bit" data-field="si" data-component="io">1</text><text x="731" y="170" class="pin-label" data-component="io">SO 采出</text><text x="707" y="185" class="bit" data-field="so" data-component="io">—</text>
+    {% for i in range(4) %}<g class="scan-cell" data-cell="{{ i }}"><path d="M{{ 154+i*140 }} 167L{{ 176+i*140 }} 179V213L{{ 154+i*140 }} 226Z" class="mux-box"/><text x="{{ 155+i*140 }}" y="241" class="tiny-label" data-component="mux">MUX</text><path d="M{{ 176+i*140 }} 196H{{ 185+i*140 }}" class="wire"/><rect x="{{ 185+i*140 }}" y="164" width="47" height="64" rx="5" class="ff-box"/><text x="{{ 208+i*140 }}" y="152" text-anchor="middle" class="pin-label" data-component="q{{ i }}">Q{{ i+1 }}</text><text x="{{ 208+i*140 }}" y="204" text-anchor="middle" class="bit" data-q="{{ i }}" data-component="q{{ i }}">0</text><path d="M{{ 194+i*140 }} 228l5 -7 5 7" class="clock-mark"/></g>{% endfor %}
+    <path d="M60 275H620" class="clock-wire"/>{% for i in range(4) %}<path d="M{{ 199+i*140 }} 275V230" class="clock-wire"/>{% endfor %}
+    <text x="28" y="299" class="pin-label" data-component="clock">CLK ↑：所有触发器在同一时钟沿更新</text>
+    <text x="400" y="320" text-anchor="middle" class="tiny-label">图中的 MUX 选择功能 D 或扫描输入；示意图省略部分反馈与控制连线。</text>
+  </svg>
+  <div class="demo-readouts"><div><small>Q1 → Q4（所选沿之后）</small><strong data-field="registers">0000</strong></div><div><small>截至所选沿的响应移出顺序</small><strong data-field="output">尚未移出</strong></div><div><small>本组刺激的无故障期望</small><strong data-field="expected">0100</strong></div></div>
+  <p class="demo-explanation" data-field="explanation">输入位按时间顺序为 1、0、1、1。先用四个时钟把它们送进扫描链。</p>
+  <div class="scan-inspector"><div class="scan-component-controls" role="group" aria-label="查看元件原理"><span>查看元件</span>{% for key, label in [('mux','MUX'),('logic','功能逻辑'),('q0','Q1'),('q1','Q2'),('q2','Q3'),('q3','Q4'),('io','SI / SO'),('clock','CLK')] %}<button type="button" data-inspect="{{ key }}" aria-pressed="{{ 'true' if key == 'mux' else 'false' }}" disabled>{{ label }}</button>{% endfor %}</div><p data-field="component-detail" aria-live="polite">MUX 由 SE 选择扫描输入或功能 D，触发器只在时钟沿更新。</p></div>
+  <div class="scan-history-heading"><strong>逐沿状态记录</strong><button type="button" data-action="latest" disabled>返回最新状态</button></div>
+  <p class="scan-view-status" data-field="view-status" aria-live="polite">单步后可选择边沿，电路和讲解会一起回到该时刻。</p>
+  <div class="scan-history-scroll" tabindex="0" aria-label="逐沿状态表，可横向滚动"><table class="scan-history"><caption>SE、SI 为本沿采样条件；SO 为本沿移出的旧 Q4。边沿序号不是物理时间或脉宽。</caption><thead><tr><th scope="col">时钟沿</th><th scope="col">阶段</th><th scope="col">SE</th><th scope="col">SI</th><th scope="col">SO 采出</th><th scope="col">沿前 Q</th><th scope="col">沿后 Q</th><th scope="col">累计响应</th></tr></thead><tbody data-history><tr><th scope="row">初始</th><td>准备移入</td><td>1</td><td>1</td><td>—</td><td>0000</td><td>0000</td><td>—</td></tr></tbody></table></div>
+  <noscript><p>动画需要 JavaScript。静态图与下方三阶段说明仍可阅读：移入 1011 → 寄存器 1101 → 捕获 0010 → 移出 0100。</p></noscript>
+</section>

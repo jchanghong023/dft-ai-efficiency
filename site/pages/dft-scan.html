@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>Scan：让寄存器可控可观测 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/dft.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a class="active" aria-current="page" href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="scan">Scan：让寄存器可控可观测</h1>
+<section class="dft-demo" id="scan-demo" data-demo="scan" aria-label="四级 Scan 交互演示">
+  <div class="demo-heading"><span class="demo-tag">01 / SCAN</span><strong>让内部状态沿着扫描链移动</strong></div>
+  <div class="demo-controls"><button type="button" data-action="step" disabled>单步</button><button type="button" data-action="play" disabled>播放</button><button type="button" data-action="reset" disabled>重置</button><label>播放速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><label>电路场景 <select data-setting="fault" disabled><option value="none">无故障</option><option value="stuck">功能 D3 stuck-at-0</option></select></label></div>
+  <fieldset class="scan-stimulus"><legend>移入刺激 · 左边的位先进入 SI（修改后重新开始）</legend><label>第 1 位 <select data-stimulus="0" disabled><option value="0">0</option><option value="1" selected>1</option></select></label><label>第 2 位 <select data-stimulus="1" disabled><option value="0" selected>0</option><option value="1">1</option></select></label><label>第 3 位 <select data-stimulus="2" disabled><option value="0">0</option><option value="1" selected>1</option></select></label><label>第 4 位 <select data-stimulus="3" disabled><option value="0">0</option><option value="1" selected>1</option></select></label></fieldset>
+  <div class="demo-status" aria-live="polite"><span data-field="phase">准备移入</span><span>SE = <b data-field="se">1</b></span><span>查看时钟沿 <b data-field="cycle">0</b> / 9</span></div>
+  <svg viewBox="0 0 800 330" role="img" aria-labelledby="scan-svg-title scan-svg-desc">
+    <title id="scan-svg-title">SI 经过四个扫描触发器到达 SO，捕获时切换到功能逻辑</title><desc id="scan-svg-desc">SE 为 1 时沿水平通路移位；SE 为 0 时从上方组合逻辑同时捕获 D1 到 D4。</desc>
+    <defs><marker id="scan-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    <rect x="158" y="20" width="484" height="50" rx="8" class="logic-box"/><text x="400" y="51" text-anchor="middle" data-component="logic">示例功能组合逻辑 · D = f(Q)</text>
+    <g class="functional-wires">
+      <path d="M190 70V140H176V160" class="wire" marker-end="url(#scan-arrow)"/><text x="193" y="104" class="pin-label">D1</text><path d="M330 70V140H316V160" class="wire" marker-end="url(#scan-arrow)"/><text x="333" y="104" class="pin-label">D2</text><path d="M470 70V140H456V160" class="wire" marker-end="url(#scan-arrow)"/><text x="473" y="104" class="pin-label">D3</text><path d="M610 70V140H596V160" class="wire" marker-end="url(#scan-arrow)"/><text x="613" y="104" class="pin-label">D4</text>
+    </g>
+    <g class="scan-wires">
+      <path d="M35 196H154" class="wire" marker-end="url(#scan-arrow)"/>
+      <path d="M232 196H294" class="wire" marker-end="url(#scan-arrow)"/><path d="M372 196H434" class="wire" marker-end="url(#scan-arrow)"/><path d="M512 196H574" class="wire" marker-end="url(#scan-arrow)"/>
+      <path d="M652 196H766" class="wire" marker-end="url(#scan-arrow)"/>
+    </g>
+    <text x="35" y="170" class="pin-label" data-component="io">SI</text><text x="78" y="185" class="bit" data-field="si" data-component="io">1</text><text x="731" y="170" class="pin-label" data-component="io">SO 采出</text><text x="707" y="185" class="bit" data-field="so" data-component="io">—</text>
+    <g class="scan-cell" data-cell="0"><path d="M154 167L176 179V213L154 226Z" class="mux-box"/><text x="155" y="241" class="tiny-label" data-component="mux">MUX</text><path d="M176 196H185" class="wire"/><rect x="185" y="164" width="47" height="64" rx="5" class="ff-box"/><text x="208" y="152" text-anchor="middle" class="pin-label" data-component="q0">Q1</text><text x="208" y="204" text-anchor="middle" class="bit" data-q="0" data-component="q0">0</text><path d="M194 228l5 -7 5 7" class="clock-mark"/></g><g class="scan-cell" data-cell="1"><path d="M294 167L316 179V213L294 226Z" class="mux-box"/><text x="295" y="241" class="tiny-label" data-component="mux">MUX</text><path d="M316 196H325" class="wire"/><rect x="325" y="164" width="47" height="64" rx="5" class="ff-box"/><text x="348" y="152" text-anchor="middle" class="pin-label" data-component="q1">Q2</text><text x="348" y="204" text-anchor="middle" class="bit" data-q="1" data-component="q1">0</text><path d="M334 228l5 -7 5 7" class="clock-mark"/></g><g class="scan-cell" data-cell="2"><path d="M434 167L456 179V213L434 226Z" class="mux-box"/><text x="435" y="241" class="tiny-label" data-component="mux">MUX</text><path d="M456 196H465" class="wire"/><rect x="465" y="164" width="47" height="64" rx="5" class="ff-box"/><text x="488" y="152" text-anchor="middle" class="pin-label" data-component="q2">Q3</text><text x="488" y="204" text-anchor="middle" class="bit" data-q="2" data-component="q2">0</text><path d="M474 228l5 -7 5 7" class="clock-mark"/></g><g class="scan-cell" data-cell="3"><path d="M574 167L596 179V213L574 226Z" class="mux-box"/><text x="575" y="241" class="tiny-label" data-component="mux">MUX</text><path d="M596 196H605" class="wire"/><rect x="605" y="164" width="47" height="64" rx="5" class="ff-box"/><text x="628" y="152" text-anchor="middle" class="pin-label" data-component="q3">Q4</text><text x="628" y="204" text-anchor="middle" class="bit" data-q="3" data-component="q3">0</text><path d="M614 228l5 -7 5 7" class="clock-mark"/></g>
+    <path d="M60 275H620" class="clock-wire"/><path d="M199 275V230" class="clock-wire"/><path d="M339 275V230" class="clock-wire"/><path d="M479 275V230" class="clock-wire"/><path d="M619 275V230" class="clock-wire"/>
+    <text x="28" y="299" class="pin-label" data-component="clock">CLK ↑：所有触发器在同一时钟沿更新</text>
+    <text x="400" y="320" text-anchor="middle" class="tiny-label">图中的 MUX 选择功能 D 或扫描输入；示意图省略部分反馈与控制连线。</text>
+  </svg>
+  <div class="demo-readouts"><div><small>Q1 → Q4（所选沿之后）</small><strong data-field="registers">0000</strong></div><div><small>截至所选沿的响应移出顺序</small><strong data-field="output">尚未移出</strong></div><div><small>本组刺激的无故障期望</small><strong data-field="expected">0100</strong></div></div>
+  <p class="demo-explanation" data-field="explanation">输入位按时间顺序为 1、0、1、1。先用四个时钟把它们送进扫描链。</p>
+  <div class="scan-inspector"><div class="scan-component-controls" role="group" aria-label="查看元件原理"><span>查看元件</span><button type="button" data-inspect="mux" aria-pressed="true" disabled>MUX</button><button type="button" data-inspect="logic" aria-pressed="false" disabled>功能逻辑</button><button type="button" data-inspect="q0" aria-pressed="false" disabled>Q1</button><button type="button" data-inspect="q1" aria-pressed="false" disabled>Q2</button><button type="button" data-inspect="q2" aria-pressed="false" disabled>Q3</button><button type="button" data-inspect="q3" aria-pressed="false" disabled>Q4</button><button type="button" data-inspect="io" aria-pressed="false" disabled>SI / SO</button><button type="button" data-inspect="clock" aria-pressed="false" disabled>CLK</button></div><p data-field="component-detail" aria-live="polite">MUX 由 SE 选择扫描输入或功能 D，触发器只在时钟沿更新。</p></div>
+  <div class="scan-history-heading"><strong>逐沿状态记录</strong><button type="button" data-action="latest" disabled>返回最新状态</button></div>
+  <p class="scan-view-status" data-field="view-status" aria-live="polite">单步后可选择边沿，电路和讲解会一起回到该时刻。</p>
+  <div class="scan-history-scroll" tabindex="0" aria-label="逐沿状态表，可横向滚动"><table class="scan-history"><caption>SE、SI 为本沿采样条件；SO 为本沿移出的旧 Q4。边沿序号不是物理时间或脉宽。</caption><thead><tr><th scope="col">时钟沿</th><th scope="col">阶段</th><th scope="col">SE</th><th scope="col">SI</th><th scope="col">SO 采出</th><th scope="col">沿前 Q</th><th scope="col">沿后 Q</th><th scope="col">累计响应</th></tr></thead><tbody data-history><tr><th scope="row">初始</th><td>准备移入</td><td>1</td><td>1</td><td>—</td><td>0000</td><td>0000</td><td>—</td></tr></tbody></table></div>
+  <noscript><p>动画需要 JavaScript。静态图与下方三阶段说明仍可阅读：移入 1011 → 寄存器 1101 → 捕获 0010 → 移出 0100。</p></noscript>
+</section>
+
+<p>普通寄存器从功能逻辑接收数据。加入扫描选择通路后，同一个寄存器在 <code>SE=1</code> 时从前一级扫描寄存器接收数据，在 <code>SE=0</code> 时从功能逻辑接收数据。这里用四级链解释最基本的过程。</p>
+<h2 id="_1">动手观察一个测试周期</h2>
+<p>点击“单步”观察每个时钟沿；“播放”自动完成一轮。四个输入选择框按左到右的时间顺序送入 SI，默认 <code>1011</code>，因此四次移位后，<code>Q1 → Q4</code> 为 <code>1101</code>。可修改任意输入位或切换示例故障；修改立即重置本轮，期望响应也会重新计算。</p>
+<p>逐沿状态表记录 SE、SI、采出的 SO、沿前/沿后 Q 和累计响应。点击已记录边沿会暂停播放，电路、读数和讲解一起回到该沿；“返回最新状态”不推进实验。回看后继续单步或播放，仍从最新状态前进，不改写历史。</p>
+<p>点击图中 Q、MUX、功能逻辑或 CLK 标签，或使用“查看元件”按钮，查看当前所选沿的采样来源和变化原因。SO 读数表示<strong>本沿移出的旧 Q4</strong>，不是沿后新 Q4 的电平。表格的 <code>↑</code> 只表示逻辑上升沿，不表示实际时钟脉宽或 ns 时序；播放速度不改变计算结果。</p>
+<h2 id="_2">三个阶段，不是同一件事</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>SE</th>
+<th>时钟沿发生什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>移入 Shift-in</td>
+<td>1</td>
+<td>SI 进入 Q1，原 Q1 进入 Q2，依次推进；旧 Q4 从 SO 移出</td>
+</tr>
+<tr>
+<td>捕获 Capture</td>
+<td>0</td>
+<td>各寄存器同时采样功能组合逻辑的输出，不进行串行移位</td>
+</tr>
+<tr>
+<td>移出 Shift-out</td>
+<td>1</td>
+<td>把已捕获的响应串行读出，与无故障期望值比较</td>
+</tr>
+</tbody>
+</table></div>
+<p>实际测试中，移出当前响应经常与移入下一组刺激重叠；此处为便于观察，移出阶段统一补入 0。示例只含一次捕获，不演示 transition ATPG 的 launch/capture 时序。</p>
+<h2 id="_3">本例为什么得到这些数值</h2>
+<p>动画采用以下教学用组合逻辑，所有 D 均根据捕获前的 Q 计算，再同时更新：</p>
+<pre><code class="language-text">D1 = Q2 XOR Q4
+D2 = Q1 AND Q3
+D3 = Q2 OR Q3
+D4 = NOT Q4
+</code></pre>
+<p>捕获前 <code>Q1..Q4 = 1101</code>，无故障响应为 <code>0010</code>。从 Q4 开始读出，时间顺序就是 <code>0100</code>。选择“D3 stuck-at-0”后，功能逻辑 D3 被固定为 0，捕获响应变为 <code>0000</code>，本组刺激可以观察到差异。这里故障作用于功能 D3，不会把扫描移位通路固定为 0。</p>
+<h2 id="_4">能发现这个故障，不等于覆盖所有故障</h2>
+<p>要观察到差异，刺激需要激活目标故障，差异还需要传播并被捕获、移出。不同故障可能需要不同刺激；一次演示的比较结果不是故障覆盖率报告。</p>
+<p>可以亲自比较：选择 D3 stuck-at-0，先运行默认 <code>1011</code>，再改为 <code>0000</code>。后者捕获前的功能 D3 已经为 0，故障没有被激活；无故障和故障响应都为 <code>1000</code>。相同响应并不能证明故障不存在。</p>
+<p>公开研究中对扫描测试也区分移位与捕获的运行过程，可参阅 <a href="https://arxiv.org/abs/1106.2794">Power Management during Scan Based Sequential Circuit Testing</a>。本页四级电路与数值为独立构造的教学示例。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-testpoints.html"><small>← 上一主题</small><strong>Test Point 与可测试性</strong></a><a href="../pages/dft-scan-engineering.html"><small>下一主题 →</small><strong>Scan 工程结构</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">动手观察一个测试周期</a></li>
+<li><a href="#_2">三个阶段，不是同一件事</a></li>
+<li><a href="#_3">本例为什么得到这些数值</a></li>
+<li><a href="#_4">能发现这个故障，不等于覆盖所有故障</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

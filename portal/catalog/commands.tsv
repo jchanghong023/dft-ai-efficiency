@@ -1,0 +1,96 @@
+name	purpose	scenario	effects	example
+security	管理 OMP 原生安全扫描的计划、执行和结果	用户明确要求漏洞扫描或比较两次结果	scan/import/disposition 等会写扫描数据；export 写文件	/security status
+settings	打开常用设置面板	调整界面、工具和任务设置	修改选项时持久化个人配置	/settings
+setup	打开模型提供方配置入口	首次配置可访问的模型服务	可能写配置和凭据并访问服务	/setup providers
+plan	切换先规划后实施的会话模式	复杂需求需要先确定修改边界	改变会话模式；执行需按计划流程继续	/plan 为接口迁移拟定方案
+plan-review	重新打开最近一次计划的审阅界面	规划模式下重新查看计划	可改变计划审阅状态，不直接实现代码	/plan-review
+vibe	切换持续使用快速/强模型 Worker 的模式	需要面向任务的持续协作	切换会话；主会话工具集只读不等于 Worker 不能修改	/vibe
+goal	管理持续自主执行的会话目标	需要跨轮持续推进明确目标	设置目标并可能持续执行修改和消耗模型额度	/goal show
+guided-goal	通过对话采访明确目标后设置 goal	初始目标不够明确	产生对话并准备持续目标	/guided-goal 整理本模块的重构目标
+loop	重复提交任务直到次数或时间条件满足	确有必要的周期性检查	重复运行任务；再次调用关闭循环，Esc 仅取消当前轮	/loop 3 检查已有测试结果
+queue	把消息放入主 Agent 让出后的队列	不打断当前工作的补充要求	改变消息队列；内容随后会执行	/queue 完成后汇总未验证项
+model	打开本会话模型选择器	切换可用模型	改变当前会话模型	/model
+switch	按模糊名称或角色快速切换模型	已有模型角色配置时快速切换	改变会话模型和可选思考档位	/switch @task
+fast	切换优先服务档位	提供方支持且需要低延迟时	改变服务请求参数，可能影响费用	/fast status
+skillful	控制本会话系统提示是否列出 Skills	排查自动 Skill 选择	改变本会话技能列表可见性	/skillful status
+extended-context	切换扩展上下文窗口	模型支持且任务需要长上下文	改变模型请求窗口，可能影响费用	/extended-context status
+computer	切换原生 computer-use 的 eval 前置环境	已配置桌面交互能力时	改变工具环境；实际操作可能影响桌面	/computer status
+prewalk	在下一次动作转给快速低成本模型	适合明确机械步骤的任务	改变后续模型执行策略	/prewalk
+advisor	配置第二模型的逐轮建议	需要对主模型输出提供旁路检查	可调用额外模型；dump 复制对话	/advisor status
+export	导出当前会话为本地 HTML	保存经检查可共享的会话记录	写入指定文件，可能含会话原文	/export .tmp/session.html
+trace	打开当前会话的统计跟踪视图	排查耗时和调用轨迹	启动/打开本地统计界面	/trace
+dump	复制会话并输出请求调试数据	诊断模型请求结构	写剪贴板及临时请求 JSON，可能含敏感上下文	/dump
+share	通过加密链接分享会话	明确授权对外分享已审查的内容	上传会话到分享服务或 secret gist；非离线功能	/share
+collab	通过 relay 共享实时会话	明确授权团队实时协作	连接外部 relay 并发送会话数据；view 为只读访客	/collab status
+join	加入实时共享会话	已获得协作链接	连接 relay 并接收共享内容	/join <协作链接>
+leave	离开当前协作会话	结束访客参与	断开协作连接	/leave
+browser	切换浏览器无头或可见模式	调试已启用的浏览器交互	改变浏览器运行方式	/browser headless
+copy	从对话中选择文本或代码复制	提取某段代码或回答	写系统剪贴板	/copy
+open	打开对话最近的链接	访问刚提到的参考页面	启动浏览器并可能发送网络请求	/open
+todo	查看或编辑 Agent 待办清单	跟踪多步任务	编辑/导入/删除会修改清单；导出写文件	/todo
+session	查看、删除或置顶会话	管理会话记录	delete 删除会话；pin 改变置顶状态	/session info
+jobs	查看异步后台任务	确认子任务是否仍运行	仅查询任务状态	/jobs
+usage	查看提供方用量和限额	了解当前额度	show 查询服务；reset 重置本地用量统计	/usage show
+stats	打开本地统计看板	分析模型消耗和会话记录	启动本地服务；host 参数影响监听范围	/stats
+changelog	查看发行变更说明	理解版本差异	仅显示变更记录	/changelog
+hotkeys	查看当前快捷键	学习 TUI 操作	仅显示快捷键	/hotkeys
+tools	查看本会话实际可见工具	确认 wiki、task、lsp 等是否启用	只读展示；比静态手册更能反映当前配置	/tools
+context	查看上下文占用估计	判断是否需要压缩	只读显示估算值	/context
+extensions	打开扩展控制中心	检查 Skill 和扩展加载来源	开关扩展时改变配置	/extensions
+agents	打开内置与自定义 Agent 配置中心	查看 Worker 是否发现及模型分配	修改选项时改变 Agent 配置	/agents
+docs	打开文档索引管理中心	检查公司 Wiki 索引是否可用	查看只读；管理操作可能改变本地索引	/docs
+git	打开 Git 差异、暂存和提交界面	检查本次改动	查看只读；暂存和提交会修改 Git 状态	/git
+hub	打开实时 Agent Hub	查看并管理运行中的 Agent	面板操作可能启动或停止任务	/hub
+branch	回到较早消息并保留原路径为分支	尝试不同对话方向	改变会话分支，不等同于 Git 回退	/branch
+fork	从早期消息创建新会话分叉	保留旧上下文尝试另一方案	创建新会话记录，不自动回滚代码	/fork
+tree	在会话树中切换分支	比较不同对话路径	改变当前会话位置，不切换 Git 分支	/tree
+login	登录 OAuth 提供方	网络和账户条件具备时认证	访问提供方并写入凭据存储	/login
+logout	退出 OAuth 提供方	撤销当前本地登录状态	删除相应本地认证记录	/logout
+mcp	管理 MCP 服务器、资源和连接	配置已授权的外部工具	add/remove/enable 等写配置；test/reconnect 访问服务	/mcp list
+ssh	管理 SSH 主机配置	使用已授权远程执行目标	add/remove 修改连接配置；连接另行发生	/ssh list
+new	开始新的会话	切换到新的独立任务	创建新会话，不删除项目文件	/new
+fresh	重置提供方流状态，保留本地对话	恢复异常的流式请求状态	改变会话连接状态，不清空记录	/fresh
+clear	在当前会话内清空模型上下文	需要同一会话名下重新开始	清空对话上下文，保持会话身份	/clear
+drop	删除当前会话并创建新会话	明确不再需要当前会话记录	删除会话数据；不是普通的新会话操作	/drop
+compact	手动压缩会话上下文	上下文接近窗口上限	改写模型上下文并可能调用模型	/compact soft 保留接口约束
+shake	剔除上下文中的重型内容	删除工具结果、图像或思考内容以释放窗口	改变上下文内容，不改变项目源码	/shake images
+handoff	把关键上下文交接到新会话	长期任务阶段切换	生成交接并创建会话，可能调用模型	/handoff 保留未完成的验证清单
+resume	恢复已有会话	继续上次工作	切换当前会话；外部来源需本地可用记录	/resume
+pin	置顶或取消置顶会话	保持常用工作在恢复列表顶部	修改会话置顶元数据	/pin
+btw	用当前上下文回答临时旁路问题	不改变主任务的简短咨询	额外模型请求；不作为主线实现入口	/btw 这里的复位约束是什么
+tan	为旁支工作启动完整后台 Agent	有独立且明确授权的并行任务	后台 Agent 可执行修改并使用工具	/tan 只读检查已有测试入口
+omfg	从行为投诉生成 TTSR 规则	固定需纠正的重复行为	生成并保存行为规则，可能调用模型	/omfg 不要把静态检查报告为仿真通过
+cleanse	根据项目诊断结果修复问题	明确需要清理真实编译/诊断错误	子 Agent 会修改项目并执行验证	/cleanse 修复当前模块的类型错误
+retry	重试最近失败的 Agent 轮次	临时服务错误已恢复	可能重复执行该轮工具调用	/retry
+debug	打开调试工具选择器	排查 TUI 或请求异常	选定工具可能写调试输出	/debug
+memory	查看和维护记忆数据	检查记忆状态或执行明确的维护	sync/clear/reset/rebuild 等改变记忆存储	/memory stats
+rename	重命名当前会话	用主题识别工作记录	修改会话标题	/rename DFT 接口验证
+move	把当前会话绑定到另一目录	更换任务所在代码仓	改变会话工作目录，不搬移项目文件	/move <目标仓库路径>
+wt	创建工作树并迁移当前会话和改动	需要隔离开发分支	创建 Git worktree、分支并迁移改动	/wt dft-check
+add-dir	为当前会话增加工作区目录	任务确实跨多个指定仓库	扩大本会话工作区范围	/add-dir <配套仓库路径>
+remove-dir	移除会话的附加工作区目录	缩小任务可用目录范围	改变会话目录列表，不删除文件	/remove-dir <附加仓库路径>
+dirs	列出当前会话工作区目录	确认代码操作范围	只读显示	/dirs
+exit	退出 OMP	结束交互会话	停止应用，不自动回滚已执行修改	/exit
+restart	使用原启动参数重启并恢复会话	需要重新加载运行状态	停止并重新启动 OMP	/restart
+marketplace	管理插件市场及已安装插件	外围维护经过选择的扩展	安装/卸载/更新写本地文件并可能联网	/marketplace list
+plugins	查看及启停已安装插件	排查扩展是否启用	enable/disable 改变配置	/plugins list
+reload-plugins	重新加载插件和扩展能力	更新 Skill、命令、Agent 文件后	刷新本会话扩展与 MCP 状态	/reload-plugins
+ultrathink	注入仔细推理通知，自动思考时提高本轮力度	复杂推理或故障分析	发送任务提示并可能提高模型用量	/ultrathink 分析此状态机的复位约束
+orchestrate	注入多 Agent 编排工作契约	有多个重要且独立的工作项	可能委派 Agent、修改代码并执行验证	/orchestrate 完成已明确范围的迁移和验证
+workflowz	注入基于 eval 辅助函数的多 Agent 工作流契约	需要可编排的大型研究或迁移	需 eval 与 task 同时启用；按任务产生读写行为	/workflowz 只读对比两套接口的差异
+fullsend	优先速度和经验证的质量，按收益直接执行或委派	目标明确并接受不限制金钱或 token 成本的任务	可能使用大量模型资源和并行修改；不会省略必要验证	/fullsend 完成指定模块的修复并验证
+jchfix	定位根因、完成最小修复并验证	已有错误或失败现象	修改相关代码并运行检查，不自动 commit/push	/jchfix 修复当前测试中的复位失败
+jchdiagnose	只读定位根因与修复边界	希望先弄清问题而不修改	只读调查，不实施修复	/jchdiagnose 分析输出延迟异常
+jchfuncreview	独立只读审查高置信功能问题	审查未提交修改、提交或路径	只读主代理及审查子代理，不修改或推送	/jchfuncreview uncommitted
+jchfuncreviewfix	审查功能问题，主代理复核后修复	明确允许审查并修复功能问题	修改被确认的问题并执行必要检查	/jchfuncreviewfix uncommitted
+jchverify	验证指定修改，不修复产品代码	需要交付前的独立验证证据	源码与配置只读；测试可生成临时输出	/jchverify uncommitted
+jchci	只读检查当前分支和 PR 的 GitHub Actions	外围诊断 CI 状态	联网读取 GitHub，不修改工作区或远端	/jchci
+jchcifix	修复、提交并推送当前分支 CI，最多三轮	已明确授权远端提交和推送的 CI 修复	修改文件、commit、push 并触发 CI；不是只读命令	/jchcifix workflow=ci
+jchcatchup	快速恢复工作现场，full 执行深入调查	中断后了解当前分支和未提交内容	默认只读 status/log；full 先 fetch 更新远端引用	/jchcatchup
+jchgs	刷新远端引用并显示简短分支状态	需要最新远端对比	执行 git fetch --all，写本地远端引用并联网	/jchgs
+jchgitpull	直接拉取当前分支	明确需要合入远端更新	执行 git pull，可能修改代码并产生冲突	/jchgitpull
+jchgitdiscardall	刷新后硬重置到 upstream，清理所有本地内容	仅用于明确要丢弃全部本地工作时	执行 fetch --prune、reset --hard、clean -xdf；未跟踪及忽略文件也会被删除	/jchgitdiscardall
+force	强制下一轮选择指定工具	工具路由需要明确约束时	改变下一轮工具选择；读写性质取决于指定工具	/force read README.md
+live	启动基于实时模型的语音模式	已具备音频和服务接入条件	使用麦克风和模型服务，非离线语音功能	/live
+pause	冻结主 Agent、子 Agent 和 advisor	需要临时暂停所有活动	暂停执行，恢复后继续	/pause
+quit	退出应用	结束当前交互	停止 OMP 进程	/quit

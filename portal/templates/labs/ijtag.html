@@ -1,0 +1,34 @@
+<section class="container dft-lab" id="ijtag-lab" data-lab="access-ijtag" aria-labelledby="ijtag-lab-title">
+  <header class="lab-header">
+    <p class="lab-kicker">ACCESS LAB · 02</p>
+    <h2 id="ijtag-lab-title">IJTAG：打开一条片内仪器路径</h2>
+    <p>改变 SIB（Segment Insertion Bit）后，扫描链的长度和可见仪器都会改变。这个小模型用于理解 ICL 描述连接、PDL 描述操作与 retarget 的分工，不是 Tessent 或其他工具的实现。</p>
+  </header>
+  <div class="lab-controls" role="group" aria-label="IJTAG 控制">
+    <button type="button" data-access-action="reset" disabled>重置路径</button>
+    <button type="button" data-access-action="shift-sib" disabled>Shift SIB 位</button>
+    <button type="button" data-access-action="update-sib" disabled>Update SIB（应用路径）</button>
+    <button type="button" data-access-action="shift" disabled>Shift 完整路径</button>
+    <button type="button" data-access-action="update-instrument" disabled>Update 仪器值</button>
+    <label>片内仪器 <select data-access-setting="instrument" disabled><option value="bist">Memory BIST · 8 bit</option><option value="sensor">温度传感器 · 4 bit</option></select></label>
+    <label>输入位 <select data-access-setting="bit" disabled><option value="1">1</option><option value="0">0</option></select></label>
+  </div>
+  <div class="lab-stage ijtag-stage">
+    <div class="ijtag-chain" aria-label="IJTAG 动态链">
+      <span class="chain-pin">TDI</span><i class="chain-box">SIB</i><b class="chain-arrow">→</b><i class="chain-box" data-access-field="instrument-box">仪器</i><b class="chain-arrow">→</b><span class="chain-pin">TDO</span>
+    </div>
+    <div class="lab-wire-card">
+      <div class="lab-register"><span>SIB 状态（已更新 / 待更新）</span><strong data-access-field="sib">关闭 / 0</strong></div>
+      <div class="lab-register"><span>当前目标</span><strong data-access-field="instrument">Memory BIST</strong></div>
+      <div class="lab-register"><span>访问范围</span><strong data-access-field="range">1 bit（旁路）</strong></div>
+      <div class="lab-register"><span>完整链（SIB + 仪器段）</span><strong data-access-field="shifted">—</strong></div>
+    </div>
+  </div>
+  <div class="lab-readouts" aria-label="IJTAG 读数">
+    <div><small>当前扫描长度</small><strong data-access-field="length">1 bit</strong></div>
+    <div><small>仪器观察值</small><strong data-access-field="instrument-value">不可见</strong></div>
+    <div><small>路径事件</small><strong data-access-field="event">等待操作</strong></div>
+  </div>
+  <p class="lab-explanation" data-access-field="explanation">SIB 关闭时，仪器段被旁路，测试访问端口只需经过一个控制位。打开后，目标段插入扫描路径；实际设计可能有多个嵌套 SIB 与不同的数据寄存器。</p>
+  <noscript><p>启用 JavaScript 后可打开/关闭 SIB 并切换仪器。静态阅读：ICL 描述网络连接，PDL 描述仪器动作，retarget 把仪器操作转换为当前芯片可执行的扫描序列。</p></noscript>
+</section>

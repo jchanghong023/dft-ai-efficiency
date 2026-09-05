@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>generate-dft-circuit · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="team" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" class="active" aria-current="page">团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索团队能力 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../team/index.html">团队能力 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="团队能力栏目"><a  href="../pages/team.html">团队公共能力</a><a  href="../pages/skills.html">团队 Skills 总览</a><a  href="../pages/team-agents.html">团队 Agent</a><a  href="../pages/team-commands.html">自定义命令</a><a  href="../pages/skill-generate-unit-tests.html">generate-unit-tests</a><a class="active" aria-current="page" href="../pages/skill-generate-dft-circuit.html">generate-dft-circuit</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../team/index.html">团队能力</a></div>
+  <h1 id="generate-dft-circuit">generate-dft-circuit</h1>
+<h2 id="_1">用途</h2>
+<p>在用户指定工程生成 DFT 插入前的最小电路，默认遵循 tiny_base 规范；效率仓库本身不交付电路工程。</p>
+<h2 id="_2">适用与不适用</h2>
+<p>适用于构造层级清晰的小型 RTL 输入、为后续 Sailor 流程准备基础电路与可重复验证。不适用于自动完成全套 DFT 插入、没有资料时猜测工艺库或 Sailor 命令，也不会擅自扩展成大规模 SoC。</p>
+<h2 id="_3">如何调用</h2>
+<p>Agent 可自动选择：<strong>是</strong>。必须手动调用：<strong>否</strong>。也可显式调用：</p>
+<pre><code class="language-text">/skill:generate-dft-circuit 在 /path/to/project 生成 tiny_base 基础 RTL；按该工程的 PAD 库资料连接真实 PAD，提供文件清单和仿真入口
+</code></pre>
+<h2 id="_4">输入</h2>
+<p>目标工程及输出目录、用户的接口或层级要求、真实 PAD 单元与端口资料、仿真模型、HDL 工具和工具版本。用户明确规格优先于默认值。</p>
+<h2 id="_5">默认电路</h2>
+<p>层级为 <code>TOP → CORE_A → CORE_B</code>，包含少量普通 DFF 与组合逻辑。默认接口：输入 <code>TCK</code>、<code>TMS</code>、<code>TDI</code>、<code>TRST_N</code>、<code>scan_clk</code>、<code>dft_lgc_rst_n</code>、<code>scan_in</code>、<code>dft_se</code>、<code>dft_edt_update</code>、<code>dft_se_occ</code>，输出 <code>TDO</code>、<code>scan_out</code>。</p>
+<p>JTAG 信号只预留；<code>scan_clk</code> 是功能时钟，<code>scan_in/scan_out</code> 是功能数据通路。初始不加入 Scan Chain、EDT、Wrapper、IJTAG、TAP 或 Boundary Cell。接口名不代表已经实现相应协议。</p>
+<h2 id="_6">输出</h2>
+<p>按需求生成 RTL、文件清单、测试平台和 Python 3.11+ 验证入口；报告已执行的层级/语法/仿真验证和未验证项。实际 PAD 单元及端口必须来自目标库。</p>
+<h2 id="pad">缺少 PAD 库时</h2>
+<p>列出缺少的单元、端口、电源/使能和模型信息。与工艺无关的核心 RTL 可以完成，但逻辑版须标明“未接真实 PAD”；不得虚构工艺单元或用假模型声称完成 PAD 集成。</p>
+<h2 id="_7">后续扩展</h2>
+<p>只有用户明确要求时增加 Scan、EDT、JTAG/Boundary Scan、IJTAG、OCC，必要时再增加 Memory/MBIST。每阶段读取真实工具资料并保留输入与结果；资料或环境缺失时不能宣称插入成功。</p>
+<p>参阅<a href="team.html">团队开发流程</a>。</p>
+<h2 id="skill">Skill 原始文件</h2>
+<p>以下内容在构建时直接读取公共源文件，保留配置头与完整正文。</p>
+<p class="source-file"><code>omp/skills/generate-dft-circuit/SKILL.md</code></p><pre data-source="omp/skills/generate-dft-circuit/SKILL.md"><code class="language-markdown">---
+name: generate-dft-circuit
+description: 在用户指定工程中生成 DFT 插入前的最小 RTL 电路、文件清单和所需验证入口，默认采用 tiny_base 层级与接口。适用于构造 DFT 流程输入；实际 Scan、EDT 或 JTAG 等插入须用户另行明确要求并提供真实工具资料。
+---
+
+# 生成 DFT 插入前电路
+
+先确认用户目标工程、输出路径、现有 HDL/验证工具和指定资料。默认规范见 [tiny-base.md](references/tiny-base.md)；用户明确给出的接口或层级优先。输出到目标工程，不在效率仓库创建电路案例。
+
+从用户工程和指定库资料识别真实 Input/Output PAD 单元、方向、端口、电源与使能连接要求以及仿真模型。缺少信息时明确列出缺少的单元/端口/模型。可完成与工艺无关的核心 RTL 和测试；未接 PAD 的逻辑版必须标为未接真实 PAD，不用虚构单元或假工艺模型冒充完整接入。真实 PAD 接入依赖这些信息，不能报告该部分已完成。
+
+原始设计只包含少量普通 DFF 和组合逻辑，以及接口预留；不预置 Scan、EDT、Wrapper、IJTAG、TAP 或 Boundary Cell。预留信号名称不意味着已实现协议或插入链路。
+
+按需求交付 RTL、文件清单、测试平台和 Python 3.11+ 验证入口。复用真实 HDL 工具的已确认命令，检查层级、方向、复位、时序行为和无未声明单元；检查不得代替实际仿真。未安装仿真器或缺 PAD 模型时标注哪些验证未运行，禁止给出伪成功输出。
+
+只有用户明确要求时扩展相应 DFT 特征；先读取该工具/版本的真实文档和目标库，保留前一阶段输入与结果。无 Sailor 资料时不猜命令、不宣称插入成功。扩展顺序与信号含义见参考规范。
+
+可自动选择，也可 `/skill:generate-dft-circuit &lt;工程路径与需求&gt;` 显式调用；通常不必手动指定。
+</code></pre>
+
+<h3 id="_8">引用的默认电路规范</h3>
+<p class="source-file"><code>omp/skills/generate-dft-circuit/references/tiny-base.md</code></p><pre data-source="omp/skills/generate-dft-circuit/references/tiny-base.md"><code class="language-markdown"># tiny_base 默认原始电路规范
+
+## 结构
+
+`TOP → CORE_A → CORE_B`。CORE_A 包含输入寄存器、少量组合逻辑及输出寄存器；CORE_B 使用普通 DFF → 组合逻辑 → DFF。单路数据接口起步，不加入存储器或额外时钟域。
+
+## 顶层接口
+
+| 信号 | 方向 | 初始含义 |
+|---|---|---|
+| TCK、TMS、TDI、TRST_N | Input | JTAG 预留输入，不实现 TAP |
+| TDO | Output | JTAG 输出预留；选用明确说明的确定值，不冒充 JTAG 响应 |
+| scan_clk | Input | 原始功能时钟，供 CORE_A / CORE_B 使用 |
+| dft_lgc_rst_n | Input | 原始低有效功能复位；按目标项目规范选择同步/异步并记录 |
+| scan_in | Input | 原始功能数据输入，后续可复用为 Scan/EDT 输入 |
+| dft_se | Input | 原始功能控制输入，尚非 Scan Enable |
+| dft_edt_update | Input | 原始功能控制输入，尚非 EDT Update |
+| dft_se_occ | Input | OCC 控制预留，不加入 OCC |
+| scan_out | Output | 原始功能输出，尚非扫描链输出 |
+
+TOP 输入经真实 Input PAD 进入内核，输出经真实 Output PAD 引出；具体单元、PAD/core 端口名、电源、使能和模型必须来自指定库。未提供库时核心逻辑可以生成，但 PAD 接入仍未完成。保留信号可确定连接或说明暂不使用，避免未驱动输出和未经说明的锁存器。
+
+## 验证
+
+检查顶层接口、三级层级、普通寄存器、复位行为、功能输入到输出的预期延迟，以及设计未包含未要求的 DFT 结构。测试平台使用明确参考行为，不仅断言仿真退出码；文件清单包含生成模块及真实所需库模型，不提交库本体到公共仓库。
+
+## 仅在用户要求时扩展
+
+基础 Scan → EDT → JTAG / Boundary Scan → IJTAG → OCC / 时钟结构 → 必要时 Memory / MBIST。每次仅增加当前目标结构，保留输入、配置、已确认工具运行入口及真实结果。
+
+JTAG 通过 TAP 指令选择当前数据寄存器，不把 BSCAN、IJTAG 和 BYPASS 固定全串联。内部 ATPG 数据默认走 Scan/EDT 通路；需要更多 channel 时依据真实配置增加接口和对应 PAD。
+</code></pre>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">用途</a></li>
+<li><a href="#_2">适用与不适用</a></li>
+<li><a href="#_3">如何调用</a></li>
+<li><a href="#_4">输入</a></li>
+<li><a href="#_5">默认电路</a></li>
+<li><a href="#_6">输出</a></li>
+<li><a href="#pad">缺少 PAD 库时</a></li>
+<li><a href="#_7">后续扩展</a></li>
+<li><a href="#skill">Skill 原始文件</a><ul>
+<li><a href="#_8">引用的默认电路规范</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索团队能力</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

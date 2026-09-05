@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>At-speed 测试：LOC 与 LOS · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/clocks.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a class="active" aria-current="page" href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="at-speed-loc-los">At-speed 测试：LOC 与 LOS</h1>
+<section class="dft-lab" id="clocks-at-speed-lab" data-lab="clocks-at-speed" aria-label="At-speed LOC 与 LOS 时序实验">
+  <div class="lab-header"><span class="demo-tag">LAB / AT-SPEED</span><strong>让转换在捕获沿之前稳定下来</strong></div>
+  <div class="lab-controls">
+    <label>方式 <select data-field="mode" disabled><option value="LOC">LOC · launch-on-capture</option><option value="LOS">LOS · launch-on-shift</option></select></label>
+    <label>路径延迟 <input data-field="path" type="number" value="6.5" min="0" step="0.5" disabled> ns</label>
+    <label>时钟周期 <input data-field="period" type="number" value="10" min="1" step="1" disabled> ns</label>
+    <label>SE 关闭延迟 <input data-field="se-low" type="number" value="0.2" min="0" step="0.1" disabled> ns</label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 220" role="img" aria-labelledby="at-speed-title at-speed-desc">
+      <title id="at-speed-title">launch 与 capture 时钟沿及路径延迟</title>
+      <desc id="at-speed-desc">转换从 launch 沿出发，经过组合逻辑后必须在 capture 沿前稳定。</desc>
+      <line x1="55" y1="150" x2="750" y2="150" class="lab-axis"/>
+      <path d="M70 150V95H160V150M370 150V95H460V150" class="lab-clock"/>
+      <path d="M70 75H160M370 75H460" class="lab-clock"/>
+      <text x="90" y="48" class="lab-label">launch</text><text x="390" y="48" class="lab-label">capture</text>
+      <path data-visual="path" d="M160 120 C225 75, 295 75, 370 120" class="lab-path"/>
+      <rect x="215" y="88" width="120" height="45" rx="7" class="lab-box"/><text x="275" y="115" text-anchor="middle" class="lab-label">组合路径</text>
+      <path d="M160 185H370" class="lab-window"/><text x="265" y="207" text-anchor="middle" class="lab-small">可用捕获窗口 = 周期 − 建立裕量</text>
+      <circle data-visual="launch" cx="160" cy="120" r="6" class="lab-dot"/><circle data-visual="arrival" cx="295" cy="120" r="6" class="lab-dot lab-arrival"/><circle data-visual="capture" cx="370" cy="120" r="6" class="lab-dot"/>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>路径到达</small><strong data-readout="arrival">—</strong></div>
+    <div><small>剩余裕量</small><strong data-readout="slack">—</strong></div>
+    <div><small>实验判断</small><strong data-readout="result">—</strong></div>
+    <div><small>事件序列</small><strong data-readout="events">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可调整路径延迟，观察采样窗口如何变化。</p>
+  <noscript><p>本实验需要 JavaScript 才能计算参数。概念仍然成立：launch 发起转换，路径延迟加时钟偏斜后必须在 capture 前满足建立时间。</p></noscript>
+</section>
+
+<p>低速移位只能验证扫描通路是否连通；要检查逻辑在目标频率下能否完成一次转换，还需要一对有时间关系的 <strong>launch / capture</strong> 事件。</p>
+<h2 id="_1">先读懂两个事件</h2>
+<ol>
+<li><strong>Launch</strong>：把一个已知状态变成另一个状态，转换沿着组合路径传播。</li>
+<li><strong>Capture</strong>：在规定时间后采样路径末端。如果路径仍未稳定，采样到的值可能与预期不同。</li>
+<li><code>Tperiod - Tsetup - Tskew</code> 是本实验用来估算的简化可用窗口；真实签核还要考虑时钟树、OCV、脉宽、库模型和测试约束。</li>
+</ol>
+<p>这里的“通过”只表示输入参数满足这个教学不等式；LOS 还要求 <code>SE</code> 在 capture 前留出本实验复用的建立裕量：</p>
+<pre><code class="language-text">路径延迟 + 时钟偏斜 ≤ 时钟周期 − 捕获端建立时间
+
+```text
+SE 关闭时间 + SE 建立裕量 ≤ capture 时间
+</code></pre>
+<p>```</p>
+<p>它不是 STA 报告，也不是 ATPG 或硅片测试结果。</p>
+<h2 id="loclaunch-on-capture">LOC：launch-on-capture</h2>
+<p>LOC 先用扫描模式装入状态，再关闭 <code>SE</code>，由功能时钟序列完成发起和捕获。教学模型把第一个功能沿记作 <code>t=0</code>，第二个功能沿记作 <code>t=T</code>；这样可以直接观察两个功能沿之间的路径预算。</p>
+<p>LOC 的重点是捕获时序相对清晰，但测试时钟必须在正确的模式下产生，并且 <code>SE</code> 的切换不能制造额外的竞争。不同实现对初始化和脉冲数有自己的协议，不能只凭这张图推导工具命令。</p>
+<h2 id="loslaunch-on-shift">LOS：launch-on-shift</h2>
+<p>LOS 利用最后一个扫描移位沿发起转换，然后在下一个捕获沿采样。<code>SE</code> 必须在捕获前关闭；如果 <code>SE</code> 过晚、扫描时钟与功能时钟关系不满足约束，示意中的“最后一个移位沿”并不等于可签核的 launch。</p>
+<p>LOS 可能减少额外的功能脉冲，但会把扫描移位、模式切换和 at-speed 采样的边界联系起来。实际流程需要由 OCC、测试协议和 ATPG 共同定义，而不是把 LOC 和 LOS 当作两个可以随意互换的标签。</p>
+<h2 id="_2">怎样使用实验</h2>
+<ul>
+<li>先保持周期为 <code>10 ns</code>，把路径延迟从 <code>6.5 ns</code> 增加到超过窗口，观察剩余裕量变为负数。</li>
+<li>切换 LOC / LOS，观察事件序列的差别；本页的延迟预算相同，只改变教学中的 launch 语义。</li>
+<li>不要把“通过采样窗口”解读为“该路径在芯片上一定通过”。实验没有建模完整时钟树、温度电压工艺角或测试仪器时序。</li>
+</ul>
+<h2 id="_3">常见误区</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>误区</th>
+<th>更准确的说法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>把 shift 频率当作 capture 频率</td>
+<td>shift 是装载/移出，capture 可能需要目标功能频率</td>
+</tr>
+<tr>
+<td>看到波形有两个沿就称为 at-speed</td>
+<td>还必须说明沿的来源、相位、脉宽和约束</td>
+</tr>
+<tr>
+<td>LOC 与 LOS 只是名字不同</td>
+<td>两者对 <code>SE</code>、launch 沿和测试协议的要求不同</td>
+</tr>
+<tr>
+<td>一条路径通过就代表覆盖率高</td>
+<td>ATPG 仍需针对故障模型生成并验证大量模式</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_4">边界与工程入口</h2>
+<p>At-speed 测试还会涉及 transition fault、launch/capture 功耗、不可测路径、时钟域交互和 X 值处理。本实验故意只展示一个单路径预算，适合建立直觉，不代替 DFT DRC、STA、故障仿真或 tester pattern sign-off。</p>
+<p>公开资料中，Synopsys 将 TestMAX ATPG 描述为面向测试质量和成本的模式生成方案，并强调 power-aware pattern generation；可阅读 <a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html">TestMAX ATPG 官方介绍</a>。有关扫描插入和时钟域处理的工程背景，可阅读 <a href="https://www.siemens.com/en-us/products/ic/tessent/test/scanpro/">Siemens Tessent ScanPro 官方介绍</a>。</p>
+<p>本页的模型、图形和文字为离线教学内容；网页上的数字由 JavaScript 即时计算，不能冒充厂商工具实现。</p>
+<h2 id="_5">复核清单</h2>
+<p>在真实流程中，还应分别确认 launch/capture 波形、<code>SE</code> 转换窗口、测试时钟约束、路径报告、故障模型和模式仿真；这些证据缺一项，都不能把教学页的“通过”升级成项目签核结论。</p>
+<p>不要把动画里的单一周期外推到多周期路径；多周期约束必须有明确的设计意图和工具约束支持。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-scan-engineering.html"><small>← 上一主题</small><strong>Scan 工程结构</strong></a><a href="../pages/dft-clock-reset.html"><small>下一主题 →</small><strong>OCC、时钟与复位</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">先读懂两个事件</a></li>
+<li><a href="#loclaunch-on-capture">LOC：launch-on-capture</a></li>
+<li><a href="#loslaunch-on-shift">LOS：launch-on-shift</a></li>
+<li><a href="#_2">怎样使用实验</a></li>
+<li><a href="#_3">常见误区</a></li>
+<li><a href="#_4">边界与工程入口</a></li>
+<li><a href="#_5">复核清单</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

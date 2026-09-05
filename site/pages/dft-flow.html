@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>DFT 工程流程与调试 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/flow.js"></script>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="dft" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" >团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" class="active" aria-current="page">DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索DFT知识 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout circuit-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a class="active" aria-current="page" href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
+  <h1 id="dft">DFT 工程流程与调试</h1>
+<section class="dft-lab" id="flow-lab" data-lab="flow" aria-label="DFT 工程流程排障演示">
+  <div class="lab-header"><span class="demo-tag">04 / ENGINEERING FLOW</span><div><strong>改变条件，重新计算证据</strong><p>选择场景并调整电路或约束条件。逐项取证，不把响应一致、屏蔽比较或取证结束当成问题已解决。</p></div><span class="lab-badge" data-field="confidence">待取证</span></div>
+  <div class="lab-controls">
+    <label>症状 <select data-setting="symptom" disabled><option value="broken-chain">链路移位异常</option><option value="reset-constraint">复位约束不完整</option><option value="x-source">捕获响应出现 X</option><option value="capture-timing">高速捕获失败</option></select></label>
+    <button type="button" data-action="inspect" disabled>检查当前证据</button>
+    <button type="button" data-action="next" disabled>进入下一项</button>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="flow-conditions">
+    <fieldset data-flow-options="broken-chain"><legend>四级扫描链 · 初值 0000</legend><label>Q2 → Q3 <select data-parameter="link" disabled><option value="open">断点：Q3 扫描输入固定 0</option><option value="normal">连接正常</option></select></label><label>时间顺序刺激 <select data-parameter="stimulus" disabled><option value="1011">1011</option><option value="0000">0000</option><option value="1111">1111</option></select></label></fieldset>
+    <fieldset data-flow-options="reset-constraint" hidden><legend>两个寄存器 · 高有效同步复位 · 功能 D 均为 1</legend><label>约束资料 <select data-parameter="documented" disabled><option value="no">未记录</option><option value="yes">已记录</option></select></label><label>B 域在第几沿前释放 <select data-parameter="release" disabled><option value="3">3（晚于第 2 沿捕获）</option><option value="1">1（捕获前已释放）</option><option value="0">0（初始即释放）</option></select></label></fieldset>
+    <fieldset data-flow-options="x-source" hidden><legend>一个 XOR 观察点 · 无故障 A = 1</legend><label>源 B <select data-parameter="source" disabled><option value="X">X（未知）</option><option value="0">0</option><option value="1">1</option></select></label><label>观察点 mask <select data-parameter="mask" disabled><option value="no">参与比较</option><option value="yes">屏蔽比较</option></select></label><label>A stuck-at-0 <select data-parameter="fault" disabled><option value="no">不注入</option><option value="yes">注入</option></select></label></fieldset>
+    <fieldset data-flow-options="capture-timing" hidden><legend>理想单路径 setup 检查 · launch 在 0 ns</legend><label>路径延迟 <select data-parameter="delay" disabled><option value="12">12 ns</option><option value="8">8 ns</option><option value="9">9 ns</option></select></label><label>捕获周期 <select data-parameter="period" disabled><option value="10">10 ns</option><option value="15">15 ns</option></select></label><label>Setup 要求 <select data-parameter="setup" disabled><option value="1">1 ns</option><option value="2">2 ns</option></select></label><label>脉冲数 <select data-parameter="pulses" disabled><option value="2">2（launch + capture）</option><option value="1">1（只有 launch）</option></select></label></fieldset>
+    <p class="flow-topology" data-field="topology">SI → Q1 → Q2 → Q3 → Q4 → SO；条件与数值在启用 JavaScript 后计算。</p>
+    <div class="flow-trace-scroll" tabindex="0" aria-label="本组输入的计算记录"><table><caption>当前条件的计算预览；不读取真实网表、工具日志或公司报告。</caption><thead><tr data-trace-head><th>计算记录</th></tr></thead><tbody data-trace-body><tr><td>等待计算</td></tr></tbody></table></div>
+  </div>
+  <div class="lab-stage" aria-live="polite">
+    <div class="lab-stage-progress"><span>当前阶段</span><strong data-field="stage">—</strong><b data-field="progress">0 / 0</b></div>
+    <div class="lab-evidence"><span class="lab-evidence-icon" data-field="evidence-icon">?</span><div><h3 data-field="check-title">等待选择症状</h3><p data-field="check-prompt">启用 JavaScript 后，从一项具体证据开始。</p></div></div>
+    <div class="lab-result" data-field="result">尚未检查</div>
+  </div>
+  <div class="lab-readouts"><div><small>已检查项目（不等于通过）</small><strong data-field="confirmed">0</strong></div><div><small>待检查</small><strong data-field="remaining">0</strong></div><div><small>下一步建议</small><strong data-field="next-step">选择症状并开始取证</strong></div></div>
+  <ol class="flow-evidence-records" data-evidence-records aria-label="本轮已记录证据"></ol>
+  <p class="lab-explanation" data-field="explanation">独立构造的教学模型，不读取真实工程。改变条件会清除本轮证据；原理说明不代替工艺库、门级仿真和实际签核。</p>
+  <noscript><p>此排障演示需要 JavaScript 执行检查。静态页面仍可阅读上方 DFT 工程流程表；真实项目应保存版本、约束、报告、波形与 ATE 证据，再判断根因。</p></noscript>
+</section>
+
+<p>完整的 DFT 交付不是“插入工具跑完”这一条命令，而是一条有证据闭环的工程链：先定义测试目标与约束，再插入结构、验证结构和功能，最后生成、仿真并带到 ATE。下面把每个阶段的输入、输出、常见失败与下一步放在同一张地图上。</p>
+<h2 id="_1">流程总览</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>关键输入</th>
+<th>可交付输出</th>
+<th>失败时先看什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规格与库准备</td>
+<td>测试目标、工艺库、RTL、时钟/复位约束</td>
+<td>DFT 规格、库能力清单、约束基线</td>
+<td>是否有真实 scan FF、测试时钟和 PAD 资料</td>
+</tr>
+<tr>
+<td>模式规划</td>
+<td>链数、外部通道、功耗、模式与层级边界</td>
+<td>test mode 表、链路/时钟规划</td>
+<td>模式之间的互斥、复位释放和功耗预算</td>
+</tr>
+<tr>
+<td>DRC</td>
+<td>RTL、库模型、约束、模式规划</td>
+<td>DFT DRC 报告及豁免依据</td>
+<td>时钟、复位、异步控制、不可控/不可观节点</td>
+</tr>
+<tr>
+<td>结构插入</td>
+<td>通过的 RTL/网表、库单元、规划</td>
+<td>插入后的 RTL/网表、约束和日志</td>
+<td>插入版本、库映射、黑盒和命名变化</td>
+</tr>
+<tr>
+<td>结构/等价/连接验证</td>
+<td>插入前后设计、约束、形式/仿真环境</td>
+<td>结构报告、等价报告、链连接报告</td>
+<td>逻辑差异、链顺序、test mode 覆盖</td>
+</tr>
+<tr>
+<td>ATPG</td>
+<td>故障模型、插入网表、时序/模式约束</td>
+<td>pattern、预期响应、覆盖率与未测原因</td>
+<td>故障激活/传播、约束冲突、X 来源</td>
+</tr>
+<tr>
+<td>Fault simulation</td>
+<td>ATPG pattern、故障模型、门级模型</td>
+<td>检出/未检出/不可模拟分类</td>
+<td>模式、时钟、复位和故障注入是否一致</td>
+</tr>
+<tr>
+<td>Pattern simulation</td>
+<td>pattern、SDF/时序模型、ATE 约定</td>
+<td>时序仿真波形、协议与功耗证据</td>
+<td>launch/capture 边沿、setup/hold、X 传播</td>
+</tr>
+<tr>
+<td>ATE / bring-up / diagnosis</td>
+<td>签核 pattern、ATE 格式、探针与芯片</td>
+<td>首片日志、失效 bitmap、诊断假设</td>
+<td>tester 映射、电源/时钟、硅上与仿真差异</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">交付物的最小闭环</h2>
+<ul>
+<li>设计快照：RTL/网表、库版本、约束、模式表和工具版本必须可以相互追溯。</li>
+<li>结构证据：链数量、每条链的首尾、寄存器顺序、时钟/复位连接和豁免列表。</li>
+<li>模式证据：每个 pattern 的输入、期望响应、压缩映射、功耗/频率限制和生成日志。</li>
+<li>仿真证据：无故障、故障、门级时序三类结果，注明模型、SDF、频点和 X 策略。</li>
+<li>硅上证据：ATE 通道映射、失效 cycle、温压频点、复测结果和诊断范围。</li>
+</ul>
+<p>缺少其中一类证据时，应把状态标记为“待确认”，而不是用另一类报告代替它。尤其不能用 ATPG 覆盖率代替 RTL 功能验证、结构等价或硅上质量判断。</p>
+<h2 id="_3">每个阶段怎样留下证据</h2>
+<h3 id="1">1. 规格、库、时钟与复位</h3>
+<p>先写清要测什么：制造故障、速度故障、存储器，还是板级互连。收集真实工艺库中的 scan flip-flop、锁存器、测试时钟单元、隔离/电源域单元和 PAD/边界单元；同时确认库模型、时序弧、test enable 极性与可用电压域。没有这些资料时，只能做规划，不能宣称完成真实单元接入。</p>
+<p>输入是 RTL、库与工艺资料、时钟/复位约束、功耗和 ATE 限制；输出是版本化的规格、库能力清单、mode/clock/reset 表。常见失败是只拿功能仿真约束运行测试流程，遗漏异步复位、门控时钟或多电源域。下一步应补齐缺失证据，再进入 DRC。</p>
+<p>至少应记录以下问题：</p>
+<ul>
+<li>哪些寄存器可替换为 scan 单元，哪些状态必须保留或旁路？</li>
+<li>shift、capture、测试复位与功能复位分别由哪个时钟和控制信号驱动？</li>
+<li>测试时的电源域、隔离和电平转换条件是否有真实库模型？</li>
+<li>PAD、边界单元和 ATE 电气限制是否已由项目资料确认？</li>
+</ul>
+<h3 id="2-drc">2. 模式规划与 DRC</h3>
+<p>把功能模式、shift、capture、MBIST、JTAG/IJTAG 等模式的控制信号、时钟来源、复位策略、隔离策略和允许的组合写成表。DRC 用来发现结构不可测、控制冲突和不安全的测试路径；每个豁免都应有设计依据和责任人，而不是把告警改成通过。</p>
+<p>DRC 输入为带约束的设计和规划，输出是可追踪报告。若出现 reset 未约束、clock gate 不可控、scan enable 在捕获时错误翻转等告警，先定位控制路径和模式条件；不要直接删告警或猜测工具默认值。通过 DRC 只表示规则检查有证据，不表示覆盖率或硅上测试已完成。</p>
+<p>DRC 结果应按“错误、警告、已审豁免”分组保存，并为每条豁免记录影响范围。模式表还应覆盖：</p>
+<ul>
+<li>shift 时允许的时钟、复位、test enable 和隔离状态；</li>
+<li>capture 时 launch/capture 脉冲的来源、边沿与频点；</li>
+<li>多时钟域之间的锁存、跨域和 lockup 处理；</li>
+<li>低功耗模式下哪些测试结构必须保持可控或被安全旁路。</li>
+</ul>
+<h3 id="3">3. 插入与结构验证</h3>
+<p>使用已批准的工具流程和真实库执行插入，保存输入快照、版本、参数、日志和输出网表。插入后要检查 scan chain 数量、长度、锁存/分组、时钟和复位连接，并做插入前后的功能等价或约定范围内的比较。结构连接验证应能回答“每条链从哪里进、经过哪些寄存器、从哪里出”。</p>
+<p>常见失败包括链顺序和约束不一致、黑盒导致等价失败、测试控制没有覆盖全部层级、插入改变了不允许改变的功能路径。先比较结构报告、端口映射和差异锥，再决定是修复约束、库映射还是设计；不要编造某个具体工具的命令或成功日志。</p>
+<p>结构验证至少要回答四个可复现的问题：</p>
+<ol>
+<li>插入前后功能端口和允许变化的测试端口是否一致？</li>
+<li>每个 scan cell 的 SI、SO、SE、D 和 Q 是否落在预期时钟域？</li>
+<li>结构报告中的链长与模式仿真实际移位位数是否一致？</li>
+<li>任何失败能否从输入快照、日志行和报告版本定位，而不是依赖口头描述？</li>
+</ol>
+<h3 id="4-atpg">4. ATPG 与两类仿真</h3>
+<p>ATPG 的输入是经过验证的插入设计、故障模型、时钟/复位/测试约束；输出是测试模式、期望响应、故障覆盖和未测原因。ATPG 覆盖率描述所选故障模型在约束下被检测的程度，不能替代 RTL 功能验证，也不能直接等同于真实制造质量。</p>
+<p>Fault simulation 验证模式对故障模型的检出分类；Pattern simulation 则进一步检查无故障门级/时序模型上的模式协议、X、setup/hold、launch/capture 和功耗条件。若两者冲突，先确认网表、库、模式版本和时钟复位条件完全一致，再比较波形与期望响应。</p>
+<p>阅读覆盖率报告时，应把故障分成已检测、未检测、不可测、受约束和不可模拟等类别，并保留分类原因。一个模式把某个 stuck-at 故障激活并传播出来，只能说明这个故障在该模型和该约束下被观察到；它不证明 transition、bridging 或工艺特有缺陷也被覆盖。</p>
+<p>Pattern simulation 的顺序通常是先确认协议，再确认数据：先看 test mode、复位、时钟和比较窗口，再看每条链的位序、压缩响应和 X。这样可以避免把通道映射错误误诊为逻辑故障。</p>
+<h3 id="5-atebring-up-diagnosis">5. ATE、bring-up 与 diagnosis</h3>
+<p>把签核后的模式转换为经过审查的 ATE 格式，核对通道、极性、时钟、比较窗口、电源和压缩数据映射。bring-up 先做低风险的链路、IDCODE/旁路或已知响应检查，再逐步打开目标模式；首片失效要保存 tester 日志、温压频点、失效 cycle、链/通道位置和复测结果。</p>
+<p>Diagnosis 是基于证据缩小候选范围，不是把第一条失败链当成根因。将仿真响应、ATE bitmap、失效模式和版图/时钟区域交叉比对，区分测试程序、封装/接触、电源时钟、结构缺陷和真实逻辑问题。任何教学结论都不能替代公司工艺、ATE 或硅上数据。</p>
+<p>首片 bring-up 的记录建议包括：</p>
+<ul>
+<li>tester 程序、pattern 集合、通道/极性映射和加载时间；</li>
+<li>电源、温度、频率、复位和时钟条件；</li>
+<li>首次失败与复测失败是否在同一 cycle、同一链或同一通道；</li>
+<li>是否能用旁路、低速或已知响应模式把问题缩小到接触、时钟、模式或设计。</li>
+</ul>
+<h2 id="_4">互动排障：先取证，再推进</h2>
+<p>演示包含四个独立构造的小模型，结果由输入条件计算，不读取真实网表或预先写好的“通过”日志。修改条件会清除旧证据并重算表格；每一步先检查、后推进，取证结束仍保留异常或无法判定的项目。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>可调整条件</th>
+<th>观察与边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>四级扫描链</td>
+<td>Q2→Q3 正常/固定零断点，三组刺激</td>
+<td>八个沿的移入/移出记录；<code>0000</code> 可能掩盖断点，另用 <code>1111</code> 交叉检查。只模拟固定零断点，不模拟悬空节点电气行为</td>
+</tr>
+<tr>
+<td>两域同步复位</td>
+<td>约束是否记录、B 域复位释放沿</td>
+<td>D 均为 1，在第 2 沿比较响应；“已写约束”不自动释放真实复位。模型不验证异步复位 recovery/removal</td>
+</tr>
+<tr>
+<td>XOR 的 X 传播</td>
+<td>源值、mask、A stuck-at-0</td>
+<td>X 传播到输出；mask 只放弃该点比较，不消除 X、不修复故障。未知或屏蔽均不能报告通过</td>
+</tr>
+<tr>
+<td>单路径捕获</td>
+<td>数据延迟、周期、setup、脉冲数</td>
+<td>计算 <code>周期 − setup − 延迟</code>；缺捕获沿或负裕量不能宣称确定采样值。无 skew、hold、库时序弧或亚稳态仿真</td>
+</tr>
+</tbody>
+</table></div>
+<p>建议分别尝试“断点 + 全零刺激”“已记录约束 + 复位晚释放”“注入故障 + 屏蔽观察点”“裕量为正 + 缺捕获脉冲”。这些组合说明：单项检查看似正常，不代表整个测试条件成立。再改变造成缺口的条件，比较重新计算出的证据。</p>
+<h2 id="_5">可复用的排障顺序</h2>
+<ol>
+<li>固定输入版本：RTL/网表、库、约束、模式和工具日志必须能互相对应。</li>
+<li>从最靠近症状的可观测证据开始：链路看连接，复位看释放条件，X 看来源，时序看边沿和约束。</li>
+<li>每个结论记录证据、反证和下一步；未检查的假设保持未确认。</li>
+<li>修复后重跑受影响的结构、等价、仿真和模式检查；不要只看一项报告变绿。</li>
+</ol>
+<h2 id="_6">公开参考</h2>
+<p>流程中的术语和阶段边界可对照 <a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT 官方介绍</a> 与 <a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html">TestMAX ATPG 官方介绍</a>。扫描测试的运行约束可参考 <a href="https://arxiv.org/abs/1106.2794">Power Management during Scan Based Sequential Circuit Testing</a>。这些链接是外部参考，页面本身和互动模型不依赖网络；具体命令、库单元与签核标准必须以项目批准资料为准。</p>
+  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-logic-bist.html"><small>← 上一主题</small><strong>LBIST 与签名分析</strong></a></nav>
+  <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
+<ul>
+<li><a href="#_1">流程总览</a></li>
+<li><a href="#_2">交付物的最小闭环</a></li>
+<li><a href="#_3">每个阶段怎样留下证据</a><ul>
+<li><a href="#1">1. 规格、库、时钟与复位</a></li>
+<li><a href="#2-drc">2. 模式规划与 DRC</a></li>
+<li><a href="#3">3. 插入与结构验证</a></li>
+<li><a href="#4-atpg">4. ATPG 与两类仿真</a></li>
+<li><a href="#5-atebring-up-diagnosis">5. ATE、bring-up 与 diagnosis</a></li>
+</ul>
+</li>
+<li><a href="#_4">互动排障：先取证，再推进</a></li>
+<li><a href="#_5">可复用的排障顺序</a></li>
+<li><a href="#_6">公开参考</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

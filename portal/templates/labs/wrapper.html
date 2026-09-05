@@ -1,0 +1,31 @@
+<section class="container dft-lab" id="wrapper-lab" data-lab="access-wrapper" aria-labelledby="wrapper-lab-title">
+  <header class="lab-header">
+    <p class="lab-kicker">ACCESS LAB · 03</p>
+    <h2 id="wrapper-lab-title">Wrapper：让层级测试各走各的路径</h2>
+    <p>在一个可复用核周围，Wrapper Cell 可以隔离核心、串接边界或旁路。切换模式观察同一输入如何到达核心与输出；它与芯片 PAD 上的 Boundary Scan Cell 是相关但不同的工程结构。</p>
+  </header>
+  <div class="lab-controls" role="group" aria-label="Wrapper 控制">
+    <button type="button" data-access-action="reset" disabled>重置</button>
+    <button type="button" data-access-action="apply" disabled>应用数据路径</button>
+    <label>测试模式 <select data-access-setting="mode" disabled><option value="internal">Internal Test · 内测</option><option value="external">External Test · 外测</option><option value="bypass">Bypass · 旁路</option></select></label>
+    <label>输入 <select data-access-setting="input" disabled><option value="0">0</option><option value="1">1</option></select></label>
+    <label>外部互连 <select data-access-setting="link" disabled><option value="normal">正常：link(input)</option><option value="invert">反相：link(!input)</option><option value="stuck0">故障：固定 0</option><option value="stuck1">故障：固定 1</option></select></label>
+  </div>
+  <div class="lab-stage wrapper-stage" aria-label="Wrapper 数据路径示意">
+    <div class="wrapper-ports"><span>测试输入</span><strong data-access-field="input">0</strong></div>
+    <div class="wrapper-box">
+      <div class="wrapper-row" data-wrapper-row="external"><span>边界 Cell · 外测角色</span><b data-access-field="external-cell">—</b></div>
+      <div class="wrapper-core"><span>CORE：Y = NOT X</span><strong data-access-field="core">—</strong><small data-access-field="core-input">输入 —</small></div>
+      <div class="wrapper-row" data-wrapper-row="internal"><span>边界 Cell · 内测角色</span><b data-access-field="internal-cell">—</b></div>
+    </div>
+    <div class="wrapper-ports"><span>测试输出</span><strong data-access-field="output">—</strong></div>
+  </div>
+  <div class="lab-readouts" aria-label="Wrapper 读数">
+    <div><small>当前模式</small><strong data-access-field="mode">Internal Test</strong></div>
+    <div><small>核心是否隔离</small><strong data-access-field="isolation">否</strong></div>
+    <div><small>路径结果</small><strong data-access-field="result">尚未应用</strong></div>
+    <div><small>外部互连简化值 / 旁路寄存器</small><strong><span data-access-field="neighbor">—</span> / <span data-access-field="bypass-reg">—</span></strong></div>
+  </div>
+  <p class="lab-explanation" data-access-field="explanation">Internal Test 把测试刺激送入核内部，外部边界保持安静；External Test 通过外部 Wrapper 观察或驱动核边界；Bypass 绕过核心，适合层级串接。</p>
+  <noscript><p>启用 JavaScript 后可切换三种模式。Wrapper 是层级 DFT 的隔离与串接结构；Boundary Scan 是芯片 I/O 边界上的另一层结构，两者不要混为同一个单元。</p></noscript>
+</section>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DFT 团队离线开发手册：OMP、共享能力与有依据的验证。">
+  <title>团队 Skills 总览 · DFT 工作台</title>
+  <script src="../assets/theme.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script defer src="../assets/search-data.js"></script>
+  <script defer src="../assets/app.js"></script>
+  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+  
+  
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../assets/desktop.css">
+</head>
+<body data-base="../" data-area="team" data-page-kind="document" data-internal-entry="false">
+<a class="skip-link" href="#main">跳到正文</a>
+<header class="header">
+  <a class="brand" href="../index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
+  <nav class="topnav" aria-label="主导航"><a href="../index.html" >首页</a><a href="../start/index.html" >开始使用</a><a href="../team/index.html" class="active" aria-current="page">团队能力</a><a href="../maintenance/index.html" >维护手册</a><a href="../internal/index.html" >内部文档</a><a href="../dft/index.html" >DFT知识</a></nav>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索团队能力 <kbd>/</kbd></button>
+  <span class="offline"><i></i> 离线可用</span>
+  <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
+    <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+  </div>
+</header>
+
+<div class="docs-layout">
+  
+  <aside class="sidebar"><a class="area-back" href="../team/index.html">团队能力 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="团队能力栏目"><a  href="../pages/team.html">团队公共能力</a><a class="active" aria-current="page" href="../pages/skills.html">团队 Skills 总览</a><a  href="../pages/team-agents.html">团队 Agent</a><a  href="../pages/team-commands.html">自定义命令</a><a  href="../pages/skill-generate-unit-tests.html">generate-unit-tests</a><a  href="../pages/skill-generate-dft-circuit.html">generate-dft-circuit</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+  
+  <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../team/index.html">团队能力</a></div>
+  <h1 id="skills">团队 Skills 总览</h1>
+<p>Skill 是供 Agent 按需读取的方法说明，不是后台服务。先按任务找到合适的 Skill，再查看使用示例；完整输入输出、执行边界和原始文件放在各自独立页面。</p>
+<h2 id="_1">按任务选择</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>功能</th>
+<th>什么场景下使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="skill-generate-unit-tests.html">generate-unit-tests</a></td>
+<td>根据真实修改，复用已有框架补充并执行相关单元测试</td>
+<td>功能已修改、缺陷已修复，需要补回归或验证受影响的边界行为</td>
+</tr>
+<tr>
+<td><a href="skill-generate-dft-circuit.html">generate-dft-circuit</a></td>
+<td>在指定工程生成 DFT 插入前基础 RTL、文件清单与验证入口</td>
+<td>需要小型电路作为后续 DFT 流程输入，还没有 Scan、EDT 等结构</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="_2">怎么调用</h2>
+<p>Agent 可以根据任务自动选择 Skill，通常直接描述需求即可。希望明确采用某项方法时，在 OMP 输入框使用 <code>/skill:&lt;名称&gt; &lt;需求&gt;</code>，不在 Shell 中执行。</p>
+<h3 id="_3">为已有修改补充测试</h3>
+<p>直接描述：</p>
+<pre><code class="language-text">请根据当前复位逻辑的修改，在项目现有测试框架中补充回归，并运行相关测试。
+</code></pre>
+<p>显式调用：</p>
+<pre><code class="language-text">/skill:generate-unit-tests 对当前复位逻辑的修改补充相关 UT，并执行项目已有测试入口，不修改产品代码。
+</code></pre>
+<p>适用于已有修改的验证，不是无目标地扩充测试数量。查看 <a href="skill-generate-unit-tests.html">generate-unit-tests 的完整说明与原始文件</a>。</p>
+<h3 id="dft">生成 DFT 插入前基础电路</h3>
+<p>直接描述：</p>
+<pre><code class="language-text">请在我指定的工程生成 TOP → CORE_A → CORE_B 的基础 RTL，提供文件清单和验证入口，先不要加入 Scan 或 EDT。当前没有 PAD 库，请明确说明未接真实 PAD。
+</code></pre>
+<p>显式调用：</p>
+<pre><code class="language-text">/skill:generate-dft-circuit 在 /path/to/project 生成 DFT 插入前基础 RTL、文件清单和测试平台；缺少 PAD 库或仿真工具时明确报告缺口。
+</code></pre>
+<p>将示例路径替换为实际目标工程。此 Skill 不会在缺少资料时假装完成真实 PAD 接入或 DFT 插入。查看 <a href="skill-generate-dft-circuit.html">generate-dft-circuit 的完整说明与原始文件</a>。</p>
+<h2 id="_4">和自定义命令有什么区别</h2>
+<p><code>/code-and-verify</code> 是从需求到实现、验证的完整开发入口；Skill 是某类任务的具体做法。例如开发流程需要补测试时，Agent 可以选用 <code>generate-unit-tests</code>。只需要为已有修改补测试，可以直接调用该 Skill，不必重新启动完整开发流程。</p>
+<h2 id="_5">发现与启用</h2>
+<p>两项 Skill 均允许自动选择，不设置 <code>hide</code> 或 <code>disable-model-invocation</code>。显式调用需要启用 <code>skills.enabled</code>、<code>skills.enableSkillCommands</code>。</p>
+<p>同步位置为 <code>~/.omp/agent/skills/&lt;名称&gt;/SKILL.md</code>。进入目标代码仓后启动 OMP 即可发现；项目同名定义或禁用设置可能覆盖个人版本，加载情况可通过 <code>/extensions</code> 查看。</p>
+<p>这里只列团队共享的 Skill，不是当前用户全部个人 Skill 的清单。每项 Skill 在左侧都有独立入口，后续新增能力继续按项查阅。</p>
+<p>依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/extensibility/skills.ts">Skill 发现与调用</a>。</p>
+  
+  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+  <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
+<ul>
+<li><a href="#_1">按任务选择</a></li>
+<li><a href="#_2">怎么调用</a><ul>
+<li><a href="#_3">为已有修改补充测试</a></li>
+<li><a href="#dft">生成 DFT 插入前基础电路</a></li>
+</ul>
+</li>
+<li><a href="#_4">和自定义命令有什么区别</a></li>
+<li><a href="#_5">发现与启用</a></li>
+</ul>
+</div>
+<a class="back-top" href="#main">返回顶部 ↑</a></aside>
+</div>
+
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索团队能力</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

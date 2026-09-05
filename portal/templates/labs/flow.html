@@ -1,0 +1,26 @@
+<section class="dft-lab" id="flow-lab" data-lab="flow" aria-label="DFT 工程流程排障演示">
+  <div class="lab-header"><span class="demo-tag">04 / ENGINEERING FLOW</span><div><strong>改变条件，重新计算证据</strong><p>选择场景并调整电路或约束条件。逐项取证，不把响应一致、屏蔽比较或取证结束当成问题已解决。</p></div><span class="lab-badge" data-field="confidence">待取证</span></div>
+  <div class="lab-controls">
+    <label>症状 <select data-setting="symptom" disabled><option value="broken-chain">链路移位异常</option><option value="reset-constraint">复位约束不完整</option><option value="x-source">捕获响应出现 X</option><option value="capture-timing">高速捕获失败</option></select></label>
+    <button type="button" data-action="inspect" disabled>检查当前证据</button>
+    <button type="button" data-action="next" disabled>进入下一项</button>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="flow-conditions">
+    <fieldset data-flow-options="broken-chain"><legend>四级扫描链 · 初值 0000</legend><label>Q2 → Q3 <select data-parameter="link" disabled><option value="open">断点：Q3 扫描输入固定 0</option><option value="normal">连接正常</option></select></label><label>时间顺序刺激 <select data-parameter="stimulus" disabled><option value="1011">1011</option><option value="0000">0000</option><option value="1111">1111</option></select></label></fieldset>
+    <fieldset data-flow-options="reset-constraint" hidden><legend>两个寄存器 · 高有效同步复位 · 功能 D 均为 1</legend><label>约束资料 <select data-parameter="documented" disabled><option value="no">未记录</option><option value="yes">已记录</option></select></label><label>B 域在第几沿前释放 <select data-parameter="release" disabled><option value="3">3（晚于第 2 沿捕获）</option><option value="1">1（捕获前已释放）</option><option value="0">0（初始即释放）</option></select></label></fieldset>
+    <fieldset data-flow-options="x-source" hidden><legend>一个 XOR 观察点 · 无故障 A = 1</legend><label>源 B <select data-parameter="source" disabled><option value="X">X（未知）</option><option value="0">0</option><option value="1">1</option></select></label><label>观察点 mask <select data-parameter="mask" disabled><option value="no">参与比较</option><option value="yes">屏蔽比较</option></select></label><label>A stuck-at-0 <select data-parameter="fault" disabled><option value="no">不注入</option><option value="yes">注入</option></select></label></fieldset>
+    <fieldset data-flow-options="capture-timing" hidden><legend>理想单路径 setup 检查 · launch 在 0 ns</legend><label>路径延迟 <select data-parameter="delay" disabled><option value="12">12 ns</option><option value="8">8 ns</option><option value="9">9 ns</option></select></label><label>捕获周期 <select data-parameter="period" disabled><option value="10">10 ns</option><option value="15">15 ns</option></select></label><label>Setup 要求 <select data-parameter="setup" disabled><option value="1">1 ns</option><option value="2">2 ns</option></select></label><label>脉冲数 <select data-parameter="pulses" disabled><option value="2">2（launch + capture）</option><option value="1">1（只有 launch）</option></select></label></fieldset>
+    <p class="flow-topology" data-field="topology">SI → Q1 → Q2 → Q3 → Q4 → SO；条件与数值在启用 JavaScript 后计算。</p>
+    <div class="flow-trace-scroll" tabindex="0" aria-label="本组输入的计算记录"><table><caption>当前条件的计算预览；不读取真实网表、工具日志或公司报告。</caption><thead><tr data-trace-head><th>计算记录</th></tr></thead><tbody data-trace-body><tr><td>等待计算</td></tr></tbody></table></div>
+  </div>
+  <div class="lab-stage" aria-live="polite">
+    <div class="lab-stage-progress"><span>当前阶段</span><strong data-field="stage">—</strong><b data-field="progress">0 / 0</b></div>
+    <div class="lab-evidence"><span class="lab-evidence-icon" data-field="evidence-icon">?</span><div><h3 data-field="check-title">等待选择症状</h3><p data-field="check-prompt">启用 JavaScript 后，从一项具体证据开始。</p></div></div>
+    <div class="lab-result" data-field="result">尚未检查</div>
+  </div>
+  <div class="lab-readouts"><div><small>已检查项目（不等于通过）</small><strong data-field="confirmed">0</strong></div><div><small>待检查</small><strong data-field="remaining">0</strong></div><div><small>下一步建议</small><strong data-field="next-step">选择症状并开始取证</strong></div></div>
+  <ol class="flow-evidence-records" data-evidence-records aria-label="本轮已记录证据"></ol>
+  <p class="lab-explanation" data-field="explanation">独立构造的教学模型，不读取真实工程。改变条件会清除本轮证据；原理说明不代替工艺库、门级仿真和实际签核。</p>
+  <noscript><p>此排障演示需要 JavaScript 执行检查。静态页面仍可阅读上方 DFT 工程流程表；真实项目应保存版本、约束、报告、波形与 ATE 证据，再判断根因。</p></noscript>
+</section>

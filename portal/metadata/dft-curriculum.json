@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "title": "测试原理", "description": "先理解测什么、怎样检出，以及结果意味着什么。",
+      "lessons": [
+        {"slug": "dft-overview", "title": "DFT 概念地图", "summary": "串起测试结构、算法与工程验证的完整关系。"},
+        {"slug": "dft-fault-atpg", "title": "故障模型与 ATPG", "summary": "选择刺激，观察故障激活与差异传播。", "lab": "fault-atpg", "script": "faults.js"},
+        {"slug": "dft-coverage", "title": "覆盖率与测试质量", "summary": "改变故障分类，分清分母、未测与不可测。", "lab": "coverage", "script": "faults.js"},
+        {"slug": "dft-testpoints", "title": "Test Point 与可测试性", "summary": "加入控制点和观察点，比较可检出的故障。", "lab": "testpoints", "script": "faults.js"}
+      ]
+    },
+    {
+      "title": "扫描与时钟", "description": "从一个寄存器的移位，到多链、高速捕获与测试控制。",
+      "lessons": [
+        {"slug": "dft-scan", "title": "Scan 基础：移入、捕获、移出", "summary": "单步观察四级扫描链和故障响应。"},
+        {"slug": "dft-scan-engineering", "title": "Scan 工程结构", "summary": "理解链划分、链长平衡与跨时钟连接。", "lab": "scan-engineering", "script": "clocks.js"},
+        {"slug": "dft-at-speed", "title": "At-speed 与 LOC / LOS", "summary": "改变路径延迟，观察 launch / capture 的时序。", "lab": "at-speed", "script": "clocks.js"},
+        {"slug": "dft-clock-reset", "title": "OCC、时钟与复位", "summary": "观察门控、复位和测试时钟的配合。", "lab": "clock-reset", "script": "clocks.js"}
+      ]
+    },
+    {
+      "title": "压缩与功耗", "description": "了解有限通道、未知值和测试资源之间的取舍。",
+      "lessons": [
+        {"slug": "dft-edt", "title": "EDT 基础：并行链与响应压缩", "summary": "比较正常、单错误和双错误抵消。"},
+        {"slug": "dft-compression", "title": "EDT 约束与 X 处理", "summary": "尝试编码约束、X 屏蔽与压缩旁路。", "lab": "compression", "script": "compression-power.js"},
+        {"slug": "dft-test-power", "title": "测试功耗与低功耗设计", "summary": "切换测试调度与电源域，比较翻转活动。", "lab": "test-power", "script": "compression-power.js"}
+      ]
+    },
+    {
+      "title": "访问与分层", "description": "打通芯片外部、片内仪器与独立 IP 的测试入口。",
+      "lessons": [
+        {"slug": "dft-jtag", "title": "JTAG / Boundary Scan", "summary": "步进 TAP 状态，分清指令、数据与边界访问。", "lab": "jtag", "script": "access.js"},
+        {"slug": "dft-ijtag", "title": "IJTAG 与片内仪器", "summary": "开闭 SIB，观察可变访问路径。", "lab": "ijtag", "script": "access.js"},
+        {"slug": "dft-wrapper", "title": "Wrapper 与分层 DFT", "summary": "切换内测、外测、旁路，观察边界隔离。", "lab": "wrapper", "script": "access.js"}
+      ]
+    },
+    {
+      "title": "内建自测试", "description": "区分逻辑与存储器的激励、响应和修复机制。",
+      "lessons": [
+        {"slug": "dft-memory-bist", "title": "MBIST / BIRA / BISR", "summary": "步进内存读写，观察故障与冗余修复。", "lab": "memory-bist", "script": "bist.js"},
+        {"slug": "dft-logic-bist", "title": "LBIST 与签名分析", "summary": "观察 LFSR 激励与 MISR 签名的逐拍变化。", "lab": "logic-bist", "script": "bist.js"}
+      ]
+    },
+    {
+      "title": "工程落地", "description": "把结构、模式、验证与实际测试串成可追溯的流程。",
+      "lessons": [
+        {"slug": "dft-flow", "title": "DFT 工程流程与调试", "summary": "跟随证据排障，明确每个阶段的输入和输出。", "lab": "flow", "script": "flow.js"}
+      ]
+    }
+  ]
+}

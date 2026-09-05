@@ -1,0 +1,26 @@
+<section class="dft-lab" id="testpoints-lab" data-lab="faults-testpoints" aria-label="测试点与可测试性互动实验">
+  <header class="lab-header"><span class="demo-tag">LAB 03 / TEST POINTS</span><div><h3>给难测节点一条新路径</h3><p>选择控制点、观察点或两者，比较教学模型中的收益与代价。</p></div></header>
+  <div class="lab-controls">
+    <label>候选结构 <select data-point-setting disabled><option value="none">不加测试点</option><option value="control">加入控制点</option><option value="observe">加入观察点</option><option value="both">控制点 + 观察点</option></select></label>
+    <button type="button" data-action="point-evaluate" disabled>评估候选点</button><button type="button" data-action="point-reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage point-stage">
+    <svg viewBox="0 0 760 190" role="img" aria-labelledby="point-lab-title point-lab-desc">
+      <title id="point-lab-title">控制点和观察点对内部节点的影响</title>
+      <desc id="point-lab-desc">h=a AND b，p=a XOR b，out=h AND p 被掩蔽；控制点作用于 h，观察点捕获控制后的 h。</desc>
+      <path d="M38 58H112M38 132H112M212 58H292M212 132H292M392 95H472M572 95H700" class="lab-wire"/>
+      <text x="28" y="52" class="lab-label">a</text><text x="28" y="126" class="lab-label">b</text>
+      <rect x="112" y="30" width="100" height="56" rx="10" class="lab-gate"/><text x="162" y="55" text-anchor="middle">AND</text><text x="162" y="73" text-anchor="middle" class="lab-small">h = a &amp; b</text>
+      <rect x="112" y="106" width="100" height="56" rx="10" class="lab-gate"/><text x="162" y="131" text-anchor="middle">XOR</text><text x="162" y="149" text-anchor="middle" class="lab-small">p = a ^ b</text>
+      <rect x="292" y="30" width="100" height="56" rx="10" class="lab-gate lab-control"/><text x="342" y="55" text-anchor="middle">控制点</text><text x="342" y="73" text-anchor="middle" class="lab-small">h / test=1</text>
+      <rect x="472" y="62" width="100" height="66" rx="10" class="lab-hidden"/><text x="522" y="91" text-anchor="middle">out = h&amp;p</text><text x="522" y="110" text-anchor="middle" class="lab-small">逻辑输出（被掩蔽）</text>
+      <rect x="700" y="62" width="48" height="66" rx="10" class="lab-observe"/><text x="724" y="91" text-anchor="middle">观</text><text x="724" y="110" text-anchor="middle" class="lab-small">h</text>
+      <path d="M392 58V95H472M212 134H260V95H292" class="lab-wire"/>
+      <text x="42" y="177" class="lab-label">四个模式：00 / 01 / 10 / 11</text><text x="574" y="151" class="lab-label">SO</text>
+      <circle cx="272" cy="58" r="7" class="lab-node" data-node="h"/><circle cx="272" cy="134" r="7" class="lab-node" data-node="p"/>
+    </svg>
+  </div>
+  <div class="lab-readouts" aria-live="polite"><div><small>激活集合</small><strong data-field="activation-set">—</strong></div><div><small>被检出故障</small><strong data-field="detected-set">—</strong></div><div><small>检出数量</small><strong data-field="detected-count">—</strong></div><div><small>可用模式数</small><strong data-field="pattern-count">—</strong></div></div>
+  <p class="lab-explanation" data-field="explanation">小电路枚举固定故障集合和四个输入模式。控制点改变激励路径，观察点改变可观察集合；结果来自逐模式好/坏电路比较。</p>
+  <noscript><p>本实验需要 JavaScript 枚举教学电路。控制点主要改变隐藏节点的激励，观察点主要增加隐藏节点捕获；真实工具结果需要具体设计和约束。</p></noscript>
+</section>

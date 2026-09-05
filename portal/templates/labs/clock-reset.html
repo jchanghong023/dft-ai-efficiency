@@ -1,0 +1,40 @@
+<section class="dft-lab" id="clocks-occ-lab" data-lab="clocks-occ" aria-label="OCC、门控与复位实验">
+  <div class="lab-header"><span class="demo-tag">LAB / CLOCK CONTROL</span><strong>哪些源时钟沿真正到达扫描触发器？</strong></div>
+  <div class="lab-controls">
+    <label>模式 <select data-field="mode" disabled><option value="shift">Shift · 低速移位</option><option value="capture">Capture · at-speed 捕获</option></select></label>
+    <label class="lab-check"><input type="checkbox" data-field="se" checked disabled> Scan Enable</label>
+    <label class="lab-check"><input type="checkbox" data-field="test" checked disabled> Test Enable</label>
+    <label class="lab-check"><input type="checkbox" data-field="functional" disabled> 功能时钟源</label>
+    <label class="lab-check"><input type="checkbox" data-field="reset" disabled> 复位有效</label>
+    <button type="button" data-action="step" disabled>单步源时钟沿</button>
+    <button type="button" data-action="play" disabled>播放</button>
+    <label>速度 <select data-setting="speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 230" role="img" aria-labelledby="occ-title occ-desc">
+      <title id="occ-title">OCC 门控功能时钟和测试时钟</title>
+      <desc id="occ-desc">测试使能、Scan Enable 和复位共同决定 OCC 是否能够输出移位或捕获时钟。</desc>
+      <rect x="45" y="80" width="130" height="58" rx="8" class="lab-box"/><text x="110" y="105" text-anchor="middle" class="lab-label">功能 / 测试</text><text x="110" y="124" text-anchor="middle" class="lab-small">clock source</text>
+      <path d="M175 109H285" class="lab-wire" marker-end="url(#occ-arrow)"/>
+      <rect x="285" y="65" width="180" height="88" rx="12" class="lab-box lab-occ"/><text x="375" y="98" text-anchor="middle" class="lab-label">OCC</text><text x="375" y="121" text-anchor="middle" class="lab-small">门控 · 计数 · 复位保护</text>
+      <path d="M465 109H570" class="lab-wire" marker-end="url(#occ-arrow)"/><rect x="570" y="80" width="175" height="58" rx="8" class="lab-box"/><text x="657" y="105" text-anchor="middle" class="lab-label">scan flops</text><text x="657" y="124" text-anchor="middle" class="lab-small">shift / capture</text>
+      <path d="M375 153V190H650V138" class="lab-control"/><text x="505" y="214" text-anchor="middle" class="lab-small">SE、Test Enable、Reset 是控制条件，不是数据位</text>
+      <circle data-visual="pulse" cx="510" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="530" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="550" cy="109" r="7" class="lab-dot"/><circle data-visual="pulse" cx="570" cy="109" r="7" class="lab-dot"/>
+      <defs><marker id="occ-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>已放行 / 本组预计输出沿</small><strong data-readout="edges">—</strong></div>
+    <div><small>所选源沿 / 本组源沿数</small><strong data-readout="cycle">—</strong></div>
+    <div><small>所选沿类型</small><strong data-readout="pulses">—</strong></div>
+    <div><small>所选沿门控</small><strong data-readout="result">—</strong></div>
+    <div><small>请求还需放行的沿数</small><strong data-readout="remaining">—</strong></div>
+  </div>
+  <p class="access-node-detail" data-occ-detail>OCC 选择时钟来源、门控和计数；输入时钟、控制条件和输出沿不是同一件事。</p>
+  <div class="access-history-heading"><strong>源时钟与门控记录</strong><button type="button" data-action="latest" disabled>返回最新状态</button></div>
+  <p class="access-view-status" data-occ-view aria-live="polite">每组最多观察四个源沿，改变条件会重新开始。</p>
+  <div class="access-history-scroll" tabindex="0" aria-label="OCC 逐源沿记录，可横向滚动"><table><caption>↑ 只表示源时钟沿序号，不表示脉宽、频率、毛刺或传播延迟；图中圆点表示累计放行次数。</caption><thead><tr><th>源沿</th><th>来源</th><th>SE</th><th>TE</th><th>RST</th><th>门控</th><th>输出</th><th>计数前 → 后</th><th>还需</th></tr></thead><tbody data-occ-history></tbody></table></div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可改变门控条件。复位有效或测试使能关闭时，模型会保持时钟关闭。</p>
+  <noscript><p>本实验需要 JavaScript 才能切换状态。OCC 的教学要点是把移位时钟与高速捕获脉冲分开控制，并在复位或模式不安全时禁止输出。</p></noscript>
+</section>

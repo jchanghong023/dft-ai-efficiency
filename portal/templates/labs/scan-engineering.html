@@ -1,0 +1,33 @@
+<section class="dft-lab" id="clocks-scan-engineering-lab" data-lab="clocks-scan-engineering" aria-label="扫描链划分、平衡与 lock-up 实验">
+  <div class="lab-header"><span class="demo-tag">LAB / SCAN ENGINEERING</span><strong>链长平衡与跨时钟保持裕量</strong></div>
+  <div class="lab-controls">
+    <label>各链长度 <input data-field="lengths" value="8,8,7,9" disabled aria-label="各扫描链长度，逗号分隔"></label>
+    <label>目标沿偏移 <input data-field="edge" type="number" value="0.3" step="0.1" disabled> ns</label>
+    <label class="lab-check"><input type="checkbox" data-field="lockup" disabled> 插入 lock-up</label>
+    <button type="button" data-action="reset" disabled>重置</button>
+  </div>
+  <div class="lab-stage">
+    <svg viewBox="0 0 800 245" role="img" aria-labelledby="scan-eng-title scan-eng-desc">
+      <title id="scan-eng-title">四条扫描链的长度平衡与 lock-up</title>
+      <desc id="scan-eng-desc">四条链可以按时钟域和物理区域划分；跨域边界的 lock-up 用于改善保持裕量。</desc>
+      <text x="35" y="32" class="lab-label">clk_A</text><text x="35" y="174" class="lab-label">clk_B</text>
+      <path d="M100 45H675M100 100H675M100 187H675M100 232H675" class="lab-wire"/>
+      <rect data-visual="bar-0" x="450" y="32" width="298" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-1" x="450" y="87" width="298" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-2" x="450" y="174" width="267" height="6" rx="3" class="lab-bar"/><rect data-visual="bar-3" x="450" y="219" width="298" height="6" rx="3" class="lab-bar"/>
+      <circle cx="160" cy="45" r="10" class="lab-cell"/><circle cx="250" cy="45" r="10" class="lab-cell"/><circle cx="340" cy="45" r="10" class="lab-cell"/><circle cx="430" cy="45" r="10" class="lab-cell"/><text x="685" y="50" class="lab-small">chain 1</text>
+      <circle cx="160" cy="100" r="10" class="lab-cell"/><circle cx="250" cy="100" r="10" class="lab-cell"/><circle cx="340" cy="100" r="10" class="lab-cell"/><circle cx="430" cy="100" r="10" class="lab-cell"/><text x="685" y="105" class="lab-small">chain 2</text>
+      <circle cx="160" cy="187" r="10" class="lab-cell lab-b"/><circle cx="250" cy="187" r="10" class="lab-cell lab-b"/><circle cx="340" cy="187" r="10" class="lab-cell lab-b"/><text x="685" y="192" class="lab-small">chain 3</text>
+      <circle cx="160" cy="232" r="10" class="lab-cell lab-b"/><circle cx="250" cy="232" r="10" class="lab-cell lab-b"/><circle cx="340" cy="232" r="10" class="lab-cell lab-b"/><circle cx="430" cy="232" r="10" class="lab-cell lab-b"/><text x="685" y="237" class="lab-small">chain 4</text>
+      <rect data-visual="lockup" x="505" y="150" width="88" height="32" rx="6" class="lab-lockup"/><text x="549" y="171" text-anchor="middle" class="lab-small">lock-up</text>
+      <line data-visual="edge" x1="494" y1="135" x2="494" y2="185" class="lab-edge"/>
+      <path d="M505 166H430M593 166H635" class="lab-control"/>
+    </svg>
+  </div>
+  <div class="lab-readouts">
+    <div><small>链长</small><strong data-readout="balance">—</strong></div>
+    <div><small>最长−最短</small><strong data-readout="spread">—</strong></div>
+    <div><small>移位周期</small><strong data-readout="cycles">—</strong></div>
+    <div><small>跨沿判断</small><strong data-readout="timing">—</strong></div>
+  </div>
+  <p class="lab-explanation" data-explanation>启用 JavaScript 后可调整链长与 lock-up。示意只解释工程权衡，不替代 CTS、STA 或 DFT DRC。</p>
+  <noscript><p>本实验需要 JavaScript 才能计算链长差异。实际扫描链还需依据时钟域、电源域、物理区域与 DFT 规则进行划分，并对跨沿保持问题插入适合的 lock-up 结构。</p></noscript>
+</section>
