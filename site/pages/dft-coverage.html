@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+<link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,18 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout circuit-layout">
-  
+
   <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a class="active" aria-current="page" href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
-  
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
-  <h1 id="_1">覆盖率：数字背后的口径</h1>
+<h1 id="_1">覆盖率：数字背后的口径</h1>
+<p>“覆盖率”不是一个脱离报告上下文的单一百分比。它至少要回答三件事：分母是什么、哪些故障被排除、检测判定采用什么模拟和约束。比较两个百分比前，必须先确认故障模型、故障列表、工具选项、X 处理和报告阶段一致。</p>
+<p>本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。</p>
 <section class="dft-lab" id="coverage-lab" data-lab="faults-coverage" aria-label="覆盖率口径互动实验">
   <header class="lab-header"><span class="demo-tag">LAB 02 / COVERAGE</span><div><h3>同一组故障，两个分母</h3><p>切换报告口径，观察 detected、untestable 和 aborted 如何改变百分比。</p></div></header>
   <div class="lab-controls">
@@ -49,7 +51,6 @@
   <noscript><p>本实验需要 JavaScript 计算示例。静态理解：全目标检测比例的分母保留所有状态；第二种口径只排除已证明不可测，aborted 仍留在分母。</p></noscript>
 </section>
 
-<p>“覆盖率”不是一个脱离报告上下文的单一百分比。它至少要回答三件事：分母是什么、哪些故障被排除、检测判定采用什么模拟和约束。比较两个百分比前，必须先确认故障模型、故障列表、工具选项、X 处理和报告阶段一致。</p>
 <h2 id="_2">三个常被混用的词</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -69,7 +70,7 @@
 </tr>
 <tr>
 <td>Test coverage</td>
-<td>更宽泛的测试目标或场景</td>
+<td>ATPG 报告中按工具故障分类统计的检测结果</td>
 <td>由具体工具/规范定义</td>
 <td>各工具之间可直接横比</td>
 </tr>
@@ -81,6 +82,7 @@
 </tr>
 </tbody>
 </table></div>
+<p>此处讨论 ATPG 报告术语，不能与功能验证覆盖率混用。引用 Fault coverage、Test coverage 或 ATPG effectiveness 时，须同时列明工具、版本、故障分类及该报告的公式；本页不绑定某个工具版本，不给这些术语强加统一公式。</p>
 <p>不同工具会把“coverage”用于不同报告层次。下面的实验明确提供两个口径：<strong>全目标检测比例</strong>把 detected、not-detected、已证明不可测和 aborted 都保留在分母；<strong>排除已证明不可测后的检测比例</strong>只排除已证明不可测，aborted 仍然是未解决状态，必须留在分母。两者都只对当前演示数据成立。</p>
 <h2 id="_3">为什么要看分母</h2>
 <p>假设 100 个目标故障中检测 80 个、未检测 5 个、已证明不可测 10 个、尚未完成处理 5 个：</p>
@@ -115,7 +117,7 @@
 <p>本页的交互数据故意很小，便于手算核对；它不代表任何产品的目标值。</p>
 <h2 id="_8">公开参考</h2>
 <p><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html">Synopsys TestMAX ATPG 官方介绍</a>强调故障建模、故障仿真和高覆盖率模式生成是工具流程中的不同能力。<a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-advisor.html">Synopsys TestMAX Advisor 官方介绍</a>列出 coverage estimation、DFT 检查和测试点选择等分析功能。本文实验的百分比由页面内固定数据计算，不冒充任一商业工具的统一报告口径。</p>
-  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-fault-atpg.html"><small>← 上一主题</small><strong>故障模型与 ATPG</strong></a><a href="../pages/dft-testpoints.html"><small>下一主题 →</small><strong>Test Point 与可测试性</strong></a></nav>
+<nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-fault-atpg.html"><small>← 上一主题</small><strong>故障模型与 ATPG</strong></a><a href="../pages/dft-testpoints.html"><small>下一主题 →</small><strong>Test Point 与可测试性</strong></a></nav>
   <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
 <ul>
@@ -131,7 +133,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

@@ -35,6 +35,63 @@ class InternalDocsTests(unittest.TestCase):
     def run_build(self, **kwargs):
         with contextlib.redirect_stdout(io.StringIO()): build(self.root, **kwargs)
 
+    def clean_delivery(self):
+        self.first.write_text('# 测试说明\n\n[另一份](nested/第二份.MD#输入)\n\n![本地图片](image.png)\n', encoding='utf-8')
+        self.run_build()
+
+    def test_extracted_delivery_files_http_search_and_hashes(self):
+        import zipfile
+        import threading
+        from scripts.serve_site import create_server, SiteHandler
+        from tests.verify_delivery import verify_delivery
+        self.clean_delivery()
+        archive = self.root / 'fixture.zip'
+        with zipfile.ZipFile(archive, 'w') as bundle:
+            for folder in ('site', 'yellow/.site', 'yellow/docs'):
+                for path in (self.root / folder).rglob('*'):
+                    if path.is_file(): bundle.write(path, path.relative_to(self.root))
+        relocated = self.root / 'different directory'
+        with zipfile.ZipFile(archive) as bundle: bundle.extractall(relocated)
+        with patch.object(SiteHandler, 'log_message'), create_server(relocated, port=0) as server:
+            thread = threading.Thread(target=server.serve_forever); thread.start()
+            try: result = verify_delivery(relocated, f'http://127.0.0.1:{server.server_port}')
+            finally: server.shutdown(); thread.join()
+        self.assertTrue(result['passed'], result['errors'])
+        self.assertGreater(result['http_checked'], 180)
+        (relocated / 'yellow/docs/image.png').unlink()
+        self.assertFalse(verify_delivery(relocated)['passed'])
+
+    def test_delivery_rejects_broken_fragment_and_changed_original(self):
+        from tests.verify_delivery import verify_delivery
+        self.clean_delivery()
+        self.first.write_text('# 测试说明\n\n[章节](nested/第二份.MD#不存在)\n', encoding='utf-8')
+        self.run_build()
+        result = verify_delivery(self.root)
+        self.assertTrue(any('章节锚点不存在' in error for error in result['errors']))
+        self.clean_delivery()
+        self.first.write_text('# Changed after build', encoding='utf-8')
+        self.assertFalse(verify_delivery(self.root)['passed'])
+        self.clean_delivery()
+        (self.docs / 'added-after-build.md').write_text('# New document', encoding='utf-8')
+        self.assertFalse(verify_delivery(self.root)['passed'])
+
+    def test_hidden_resources_and_invalid_encoding_are_reported_privately(self):
+        from tests.verify_delivery import verify_delivery
+        self.clean_delivery()
+        (self.docs / '.assets').mkdir()
+        (self.docs / '.assets/figure.png').write_bytes(b'fixture')
+        (self.docs / 'invalid.md').write_bytes(b'\xff\xfe\x00')
+        self.first.write_text('# 测试说明\n\n![隐藏附件](.assets/figure.png)\n', encoding='utf-8')
+        self.run_build()
+        manifest = read_json(self.root / 'yellow/.site/manifest.json')
+        self.assertEqual(len(manifest['failed']), 1)
+        self.assertEqual(len(manifest['issues']), 1)
+        article = (self.root / 'yellow/.site' / next(name for name in manifest['files'] if name.startswith('doc-') and '测试说明' in (self.root / 'yellow/.site' / name).read_text(encoding='utf-8'))).read_text(encoding='utf-8')
+        self.assertNotIn('src="../docs/.assets', article)
+        self.assertIn('.assets/figure.png', (self.root / 'yellow/.site/build-report.html').read_text(encoding='utf-8'))
+        self.assertNotIn('.assets/figure.png', (self.root / 'site/assets/search-data.js').read_text(encoding='utf-8'))
+        self.assertFalse(verify_delivery(self.root)['passed'])
+
     def test_private_output_does_not_enter_public_manifest_or_search(self):
         manifest = read_json(self.root / "site/build-manifest.json")
         for path in (self.root / "site").rglob("*"):

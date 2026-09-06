@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,33 +24,34 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout">
-  
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a class="active" aria-current="location" href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
-  
+
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a class="active" aria-current="location" href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">基础手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
-  <h1 id="model">/model</h1>
-<p>打开本会话模型选择器。</p>
+<h1 id="model">/model</h1>
+<p>打开模型中心（TUI，参考 61fb07d）。</p>
 <h2 id="_1">示例</h2>
 <pre><code class="language-text">/model
 </code></pre>
 <h2 id="_2">功能与场景</h2>
-<p>打开本会话模型选择器。</p>
-<p>典型场景：切换可用模型。</p>
+<p>打开模型中心（TUI，参考 61fb07d）。</p>
+<p>典型场景：管理模型角色与默认选择。</p>
 <h2 id="_3">主要参数</h2>
 <p>无必需位置参数；需要交互选择的命令会打开对应面板。</p>
 <p>别名：<code>/models</code>。</p>
 <h2 id="_4">文件与状态影响</h2>
-<p>改变当前会话模型。</p>
+<p>打开面板不自动保存；确认后可影响角色及默认配置。</p>
 <p>示例中的路径、链接与名称须按实际任务替换；涉及写入或远端操作时，请先确认操作对象与影响。</p>
 <h2 id="_5">版本依据</h2>
-<p>v18.1.9+fork.170 · <a href="https://github.com/jchanghong023/oh-my-pi/blob/755b392dc4e99bec1415bed12b3a581d1b19643c/packages/coding-agent/src/slash-commands/builtin-modes.ts#L323">对应注册源码</a>。</p>
-  
-  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+<p>上游提交 61fb07d（2026-09-05，非分发二进制版本） · <a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/slash-commands/builtin-modes.ts#L324">对应注册源码</a>。</p>
+<p>交互行为按 <a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/modes/controllers/selector-controller.ts#L818">模型选择器实现</a> 核验：TUI 中 <code>/switch</code> 打开仅本会话的选择器，<code>/model</code> 打开模型中心，可管理角色和默认选择。打开面板本身不等于保存默认模型；旧版本或其他接入模式须按实际客户端确认。</p>
+
+  <div class="article-end">本页交互说明参考上游 61fb07d，详见正文依据。实际可用能力以本机二进制与会话配置为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
 <ul>
 <li><a href="#_1">示例</a></li>
@@ -63,7 +64,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

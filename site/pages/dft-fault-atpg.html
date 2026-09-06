@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+<link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/faults.js"></script>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,18 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout circuit-layout">
-  
+
   <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a class="active" aria-current="page" href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
-  
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
-  <h1 id="atpg">故障模型与 ATPG</h1>
+<h1 id="atpg">故障模型与 ATPG</h1>
+<p>ATPG（Automatic Test Pattern Generation，自动测试图形生成）不是“把随机 0/1 塞进扫描链”。它从一个明确的故障模型出发，寻找能够激活故障、传播差异并在可观测点捕获的测试模式；随后还要经过故障仿真、时序/功耗约束和 ATE 格式转换。</p>
+<p>本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。</p>
 <section class="dft-lab" id="fault-atpg-lab" data-lab="faults-atpg" aria-label="故障模型与 ATPG 互动实验">
   <header class="lab-header"><span class="demo-tag">LAB 01 / ATPG</span><div><h3>让一个故障变得可检测</h3><p>选择故障与输入模式，分开观察激活、传播和输出差异。</p></div></header>
   <div class="lab-controls">
@@ -65,7 +67,6 @@
   <noscript><p>本实验需要 JavaScript 执行固定教学模型。即使没有脚本，也可根据图示理解：a、b 经 OR/AND/XOR 到达 capture；故障需先激活，再沿路径传播到 out。</p></noscript>
 </section>
 
-<p>ATPG（Automatic Test Pattern Generation，自动测试图形生成）不是“把随机 0/1 塞进扫描链”。它从一个明确的故障模型出发，寻找能够激活故障、传播差异并在可观测点捕获的测试模式；随后还要经过故障仿真、时序/功耗约束和 ATE 格式转换。</p>
 <h2 id="_1">先区分缺陷、故障模型与测试模式</h2>
 <ul>
 <li><strong>物理缺陷</strong>是制造过程中的开路、短路、参数偏差等真实原因。</li>
@@ -142,7 +143,7 @@
 <p>实验固定了一个两输入组合电路和一个简化桥接模型；没有模拟扫描寄存器、X、时序延迟、功耗、约束传播或 ATE 电气条件。它展示“激活 → 传播 → 观察”的推理顺序，不能输出真实模式文件、覆盖率或 Sailor/商业工具插入结果。</p>
 <h2 id="_7">公开参考</h2>
 <p><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-atpg.html">Synopsys TestMAX ATPG 官方介绍</a>列出 stuck-at、transition、bridging、path-delay、cell-aware 等模型及功耗感知模式生成能力。<a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT 官方介绍</a>说明 DFT 插入与 ATPG 是相互衔接而不是同一阶段。本文实验数值为独立构造的教学模型，不代表这些工具的运行结果。</p>
-  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-overview.html"><small>← 上一主题</small><strong>DFT 概念地图</strong></a><a href="../pages/dft-coverage.html"><small>下一主题 →</small><strong>覆盖率与测试质量</strong></a></nav>
+<nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-overview.html"><small>← 上一主题</small><strong>DFT 概念地图</strong></a><a href="../pages/dft-coverage.html"><small>下一主题 →</small><strong>覆盖率与测试质量</strong></a></nav>
   <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
 <ul>
@@ -159,7 +160,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

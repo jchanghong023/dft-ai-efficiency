@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/access.js"></script>
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+<link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/access.js"></script>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,21 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout circuit-layout">
-  
+
   <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a class="active" aria-current="page" href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
-  
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
-  <h1 id="ijtag">IJTAG：让片内仪器按需接入</h1>
+<h1 id="ijtag">IJTAG：让片内仪器按需接入</h1>
+<p>IEEE 1687（通常称 IJTAG）关注的是片内嵌入式仪器的访问网络。它把“网络如何连接”和“仪器如何操作”分开描述，并支持把面向仪器的操作重新定位（retarget）到当前芯片可执行的扫描序列。</p>
+<blockquote>
+<p><strong>范围声明</strong>：本页的 SIB、链长和位序列是一个单段教学模型，不是任何 EDA 工具的实现，也不产生真实的 ICL/PDL 文件、ATPG 模式或仪器测量结果。</p>
+</blockquote>
+<p>本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。</p>
 <section class="container dft-lab" id="ijtag-lab" data-lab="access-ijtag" aria-labelledby="ijtag-lab-title">
   <header class="lab-header">
     <p class="lab-kicker">ACCESS LAB · 02</p>
@@ -69,10 +74,6 @@
   <noscript><p>启用 JavaScript 后可打开/关闭 SIB 并切换仪器。静态阅读：ICL 描述网络连接，PDL 描述仪器动作，retarget 把仪器操作转换为当前芯片可执行的扫描序列。</p></noscript>
 </section>
 
-<p>IEEE 1687（通常称 IJTAG）关注的是片内嵌入式仪器的访问网络。它把“网络如何连接”和“仪器如何操作”分开描述，并支持把面向仪器的操作重新定位（retarget）到当前芯片可执行的扫描序列。</p>
-<blockquote>
-<p><strong>范围声明</strong>：本页的 SIB、链长和位序列是一个单段教学模型，不是任何 EDA 工具的实现，也不产生真实的 ICL/PDL 文件、ATPG 模式或仪器测量结果。</p>
-</blockquote>
 <h2 id="_1">为什么需要动态路径</h2>
 <p>如果所有 MBIST、传感器、调试寄存器永远串在一条链上，普通的访问会变长、测试时间增加，也更难隔离未使用的仪器。IJTAG 用可控的段插入位（SIB）决定一个数据段是否进入当前扫描路径：</p>
 <pre><code class="language-text">SIB 关闭：TDI → SIB 移位位 → TDO（共 1 位，无额外旁路位）
@@ -129,7 +130,7 @@ SIB 打开：TDI → SIB 移位位 → 目标仪器寄存器 → TDO（共 1 + �
 <li><a href="https://www.siemens.com/en-gb/products/ic/tessent/test/ijtag/">Siemens Tessent IJTAG</a>：片内仪器访问与工具流程资料。</li>
 </ul>
 <p>资料中的术语可能使用不同工具的命名方式；学习时应先确认网络结构，再确认操作语义。</p>
-  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-jtag.html"><small>← 上一主题</small><strong>JTAG / Boundary Scan</strong></a><a href="../pages/dft-wrapper.html"><small>下一主题 →</small><strong>Wrapper 与分层 DFT</strong></a></nav>
+<nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-jtag.html"><small>← 上一主题</small><strong>JTAG / Boundary Scan</strong></a><a href="../pages/dft-wrapper.html"><small>下一主题 →</small><strong>Wrapper 与分层 DFT</strong></a></nav>
   <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
 <ul>
@@ -147,7 +148,7 @@ SIB 打开：TDI → SIB 移位位 → 目标仪器寄存器 → TDO（共 1 + �
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

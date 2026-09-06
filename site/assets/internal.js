@@ -16,7 +16,11 @@
     script.onload = () => {
       if (window.DFT_INTERNAL_READY) location.replace(new URL("index.html", entry).href);
     };
-    script.onerror = () => { /* Keep the readable empty state when local documents are absent. */ };
+    script.onerror = () => {
+      const message = document.createElement('p'); message.setAttribute('role', 'status');
+      message.textContent = '内部页面入口加载失败：可能尚未生成、交付包不完整，或浏览器阻止本地脚本。请核对 yellow/.site/entry.js，或直接打开 yellow/.site/index.html、使用本地服务。';
+      document.querySelector('#main').prepend(message);
+    };
     document.head.append(script);
   }
 })();

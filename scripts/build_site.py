@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 sys.dont_write_bytecode = True
 import csv
+import hashlib
 import argparse
 import html
 import json
@@ -148,6 +149,9 @@ def load_content(root):
 
 def command_page(item, category, snapshot):
     cli = category == "cli"
+    if category == "commands" and item["name"] in {"model", "switch"}:
+        snapshot = dict(snapshot, revision="61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9", version="上游提交 61fb07d（2026-09-05，非分发二进制版本）")
+        item = dict(item, source="packages/coding-agent/src/slash-commands/builtin-modes.ts", line=324 if item["name"] == "model" else 368)
     prefix = "omp " if cli else "/"
     title = prefix + item["name"]
     params = item.get("inlineHint")
@@ -167,6 +171,8 @@ def command_page(item, category, snapshot):
     if cli:
         usage_url = f"{snapshot['repository']}/blob/{snapshot['revision']}/{item['usage_source']}"
         text += f"\n参数与执行条件：[对应命令实现]({usage_url})。示例是使用说明，不表示已执行这些操作。\n"
+    if not cli and item['name'] in {'model', 'switch'}:
+        text += "\n交互行为按 [模型选择器实现](" + snapshot['repository'] + "/blob/" + snapshot['revision'] + "/packages/coding-agent/src/modes/controllers/selector-controller.ts#L818) 核验：TUI 中 `/switch` 打开仅本会话的选择器，`/model` 打开模型中心，可管理角色和默认选择。打开面板本身不等于保存默认模型；旧版本或其他接入模式须按实际客户端确认。\n"
     return title, text
 
 
@@ -177,11 +183,12 @@ def build(root=ROOT, include_internal=True, max_lines=DEFAULT_MAX_LINES):
     dft_groups, dft_lessons = load_curriculum(root)
     nav = NAV + [(item["slug"], item["title"]) for item in dft_lessons.values()]
     areas = [{**area, "slugs": list(dft_lessons) if area["key"] == "dft" else area["slugs"]} for area in AREAS]
-    env = Environment(loader=FileSystemLoader(root / "portal/templates"), autoescape=select_autoescape(["html"]), undefined=StrictUndefined)
+    env = Environment(loader=FileSystemLoader(root / "portal/templates"), autoescape=select_autoescape(["html"]), undefined=StrictUndefined, lstrip_blocks=True)
     template = env.get_template("page.html")
     navigation = [dict(slug=slug, title=title) for slug, title in nav]
     shared = dict(navigation=navigation, areas=areas, version=snapshot["version"], command_count=len(snapshot["commands"]))
     source_hashes = {path.relative_to(root).as_posix(): sha256(path) for path in public_inputs(root)}
+    shared["build_id"] = hashlib.sha256(json.dumps(source_hashes, sort_keys=True).encode()).hexdigest()[:12]
     team_sources = {name: (root / name).read_text(encoding="utf-8") for name in TEAM_SOURCE_FILES}
 
     def render_team_source(match):
@@ -239,13 +246,14 @@ def build(root=ROOT, include_internal=True, max_lines=DEFAULT_MAX_LINES):
             search.append(dict(title=area["title"], area=area["key"], location=area["title"], text=PlainText.convert(body), url=f"{area['key']}/index.html"))
         for slug, (title, source, section) in pages.items():
             area = next(area for area in areas if slug in area["slugs"] or section in area["slugs"])
-            # Learning pages lead with the configured executable lab; prose stays readable below.
+            # Place the lab after the existing introductory paragraphs, before detailed sections.
             markers = re.findall(r"<!--\s*(?:lab|demo):[^>]+-->", source)
             if area["key"] == "dft" and markers:
                 for marker in markers:
                     source = source.replace(marker, "")
-                heading, remainder = source.split("\n", 1)
-                source = heading + "\n\n" + "\n".join(markers) + "\n" + remainder
+                parts = re.split(r"(?m)(?=^## )", source, maxsplit=1)
+                boundary = "本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。"
+                source = parts[0].rstrip() + "\n\n" + boundary + "\n\n" + "\n".join(markers) + "\n\n" + (parts[1] if len(parts) > 1 else "")
             renderer = markdown.Markdown(extensions=["extra", "toc", "sane_lists"], extension_configs={"toc": {"toc_depth": "2-3"}})
             body = wrap_tables(renderer.convert(source))
             body = re.sub(r"<!--\s*team-source:(.*?)\s*-->", render_team_source, body)

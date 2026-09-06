@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="assets/style.css">
   <script defer src="assets/search-data.js"></script>
   <script defer src="assets/app.js"></script>
-  <link rel="stylesheet" href="assets/home.css">
-  
-  
+<link rel="stylesheet" href="assets/home.css">
+
+
   <link rel="stylesheet" href="assets/theme.css">
   <link rel="stylesheet" href="assets/desktop.css">
 </head>
@@ -20,11 +20,11 @@
 <header class="header">
   <a class="brand" href="index.html"><span class="brand-mark">D</span><span>DFT <b>工作台</b><small>工程方法 · 团队共享</small></span></a>
   <nav class="topnav" aria-label="主导航"><a href="index.html" class="active" aria-current="page">首页</a><a href="start/index.html" >开始使用</a><a href="team/index.html" >团队能力</a><a href="maintenance/index.html" >维护手册</a><a href="internal/index.html" >内部文档</a><a href="dft/index.html" >DFT知识</a></nav>
-  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索工作手册 <kbd>/</kbd></button>
+  <button class="search-trigger" type="button" aria-haspopup="dialog">搜索公共内容 <kbd>/</kbd></button>
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
@@ -32,10 +32,10 @@
 <main id="main" class="home workspace-home">
   <section class="workspace-intro" aria-labelledby="home-title">
     <div class="intro-copy">
-      <p class="eyebrow"><span class="intro-dot"></span> DFT 团队 · OMP AI 开发提效</p>
+      <p class="eyebrow"><span class="intro-dot"></span> DFT 团队 · 工具与知识</p>
       <h1 id="home-title">让 AI 开发有依据，<br><span>让每次修改有验证。</span></h1>
-      <p class="intro-description">DFT 团队的 AI 开发工作台。<br>从 OMP、Claude Code 的安装使用，到文档检索、<br>代码修改与测试验证，在这里找到方法。</p>
-      <div class="hero-actions"><a class="button primary" href="pages/quickstart.html">快速开始 <span aria-hidden="true">→</span></a><a class="button secondary" href="pages/usage-guide.html">按场景开始工作 <span aria-hidden="true">→</span></a></div>
+      <p class="intro-description">DFT 团队的工具、方法与知识入口。<br>查阅内部资料，学习 DFT，复用团队 AI 开发能力。</p>
+      <div class="hero-actions"><a class="button primary" href="start/index.html">开始使用 <span aria-hidden="true">→</span></a><a class="button secondary" href="internal/index.html">查阅内部文档 <span aria-hidden="true">→</span></a></div>
       <div class="intro-meta"><span>本地手册</span><span>团队共享</span><span>CentOS 7 · Python 3.11+</span></div>
     </div>
     <aside class="workflow-panel" aria-labelledby="workflow-title">
@@ -50,34 +50,36 @@
     </aside>
   </section>
 
-  <section class="command-section" aria-labelledby="commands-title">
-    <div class="section-heading"><h2 id="commands-title">常用操作，直接找到</h2><a href="pages/commands.html">全部命令 <span aria-hidden="true">→</span></a></div>
-    <div class="command-grid">
-      
-      <article class="command-tile command-featured"><div class="command-purpose"><a href="pages/team.html">开发并验证 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/code-and-verify" aria-label="复制 /code-and-verify" title="复制命令" hidden>复制</button></div><code>/code-and-verify</code><small>输入需求，推进调查、实现与测试</small></article>
-      
-      <article class="command-tile"><div class="command-purpose"><a href="pages/command-resume.html">继续上次工作 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/resume" aria-label="复制 /resume" title="复制命令" hidden>复制</button></div><code>/resume</code><small>恢复已有会话</small></article>
-      
-      <article class="command-tile"><div class="command-purpose"><a href="pages/command-model.html">切换模型 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/model" aria-label="复制 /model" title="复制命令" hidden>复制</button></div><code>/model</code><small>选择当前会话使用的模型</small></article>
-      
-      <article class="command-tile"><div class="command-purpose"><a href="pages/command-compact.html">整理长会话 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/compact" aria-label="复制 /compact" title="复制命令" hidden>复制</button></div><code>/compact</code><small>压缩上下文，继续当前任务</small></article>
-      
-    </div>
-  </section>
-
   <section class="workspace-directory" aria-labelledby="directory-title">
-    <div class="section-heading"><h2 id="directory-title">按你的任务，选择入口</h2><span>从开始使用，到能力复用，再到持续维护</span></div>
+    <div class="section-heading"><h2 id="directory-title">按你的任务，选择入口</h2><span>工具使用 · 内部资料 · DFT 学习 · 团队能力 · 维护分发</span></div>
     <div class="workspace-grid">
       <article class="workspace-card workspace-start"><div class="workspace-card-top"><span class="area-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="4"/><path d="m5 7 5 5-5 5M13 17h6"/></svg></span><span class="area-category">01 / 开始使用</span></div><h3><a href="start/index.html">从第一次使用开始 <span aria-hidden="true">↗</span></a></h3><p>准备环境、配置模型，再完成第一个开发任务。</p><div class="area-links-list"><a href="pages/quickstart.html">安装与同步 <span>→</span></a><a href="pages/usage-guide.html">场景使用指南 <span>→</span></a><a href="pages/cli.html">CLI / TUI 使用手册 <span>→</span></a></div></article>
+      <article class="workspace-card workspace-internal"><div class="workspace-card-top"><span class="area-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V4h7l2 3h9v13H3ZM7 11h10M7 15h7"/></svg></span><span class="area-category">内部文档</span></div><h3><a href="internal/index.html">内部文档 <span aria-hidden="true">↗</span></a></h3><p>按文档标题、目录和正文查阅本地公司资料。</p><div class="area-links-list"><a href="internal/index.html">进入内部文档 <span>→</span></a></div></article>
+      <article class="workspace-card workspace-dft"><div class="workspace-card-top"><span class="area-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4"/></svg></span><span class="area-category">DFT知识</span></div><h3><a href="dft/index.html">DFT知识 <span aria-hidden="true">↗</span></a></h3><p>从推荐起点进入六条学习路线，用交互实验理解原理。</p><div class="area-links-list"><a href="dft/index.html">进入DFT知识 <span>→</span></a></div></article>
       <article class="workspace-card workspace-team"><div class="workspace-card-top"><span class="area-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="6" rx="2"/><rect x="2" y="16" width="8" height="6" rx="2"/><rect x="14" y="16" width="8" height="6" rx="2"/><path d="M12 8v4M6 16v-4h12v4"/></svg></span><span class="area-category">02 / 团队能力</span></div><h3><a href="team/index.html">团队能力 <span aria-hidden="true">↗</span></a></h3><p>复用团队的 2 项 Skill、3 个 Worker，让开发方法和验证要求保持一致。</p><div class="area-links-list"><a href="pages/skill-generate-unit-tests.html">为当前修改生成单元测试 <span>→</span></a><a href="pages/skill-generate-dft-circuit.html">生成 DFT 插入前基础电路 <span>→</span></a><a href="pages/team.html">了解团队 Worker 与工作流 <span>→</span></a></div></article>
       <article class="workspace-card workspace-maintenance"><div class="workspace-card-top"><span class="area-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 3 6 6-12 12H3v-6ZM12 6l6 6M4 4l4 4M16 17l4 4M2 6l4-4"/></svg></span><span class="area-category">03 / 维护分发</span></div><h3><a href="maintenance/index.html">维护手册 <span aria-hidden="true">↗</span></a></h3><p>为团队准备可用的工具和资料，维护二进制、重建门户、交付离线包。</p><div class="maintenance-flow" aria-label="维护流程"><span>更新工具</span><b aria-hidden="true">→</b><span>构建门户</span><b aria-hidden="true">→</b><span>离线分发</span></div><a class="maintenance-link" href="pages/maintenance.html">查看维护步骤 <span aria-hidden="true">→</span></a></article>
     </div>
   </section>
+  <section class="command-section" aria-labelledby="commands-title">
+    <div class="section-heading"><h2 id="commands-title">常用操作，直接找到</h2><a href="pages/commands.html">全部命令 <span aria-hidden="true">→</span></a></div>
+    <div class="command-grid">
+
+      <article class="command-tile command-featured"><div class="command-purpose"><a href="pages/team.html">开发并验证 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/code-and-verify" aria-label="复制 /code-and-verify" title="复制命令" hidden>复制</button></div><code>/code-and-verify</code><small>输入需求，推进调查、实现与测试</small></article>
+
+      <article class="command-tile"><div class="command-purpose"><a href="pages/command-resume.html">继续上次工作 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/resume" aria-label="复制 /resume" title="复制命令" hidden>复制</button></div><code>/resume</code><small>恢复已有会话</small></article>
+
+      <article class="command-tile"><div class="command-purpose"><a href="pages/command-switch.html">切换会话模型 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/switch" aria-label="复制 /switch" title="复制命令" hidden>复制</button></div><code>/switch</code><small>参考 61fb07d；模型中心使用 /model</small></article>
+
+      <article class="command-tile"><div class="command-purpose"><a href="pages/command-compact.html">整理长会话 <span aria-hidden="true">↗</span></a><button type="button" class="copy-inline" data-copy="/compact" aria-label="复制 /compact" title="复制命令" hidden>复制</button></div><code>/compact</code><small>压缩上下文，继续当前任务</small></article>
+
+    </div>
+  </section>
+
   <div class="workspace-foot"><span><span class="intro-dot"></span> 门户离线可读 · 本地检索</span><a href="pages/faq.html">遇到问题？查看 FAQ <span aria-hidden="true">↗</span></a><span>手册参考 <strong>v18.1.9+fork.170</strong></span></div>
 </main>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
-<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索工作手册</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
+<dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索公共内容</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

@@ -165,6 +165,20 @@ class SyncTests(unittest.TestCase):
         self.assertFalse(self.processes.stopped)
         self.assertFalse((self.root / ".tmp").exists())
 
+    def test_readonly_staging_rejected_even_in_preview(self):
+        access = os.access
+        for dry_run in (True, False):
+            with patch('scripts.sync.os.access', side_effect=lambda p, mode: False if p == self.root else access(p, mode)):
+                with self.assertRaises(PermissionError): self.run_sync(dry_run=dry_run)
+            self.assertFalse(self.processes.stopped)
+            self.assertEqual(list(self.home.iterdir()), [])
+
+    def test_staging_creation_failure_does_not_stop_process(self):
+        with patch('scripts.sync.tempfile.TemporaryDirectory', side_effect=PermissionError('read-only staging')):
+            with self.assertRaises(PermissionError): self.run_sync()
+        self.assertFalse(self.processes.stopped)
+        self.assertEqual(list(self.home.iterdir()), [])
+
     def test_missing_team_file_preflight(self):
         (self.root / "omp/agents/coding-worker.md").unlink()
         with self.assertRaises(ValueError): self.run_sync()

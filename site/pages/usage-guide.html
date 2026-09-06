@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,16 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout">
-  
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a class="active" aria-current="page" href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
-  
+
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a class="active" aria-current="page" href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a  href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">基础手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
-  <h1 id="_1">场景使用指南</h1>
+<h1 id="_1">场景使用指南</h1>
 <p>已经完成安装同步，接下来怎样用 OMP 做开发？从启动和一个简单任务开始，再按任务需要选择模型、计划或并发分工。本页只讲 OMP 与当前 fork 自带的日常能力；完整参数可查 <a href="cli.html">CLI 与 TUI</a> 和<a href="commands.html">内置命令</a>。尚未安装请先看<a href="quickstart.html">快速开始</a>。</p>
 <p><strong>先分清输入位置：</strong> 标注“终端”的 <code>omp ...</code> 在 Linux Shell 中运行；标注“OMP 输入框”的 <code>/...</code> 和自然语言在启动后的 OMP 中输入。每个代码块是一次独立输入；示例项目路径、文件名、功能和模型名请换成自己的。</p>
 <p><strong>常用操作优先按快捷键，fork 键位以 <a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md">fork.md</a> 为准。</strong> 下表依据上游提交 <code>61fb07d</code>（2026-09-05），不表示本地二进制已更新。在 OMP 主输入框按下组合键即可，不要把键名输入或粘贴进去。旧版本、个人配置或终端拦截可能造成键位差异，用 <code>/hotkeys</code> 查看当前绑定。</p>
@@ -265,8 +265,8 @@ omp
 <p>本页依据手册参考版本 <strong>v18.1.9+fork.170</strong>；本机可用命令、模型和配置以实际安装为准。这里只精选常用操作，全量参考见<a href="commands.html">内置命令</a>，配置字段见<a href="config.html">常用配置</a>。</p>
 <p>核对依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/settings.md">模型与设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/modes/controllers/selector-controller.ts">模型角色选择实现</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/advisor-watchdog.md">Advisor</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/prompts/system/plan-mode-active.md">Plan 流程</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/vibe-mode.md">Vibe 模式</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/config/settings-schema.ts">并发设置</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/task/parallel.ts">并发调度实现</a>。</p>
 <p>快捷键首要依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/docs-zh-CN/fork.md">fork.md 的快捷键与状态栏、代理行为与 Discuss</a>。其中未列出的通用键位补充核对<a href="https://github.com/jchanghong023/oh-my-pi/blob/61fb07d4edf82f5425bd072e1d90c0a3ff1f1ce9/packages/coding-agent/src/config/keybindings.ts">同提交键位定义</a>；本机自定义绑定以 <code>/hotkeys</code> 为准。</p>
-  
-  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+
+  <div class="article-end">本页交互说明参考上游 61fb07d，详见正文依据。实际可用能力以本机二进制与会话配置为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
 <ul>
 <li><a href="#1-omp">1. 启动 OMP，或继续上次工作</a></li>
@@ -286,7 +286,7 @@ omp
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

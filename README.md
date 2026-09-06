@@ -16,7 +16,7 @@
 
 每个分区有独立页面地址和自己的侧栏。DFT知识含 17 个页面，覆盖概念地图、Scan/EDT 基础及 14 项核心主题。实验使用本地 JavaScript 计算状态和结果，HTML/SVG 作为显示层；禁用 JavaScript 时仍可阅读静态电路和概念说明。课程清单位于 `portal/metadata/dft-curriculum.json`，主题脚本位于 `portal/assets/labs/`，浏览和构建网站均不需要 Node.js。
 
-首页使用独立的 `portal/templates/home.html` 和本地首页动画，支持暂停及减少动态效果；首页正文只提供开始使用、团队能力、维护手册入口。文档页使用独立阅读样式，左侧限定当前模块搜索和目录，右侧跟随当前标题；支持代码复制、基础词法着色、表格滚动和图片放大。DFT 实验置于文章前方，画布可缩放，图中读数可选择查看；Scan、EDT、MBIST、LBIST 支持播放速度调整。阅读与画布增强位于 `portal/assets/reading.*`，不修改教学模型的计算规则。
+首页使用独立的 `portal/templates/home.html` 和静态工作台布局；首页正文提供全部五大分区入口，搜索覆盖全部公共内容（含 DFT），内部全文使用独立索引。文档页使用独立阅读样式，左侧限定当前模块搜索和目录，右侧跟随当前标题；支持代码复制、基础词法着色、表格滚动和图片放大。DFT 实验置于简短导读与教学模型边界之后，画布可缩放，图中读数可选择查看；Scan、EDT、MBIST、LBIST 支持播放速度调整。阅读与画布增强位于 `portal/assets/reading.*`，不修改教学模型的计算规则。
 
 当前主题为 B 午夜蓝。模块搜索支持分批继续显示全部结果、命中章节跳转，以及正文关键词高亮、上一处/下一处定位和清除高亮；本地查询不会发送到外部。代码块中的高亮不改变复制内容。
 
@@ -152,3 +152,5 @@ python3 -m unittest tests.test_dft_curriculum tests.test_dft_scan tests.test_dft
 页面呈现契约及可选纯 DOM 检查：`python3 -B -m unittest tests.test_presentation`。纯 DOM 检查需要维护机安装 `linkedom@0.18.12` 到 `.tmp/dom-check/`（安装命令见测试文件）；未安装时该项明确跳过。它不启动浏览器，不验证 CSS 排版、实际图片放大或视觉效果。网站运行和构建不依赖此包。
 
 完整设计与实施要求见 [最终版文档](本仓库项目自身相关文档/DFT_OMP_AI开发提效方案与实施计划_最终版.md)，已同步 Python 入口、脚本分层、桌面门户、内部文档分区存储及电路生成 Skill 等确认事项。
+
+公司内部交付须保留 `site/`、`yellow/.site/`、`yellow/docs/` 的相对路径。最终包换目录解压后用 `tests/verify_delivery.py --root <解压目录>` 验收，流程见[维护手册](portal/content/maintenance.md#公司红区内部交付)。公共打包隔离规则保持不变。

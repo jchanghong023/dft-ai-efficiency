@@ -153,22 +153,24 @@ def synchronize(root: Path, home: Path, processes, dry_run=False, timeout=10.0, 
         with source.open("rb") as stream:
             stream.read(1)
         check_target(target, home)
+    # Dry-run remains read-only, but checks the nearest existing staging parent.
+    stage_dir = root / ".tmp/sync"
+    parent = stage_dir
+    while not parent.exists():
+        if parent.is_symlink():
+            raise ValueError("Invalid staging directory")
+        parent = parent.parent
+    if any(p.is_symlink() for p in (stage_dir, *stage_dir.parents) if p != root and root in p.parents):
+        raise ValueError("Symlink staging directory")
+    if not parent.is_dir() or not os.access(parent, os.W_OK | os.X_OK):
+        raise PermissionError("Staging directory is not writable; copy the delivery to a writable directory")
     # Preflight all sources and destinations BEFORE terminating any process.
     running = processes.scan()
-    print(f"{'WOULD STOP' if dry_run else 'STOP'} current-user OMP PIDs: {list(running)}")
+    print(f"{'WOULD STOP' if dry_run else 'WILL STOP after staging'} current-user OMP PIDs: {list(running)}")
     if dry_run:
         for _, target, _ in operations:
             print(f"WOULD SYNC {target}")
         return
-    processes.stop(running, timeout)
-    if processes.scan():
-        raise RuntimeError("Cannot confirm OMP exit; no replacement")
-    if db_digest is not None:
-        check_sidecars(source_db)
-        check_sidecars(target_db)
-        if sha256(source_db) != db_digest:
-            raise ValueError("Source database changed after preflight")
-    stage_dir = root / ".tmp/sync"
     stage_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=stage_dir) as stage:
         stage = Path(stage)
@@ -178,17 +180,25 @@ def synchronize(root: Path, home: Path, processes, dry_run=False, timeout=10.0, 
             f"原始资料目录：{(root / 'yellow/docs').resolve()}\n\n" +
             "该目录可能尚未接入资料。需要精确原文时在此 read/grep，不假设它位于目标代码仓。\n",
             encoding="utf-8")
+        if db_digest is not None:
+            import shutil
+            frozen = stage / "docs.db"
+            shutil.copyfile(source_db, frozen)
+            check_sidecars(source_db)
+            if sha256(frozen) != db_digest or sha256(source_db) != db_digest:
+                raise ValueError("Source database changed during staging")
+        processes.stop(running, timeout)
+        if processes.scan():
+            raise RuntimeError("Cannot confirm OMP exit; no replacement")
+        if db_digest is not None:
+            check_sidecars(source_db)
+            check_sidecars(target_db)
+            if sha256(source_db) != db_digest:
+                raise ValueError("Source database changed after preflight")
         for source, target, mode in operations:
             if target == agent / "AGENTS.md":
                 source = context
             if target == target_db:
-                # Freeze the validated bytes in .tmp; never copy an unverified later revision.
-                import shutil
-                frozen = stage / "docs.db"
-                shutil.copyfile(source, frozen)
-                check_sidecars(source)
-                if sha256(frozen) != db_digest or sha256(source) != db_digest:
-                    raise ValueError("Source database changed during staging")
                 source = frozen
             check_target(target, home)
             if processes.scan():

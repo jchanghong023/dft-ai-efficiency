@@ -1,9 +1,11 @@
-{% set descriptions = {'quickstart':'环境准备、安装同步与第一次启动', 'usage-guide':'按开发场景选择命令与工作方法', 'config':'配置模型、会话与团队能力', 'cli':'终端参数与交互界面的使用方式', 'tools':'查阅工具用途、输入与适用场景', 'commands':'按用途查找命令、参数与示例', 'agents':'了解内置 Agent 的职责', 'faq':'常见问题与解决方法', 'team':'从开发需求到实现与验证', 'skills':'团队共享 Skill 的调用方式', 'team-agents':'文档、编码与验证 Worker 的分工', 'team-commands':'使用团队的开发验证命令', 'skill-generate-unit-tests':'围绕当前修改补充有意义的测试', 'skill-generate-dft-circuit':'生成 DFT 插入前的基础电路', 'maintenance':'版本更新、内容构建与离线分发'} %}
+{% set descriptions = {'hotkeys':'查看当前键位及模型、模式和编辑操作', 'quickstart':'环境准备、安装同步与第一次启动', 'usage-guide':'按开发场景选择命令与工作方法', 'config':'配置模型、会话与团队能力', 'cli':'终端参数与交互界面的使用方式', 'tools':'查阅工具用途、输入与适用场景', 'commands':'按用途查找命令、参数与示例', 'agents':'了解内置 Agent 的职责', 'faq':'常见问题与解决方法', 'team':'从开发需求到实现与验证', 'skills':'团队共享 Skill 的调用方式', 'team-agents':'文档、编码与验证 Worker 的分工', 'team-commands':'使用团队的开发验证命令', 'skill-generate-unit-tests':'围绕当前修改补充有意义的测试', 'skill-generate-dft-circuit':'生成 DFT 插入前的基础电路', 'maintenance':'版本更新、内容构建与离线分发'} %}
 <section class="area-heading">
   <div><p class="eyebrow">{{ area_label }}</p><h1>{{ area_title }}</h1><p>{{ area_description }}</p></div>
   <div class="area-count"><strong>{{ 3 if area_key == 'maintenance' else area_navigation|length }}</strong><span>{% if area_key == 'dft' %}个学习主题{% elif area_key == 'maintenance' %}个日常操作{% else %}篇实用指南{% endif %}</span></div>
 </section>
 {% if area_key == 'start' %}
+<p>只阅读资料：直接打开已生成网站，或运行本地服务，无需安装 OMP、配置模型。<a href="{{ base }}dft/index.html">学习 DFT</a> · <a href="{{ base }}internal/index.html">查阅内部文档</a>。</p>
+<p>OMP 是终端 AI 开发客户端，Claude Code 是独立客户端；本网站提供使用手册和知识。团队 Skill 提供任务方法，Worker 承担调查、编码、验证职责。下列步骤用于安装使用 OMP；软件离线分发不代表模型推理离线运行，模型仍需相应服务或已配置的本地模型。</p>
 <div class="journey-grid" aria-label="上手步骤">
   {% for slug, title, description in [('quickstart','准备好工作环境','获取离线包，完成同步，启动 OMP。'),('config','连接你的模型','确认模型接入与会话配置。'),('usage-guide','开始一个实际任务','从需求描述、代码修改到测试验证。')] %}
   <a class="journey-card{% if loop.first %} is-primary{% endif %}" href="{{ base }}pages/{{ slug }}.html"><span class="journey-number">{{ '%02d'|format(loop.index) }}</span><h2>{{ title }}</h2><p>{{ description }}</p><span class="journey-action">{{ '快速开始' if loop.first else '查看指南' }} <b aria-hidden="true">→</b></span></a>
@@ -14,12 +16,13 @@
 <div class="skill-grid">{% for slug, title, label in [('skill-generate-unit-tests','为当前修改补充测试','单元测试'),('skill-generate-dft-circuit','准备 DFT 插入前的基础电路','电路生成')] %}<a class="skill-card" href="{{ base }}pages/{{ slug }}.html"><span class="skill-label">{{ label }}</span><h2>{{ title }}</h2><p>{{ descriptions[slug] }}</p><span>查看 Skill <b aria-hidden="true">↗</b></span></a>{% endfor %}</div>
 {% elif area_key == 'maintenance' %}
 <div class="maintenance-scripts" aria-label="三个日常操作入口">
-{% for name, title, description in [('build_site','生成网站','文档更新后，重新生成公共门户与本地内部页面。'),('serve_site','启动本地服务','保持终端运行，用浏览器访问 127.0.0.1:9333。'),('sync','同步安装','将团队能力与二进制同步到当前用户环境。')] %}
+{% for name, title, description in [('build_site','生成网站','文档更新后，重新生成公共门户与本地内部页面。'),('serve_site','启动本地服务','保持终端运行，用浏览器访问 127.0.0.1:9333。'),('sync','安装/更新团队能力','将团队能力与二进制同步到当前用户环境。')] %}
 <section class="script-card"><span class="journey-number">{{ '%02d'|format(loop.index) }}</span><h2>{{ title }}</h2><p>{{ description }}</p><pre><code class="language-bash">python3 scripts/{{ name }}.py</code></pre>{% if name == 'serve_site' %}<small>仅监听本机 · Ctrl+C 停止</small>{% elif name == 'sync' %}<small>首次执行可加 --dry-run 预览</small>{% else %}<small>在仓库根目录执行 · Python 3.11+</small>{% endif %}</section>
 {% endfor %}
 </div>
 {% endif %}
 {% if area_key == 'dft' %}
+<p>推荐从 <a href="{{ base }}pages/dft-overview.html">DFT 总览</a>开始，再按路线学习故障、扫描与工程主题。先了解寄存器、组合逻辑和时钟沿；各主题卡片说明本页要解决的问题。</p>
 <div class="learning-path-nav" aria-label="六条学习路线">{% for group in area_groups %}<a href="#route-{{ loop.index }}"><span>{{ '%02d'|format(loop.index) }}</span>{{ group.title }}</a>{% endfor %}</div>
 <div class="curriculum">{% for group in area_groups %}<section class="curriculum-group" id="route-{{ loop.index }}"><div class="curriculum-heading"><span>{{ '%02d'|format(loop.index) }}</span><div><h2>{{ group.title }}</h2><p>{{ group.description }}</p></div><small>{{ group.lessons|length }} 个主题</small></div><div class="lesson-cards">{% for item in group.lessons %}<a href="{{ base }}pages/{{ item.slug }}.html"><div><strong>{{ item.title }}</strong><b aria-hidden="true">↗</b></div><p>{{ item.summary }}</p><small>{% if item.lab is defined or item.slug in ['dft-scan','dft-edt'] %}交互实验{% else %}阅读指南{% endif %}</small></a>{% endfor %}</div></section>{% endfor %}</div>
 {% else %}

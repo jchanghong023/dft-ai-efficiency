@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/compression-power.js"></script>
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+<link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/compression-power.js"></script>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,19 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout circuit-layout">
-  
+
   <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a  href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a class="active" aria-current="page" href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
-  
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
-  <h1 id="_1">测试功耗：翻转、供电完整性与低功耗边界</h1>
+<h1 id="_1">测试功耗：翻转、供电完整性与低功耗边界</h1>
+<p>扫描测试的功耗不能只看功能模式。Shift 阶段会在连续时钟下移动大量位，Capture 阶段可能让组合逻辑同时翻转；当瞬时电流超过供电网络和封装可以稳定提供的范围时，可能出现 IR drop、ground bounce、时序变慢或错误捕获。低功耗 DFT 的目标是在测试质量、测试时间、面积、时序和供电完整性之间取得可验证的平衡。</p>
+<p>本页的交互只计算<strong>翻转次数和窗口峰值</strong>。它不测量电压、电流、瓦特、IR drop、温升或芯片级功耗，也不替代 UPF/CPF、STA、功耗仿真、布局寄生提取、ATE 限制和硅上测量。</p>
+<p>本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。</p>
 <section class="dft-lab power-lab" id="test-power-lab" data-lab="power" aria-label="DFT 测试功耗与低功耗调度交互演示">
   <div class="lab-header">
     <div><span class="lab-kicker">LAB 04 · TEST POWER</span><h2>把测试翻转安排在可控窗口</h2><p>分开观察 shift、capture、电源域隔离和并行/错峰调度的相对活动。</p></div>
@@ -80,8 +83,6 @@
   <noscript><p>静态图展示 shift、capture、三个电源域和隔离边界。交互需要 JavaScript；翻转计数仅用于教学，不能代表真实功耗、供电电压或 IR drop。</p></noscript>
 </section>
 
-<p>扫描测试的功耗不能只看功能模式。Shift 阶段会在连续时钟下移动大量位，Capture 阶段可能让组合逻辑同时翻转；当瞬时电流超过供电网络和封装可以稳定提供的范围时，可能出现 IR drop、ground bounce、时序变慢或错误捕获。低功耗 DFT 的目标是在测试质量、测试时间、面积、时序和供电完整性之间取得可验证的平衡。</p>
-<p>本页的交互只计算<strong>翻转次数和窗口峰值</strong>。它不测量电压、电流、瓦特、IR drop、温升或芯片级功耗，也不替代 UPF/CPF、STA、功耗仿真、布局寄生提取、ATE 限制和硅上测量。</p>
 <h2 id="_2">交互：同一组刺激怎样改变测试压力</h2>
 <h3 id="shift-capture">Shift 与 Capture 不是同一件事</h3>
 <ul>
@@ -120,7 +121,7 @@
 <li><a href="https://www.synopsys.com/implementation-and-signoff/test-automation/testmax-dft.html">Synopsys TestMAX DFT</a>：介绍 DFT 工具对低功耗设计意图、功耗、性能和面积的综合考虑。</li>
 <li><a href="https://blogs.sw.siemens.com/tessent/2019/07/24/dft-architectural-tips-testing-of-asynchronous-sets-resets/">Siemens Tessent：异步 set/reset 的测试架构提示</a>：说明测试期间控制异步置位/复位和层次化测试的必要性，提醒不要把模式控制当成普通功能信号。</li>
 </ul>
-  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-compression.html"><small>← 上一主题</small><strong>EDT 约束与 X 处理</strong></a><a href="../pages/dft-jtag.html"><small>下一主题 →</small><strong>JTAG / Boundary Scan</strong></a></nav>
+<nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-compression.html"><small>← 上一主题</small><strong>EDT 约束与 X 处理</strong></a><a href="../pages/dft-jtag.html"><small>下一主题 →</small><strong>JTAG / Boundary Scan</strong></a></nav>
   <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
 <ul>
@@ -143,7 +144,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

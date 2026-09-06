@@ -19,7 +19,7 @@ CLI 是终端中的 `omp ...`；TUI 命令是在已经启动的 OMP 输入框中
 
 ## 常用 TUI 操作
 
-`/model` 切换模型；`/settings` 调整设置；`/docs` 查看索引；`/agents` 查看 Agent；`/tools` 查看当前工具；`/context` 查看上下文占用；`/compact soft` 压缩；`/resume` 恢复；`/hotkeys` 查看当前键位。
+`/switch` 切换当前会话模型，`/model` 打开模型中心（这两项 TUI 行为参考上游 `61fb07d`，详见[命令说明](command-model.html)，不表示分发二进制已更新）；`/settings` 调整设置；`/docs` 查看索引；`/agents` 查看 Agent；`/tools` 查看当前工具；`/context` 查看上下文占用；`/compact soft` 压缩；`/resume` 恢复；`/hotkeys` 查看当前键位。
 
 完整 TUI 清单在[内置命令](commands.html)。每个命令页分别说明状态影响；不要仅根据名字推断其只读性。
 

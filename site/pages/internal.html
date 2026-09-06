@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  <script defer src="../assets/internal.js"></script>
-  
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+<script defer src="../assets/internal.js"></script>
+
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,23 +24,23 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout internal-docs">
-  
-  <aside class="sidebar document-sidebar"><button class="module-search" type="button">搜索内部文档正文 <span>/</span></button><h2>内部文档 <small>0</small></h2><label class="document-filter-label" for="document-filter">按文件名筛选</label><input id="document-filter" type="search" placeholder="查找 Markdown 文件…"><nav class="document-list" aria-label="内部 Markdown 文件"><p>暂无已加载的文档</p></nav></aside>
-  
+
+  <aside class="sidebar document-sidebar"><button class="module-search" type="button">搜索内部文档正文 <span>/</span></button><h2>内部文档 <small>0</small></h2><label class="document-filter-label" for="document-filter">按标题或路径筛选</label><input id="document-filter" type="search" placeholder="查找标题或目录…"><nav class="document-list" aria-label="内部 Markdown 文件"><p>暂无已加载的文档</p></nav></aside>
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../internal/index.html">内部文档</a></div>
-  <h1 id="_1">内部文档</h1>
+<h1 id="_1">内部文档</h1>
 <p>这里用于浏览 <code>yellow/docs/</code> 中符合行数条件的公司 Markdown 文档。左侧每个导航项对应一个已收录文件。</p>
 <p>本地文档页面尚未生成时，将文档放入该目录并执行：</p>
 <pre><code class="language-bash">python3 scripts/build_site.py
 </code></pre>
 <p>默认只生成行数<strong>不超过 3000</strong> 的 Markdown 网页；可用 <code>--max-lines N</code> 调整阈值。超过阈值的文档不进入导航和网页搜索，原文仍保留。</p>
 <p>生成后重新打开“内部文档”即可阅读。未启用 JavaScript 时，可直接打开本地 <code>yellow/.site/index.html</code>。</p>
-  
+
   <div class="article-end">内部文档 · 仅在本地浏览</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
 <ul></ul>
@@ -48,7 +48,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索内部文档</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

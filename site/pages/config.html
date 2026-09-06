@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,17 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout">
-  
-  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a class="active" aria-current="page" href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
-  
+
+  <aside class="sidebar"><a class="area-back" href="../start/index.html">开始使用 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="开始使用栏目"><a  href="../pages/quickstart.html">快速开始</a><a  href="../pages/hotkeys.html">常用快捷键</a><a  href="../pages/usage-guide.html">场景使用指南</a><a  href="../pages/cli.html">CLI 与 TUI</a><a  href="../pages/tools.html">内置工具</a><a class="active" aria-current="page" href="../pages/config.html">常用配置</a><a  href="../pages/commands.html">内置命令</a><a  href="../pages/agents.html">内置 Agent</a><a  href="../pages/faq.html">FAQ / 最佳实践</a></nav><div class="sidebar-version">基础手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../start/index.html">开始使用</a></div>
-  <h1 id="_1">常用配置</h1>
+<h1 id="_1">常用配置</h1>
+<p>模型入口（TUI，参考上游 <code>61fb07d</code>）：<code>/switch</code> 仅切换本会话模型；<code>/model</code> 打开模型中心，角色与默认模型在确认相应操作后保存。详见<a href="command-model.html">命令依据</a>；实际分发版本需在目标机核对。</p>
 <p>同步不替用户选择模型、填入凭据或修改审批策略。以下路径是默认 profile 的路径，个人命名 profile 与环境变量可改变实际位置。</p>
 <h2 id="_2">配置文件位置</h2>
 <div class="table-wrap"><table>
@@ -105,8 +106,8 @@ omp config get tools.approvalMode
 <p>同步后的 <code>docs.db</code> 可通过 <code>omp docs list</code>、<code>omp docs status</code> 或 <code>/docs</code> 检查。文档索引记录的源路径可能来自建库机器；迁移后找不到原文时使用团队上下文记录的 <code>yellow/docs/</code> 实际路径。</p>
 <p><code>--public-only</code> 构建不读取内部资料；默认网站构建仅将 Markdown 另行生成到本地内部文档栏目，不修改 Wiki 数据库。公司维护者如需重建 Wiki 索引，应使用该版 <code>omp docs init &lt;dir&gt; --name &lt;name&gt; --mode fts</code> 或 <code>omp docs reinit &lt;name&gt;</code> 的已确认条件；建库后关闭写入程序、完成 checkpoint，再复制数据库。不要把运行中的 WAL 数据库只拷走主文件。</p>
 <p>依据：<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/settings.md">设置说明</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/packages/coding-agent/src/config/settings-schema.ts">设置 schema</a>、<a href="https://github.com/jchanghong023/oh-my-pi/blob/v18.1.9%2Bfork.170/docs/models.md">模型配置</a>。</p>
-  
-  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+
+  <div class="article-end">基础手册参考 v18.1.9+fork.170；单项更新依据见正文。实际可用能力以本机二进制与会话配置为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
 <ul>
 <li><a href="#_2">配置文件位置</a></li>
@@ -118,7 +119,7 @@ omp config get tools.approvalMode
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索开始使用</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

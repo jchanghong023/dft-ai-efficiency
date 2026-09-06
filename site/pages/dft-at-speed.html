@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  <link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/clocks.js"></script>
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+<link rel="stylesheet" href="../assets/dft.css"><link rel="stylesheet" href="../assets/lab.css"><script defer src="../assets/labs/clocks.js"></script>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,18 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout circuit-layout">
-  
+
   <aside class="sidebar"><a class="area-back" href="../dft/index.html">DFT知识 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="DFT知识栏目"><section class="nav-group"><h2>01 / 测试原理</h2><a  href="../pages/dft-overview.html">DFT 概念地图</a><a  href="../pages/dft-fault-atpg.html">故障模型与 ATPG</a><a  href="../pages/dft-coverage.html">覆盖率与测试质量</a><a  href="../pages/dft-testpoints.html">Test Point 与可测试性</a></section><section class="nav-group"><h2>02 / 扫描与时钟</h2><a  href="../pages/dft-scan.html">Scan 基础：移入、捕获、移出</a><a  href="../pages/dft-scan-engineering.html">Scan 工程结构</a><a class="active" aria-current="page" href="../pages/dft-at-speed.html">At-speed 与 LOC / LOS</a><a  href="../pages/dft-clock-reset.html">OCC、时钟与复位</a></section><section class="nav-group"><h2>03 / 压缩与功耗</h2><a  href="../pages/dft-edt.html">EDT 基础：并行链与响应压缩</a><a  href="../pages/dft-compression.html">EDT 约束与 X 处理</a><a  href="../pages/dft-test-power.html">测试功耗与低功耗设计</a></section><section class="nav-group"><h2>04 / 访问与分层</h2><a  href="../pages/dft-jtag.html">JTAG / Boundary Scan</a><a  href="../pages/dft-ijtag.html">IJTAG 与片内仪器</a><a  href="../pages/dft-wrapper.html">Wrapper 与分层 DFT</a></section><section class="nav-group"><h2>05 / 内建自测试</h2><a  href="../pages/dft-memory-bist.html">MBIST / BIRA / BISR</a><a  href="../pages/dft-logic-bist.html">LBIST 与签名分析</a></section><section class="nav-group"><h2>06 / 工程落地</h2><a  href="../pages/dft-flow.html">DFT 工程流程与调试</a></section></nav><div class="sidebar-version">DFT 概念与交互演示<br>公共教学示例 · 非工艺电路</div></aside>
-  
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../dft/index.html">DFT知识</a></div>
-  <h1 id="at-speed-loc-los">At-speed 测试：LOC 与 LOS</h1>
+<h1 id="at-speed-loc-los">At-speed 测试：LOC 与 LOS</h1>
+<p>低速移位只能验证扫描通路是否连通；要检查逻辑在目标频率下能否完成一次转换，还需要一对有时间关系的 <strong>launch / capture</strong> 事件。</p>
+<p>本页实验为概念教学模型，不代表真实工具实现、时序签核或插入验证结果。</p>
 <section class="dft-lab" id="clocks-at-speed-lab" data-lab="clocks-at-speed" aria-label="At-speed LOC 与 LOS 时序实验">
   <div class="lab-header"><span class="demo-tag">LAB / AT-SPEED</span><strong>让转换在捕获沿之前稳定下来</strong></div>
   <div class="lab-controls">
@@ -67,13 +69,13 @@
   <noscript><p>本实验需要 JavaScript 才能计算参数。概念仍然成立：launch 发起转换，路径延迟加时钟偏斜后必须在 capture 前满足建立时间。</p></noscript>
 </section>
 
-<p>低速移位只能验证扫描通路是否连通；要检查逻辑在目标频率下能否完成一次转换，还需要一对有时间关系的 <strong>launch / capture</strong> 事件。</p>
 <h2 id="_1">先读懂两个事件</h2>
 <ol>
 <li><strong>Launch</strong>：把一个已知状态变成另一个状态，转换沿着组合路径传播。</li>
 <li><strong>Capture</strong>：在规定时间后采样路径末端。如果路径仍未稳定，采样到的值可能与预期不同。</li>
 <li><code>Tperiod - Tsetup - Tskew</code> 是本实验用来估算的简化可用窗口。这里 <code>Tskew ≥ 0</code> 表示按不利方向扣除的时钟偏斜预算，不是带符号的 <code>capture 时钟到达时间 − launch 时钟到达时间</code>；按后一种定义，正偏斜反而增加 setup 可用时间。真实签核还要考虑时钟树、OCV、脉宽、库模型和测试约束。</li>
 </ol>
+<p>输入的“路径延迟”包含发射寄存器的 clock-to-Q、组合逻辑和互连延迟，计至捕获寄存器的数据端；捕获端建立时间在公式中单独扣除。</p>
 <p>这里的“通过”只表示输入参数满足这个教学不等式；LOS 还要求 <code>SE</code> 在 capture 前留出本实验复用的建立裕量：</p>
 <pre><code class="language-text">路径延迟 + 不利时钟偏斜预算 ≤ 时钟周期 − 捕获端建立时间
 </code></pre>
@@ -126,7 +128,7 @@
 <h2 id="_5">复核清单</h2>
 <p>在真实流程中，还应分别确认 launch/capture 波形、<code>SE</code> 转换窗口、测试时钟约束、路径报告、故障模型和模式仿真；这些证据缺一项，都不能把教学页的“通过”升级成项目签核结论。</p>
 <p>不要把动画里的单一周期外推到多周期路径；多周期约束必须有明确的设计意图和工具约束支持。</p>
-  <nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-scan-engineering.html"><small>← 上一主题</small><strong>Scan 工程结构</strong></a><a href="../pages/dft-clock-reset.html"><small>下一主题 →</small><strong>OCC、时钟与复位</strong></a></nav>
+<nav class="lesson-pager" aria-label="学习路线"><a href="../pages/dft-scan-engineering.html"><small>← 上一主题</small><strong>Scan 工程结构</strong></a><a href="../pages/dft-clock-reset.html"><small>下一主题 →</small><strong>OCC、时钟与复位</strong></a></nav>
   <div class="article-end">科普教学模型 · 实际电路与测试配置以工程资料为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>学习导航</p><div class="study-guide">改变条件<br>↓ 观察状态<br>↓ 理解原因</div><div class="toc">
 <ul>
@@ -142,7 +144,7 @@
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索DFT知识</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

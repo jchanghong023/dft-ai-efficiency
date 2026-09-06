@@ -46,12 +46,17 @@ function load(relative, options={}) {
 const home=load('index.html');
 assert(home.document.querySelector('#home-title').textContent.includes('AI 开发有依据'));
 const homeSearch=home.document.querySelector('#search-input');
-homeSearch.value='模型';homeSearch.dispatchEvent(new home.window.Event('input'));
-assert(home.document.querySelector('.search-result').getAttribute('href').startsWith('pages/command-model.html?'),'Model selection outranks incidental mentions');
+homeSearch.value='切换当前会话模型';homeSearch.dispatchEvent(new home.window.Event('input'));
+assert(home.document.querySelector('.search-result').getAttribute('href').startsWith('pages/command-switch.html?'),'Session model selection is discoverable');
+homeSearch.value='lock-up';homeSearch.dispatchEvent(new home.window.Event('input'));
+assert(home.document.querySelector('#search-results a[href*="dft-scan-engineering.html"]'),'Home searches DFT');
+assert(home.document.querySelector('#search-status').textContent.includes('全部公共内容'));
+homeSearch.value='NO_RESULT_FIXTURE_782';homeSearch.dispatchEvent(new home.window.Event('input'));
+assert(home.document.querySelector('#search-status').textContent.includes('全部公共内容'));
 homeSearch.value='/resume';homeSearch.dispatchEvent(new home.window.Event('input'));
 assert(home.document.querySelector('.search-result').getAttribute('href').startsWith('pages/command-resume.html?'),'Exact command is first');
-assert(!home.document.querySelector('[data-copy="/model"]').hidden,'Command copy is available with JavaScript');
-for(const href of ['pages/quickstart.html','pages/team.html','pages/command-resume.html','pages/command-model.html','pages/command-compact.html']){
+assert(!home.document.querySelector('[data-copy="/switch"]').hidden,'Command copy is available with JavaScript');
+for(const href of ['pages/quickstart.html','pages/team.html','pages/command-resume.html','pages/command-switch.html','pages/command-compact.html','internal/index.html','dft/index.html']){
   assert(home.document.querySelector('main a[href="'+href+'"]'),'High-value entry: '+href);
 }
 const theme=p=>p.document.documentElement.dataset.theme;
@@ -258,8 +263,8 @@ class PresentationTests(unittest.TestCase):
     def test_home_and_article_assets_are_separate(self):
         home = (ROOT/'site/index.html').read_text(encoding='utf-8')
         body = home.split('<main', 1)[1].split('</main>', 1)[0]
-        self.assertNotIn('dft/index.html', body)
-        self.assertNotIn('internal/index.html', body)
+        self.assertIn('dft/index.html', body)
+        self.assertIn('internal/index.html', body)
         self.assertNotIn('class="sidebar', home)
         self.assertIn('assets/home.css', home)
         self.assertNotIn('assets/home.js', home)
@@ -271,11 +276,12 @@ class PresentationTests(unittest.TestCase):
         self.assertNotIn('assets/home.js', page)
         self.assertNotIn('assets/dft.js', page)
 
-    def test_labs_precede_reading_and_search_has_explicit_areas(self):
+    def test_labs_follow_intro_and_search_has_explicit_areas(self):
         curriculum=json.loads((ROOT/'portal/metadata/dft-curriculum.json').read_text(encoding='utf-8'))
         for lesson in [l for group in curriculum['groups'] for l in group['lessons'] if l.get('lab')]:
             page=(ROOT/f"site/pages/{lesson['slug']}.html").read_text(encoding='utf-8').split('<main',1)[1]
-            self.assertLess(re.search(r'<section\b[^>]*\bdft-lab\b', page).start(), page.index('<p>'))
+            self.assertLess(page.index('<p>'), re.search(r'<section\b[^>]*\bdft-lab\b', page).start())
+            self.assertLess(page.index('本页实验为概念教学模型'), re.search(r'<section\b[^>]*\bdft-lab\b', page).start())
         raw=(ROOT/'site/assets/search-data.js').read_text(encoding='utf-8')
         rows=json.loads(raw.removeprefix('window.DFT_SEARCH = ').rstrip(';\n'))
         self.assertEqual({r['area'] for r in rows},{'start','team','maintenance','internal','dft'})

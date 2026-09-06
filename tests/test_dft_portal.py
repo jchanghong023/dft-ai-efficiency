@@ -39,8 +39,8 @@ class DftPortalTests(unittest.TestCase):
         self.open('index.html')
         self.assertEqual(self.page.locator('.topnav a').all_text_contents(), ['首页', *titles])
         self.assertEqual(self.page.locator('.topnav a:not(:first-child)').evaluate_all('(links) => links.map(link => new URL(link.href).pathname.split("/").slice(-2).join("/"))'), [f'{area}/index.html' for area in areas])
-        expected_links = {'start': ['quickstart', 'cli', 'tools', 'config', 'commands', 'agents', 'faq'],
-                          'team': ['team', 'skills', 'skill-generate-unit-tests', 'skill-generate-dft-circuit'],
+        expected_links = {'start': ['quickstart', 'hotkeys', 'usage-guide', 'cli', 'tools', 'config', 'commands', 'agents', 'faq'],
+                          'team': ['team', 'skills', 'team-agents', 'team-commands', 'skill-generate-unit-tests', 'skill-generate-dft-circuit'],
                           'maintenance': ['maintenance'],
                           'dft': [lesson['slug'] for group in json.loads((ROOT / 'portal/metadata/dft-curriculum.json').read_text(encoding='utf-8'))['groups'] for lesson in group['lessons']]}
         for area, title in zip(areas, titles):
@@ -134,7 +134,7 @@ class DftPortalTests(unittest.TestCase):
             page = context.new_page()
             for demo in ('scan', 'edt'):
                 page.goto((ROOT / f'site/pages/dft-{demo}.html').as_uri())
-                self.assertEqual(page.locator('svg').count(), 1)
+                self.assertEqual(page.locator('main svg').count(), 1)
                 self.assertIn('静态图', page.locator('main').inner_text())
                 self.assertEqual(page.locator('.demo-controls button:disabled').count(), 3)
                 self.assertGreater(len(page.locator('main').inner_text()), 300)

@@ -13,7 +13,7 @@
 | 结构/等价/连接验证 | 插入前后设计、约束、形式/仿真环境 | 结构报告、等价报告、链连接报告 | 逻辑差异、链顺序、test mode 覆盖 |
 | ATPG | 故障模型、插入网表、时序/模式约束 | pattern、预期响应、覆盖率与未测原因 | 故障激活/传播、约束冲突、X 来源 |
 | Fault simulation | ATPG pattern、故障模型、门级模型 | 检出/未检出/不可模拟分类 | 模式、时钟、复位和故障注入是否一致 |
-| Pattern simulation | pattern、SDF/时序模型、ATE 约定 | 时序仿真波形、协议与功耗证据 | launch/capture 边沿、setup/hold、X 传播 |
+| Pattern simulation | pattern、SDF/时序模型、ATE 约定 | 时序仿真波形、协议检查及供后续功耗分析使用的活动数据 | launch/capture 边沿、setup/hold、X 传播 |
 | ATE / bring-up / diagnosis | 签核 pattern、ATE 格式、探针与芯片 | 首片日志、失效 bitmap、诊断假设 | tester 映射、电源/时钟、硅上与仿真差异 |
 
 ## 交付物的最小闭环

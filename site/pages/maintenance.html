@@ -9,9 +9,9 @@
   <link rel="stylesheet" href="../assets/style.css">
   <script defer src="../assets/search-data.js"></script>
   <script defer src="../assets/app.js"></script>
-  <link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
-  
-  
+<link rel="stylesheet" href="../assets/reading.css"><script defer src="../assets/reading.js"></script>
+
+
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="../assets/desktop.css">
 </head>
@@ -24,16 +24,16 @@
   <span class="offline"><i></i> 离线可用</span>
   <div class="theme-controls" role="group" aria-label="页面明暗模式" hidden>
     <button id="theme-toggle" type="button" aria-label="切换明暗模式"><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20.7 14.1A9 9 0 0 1 9.9 3.3 9 9 0 1 0 20.7 14.1Z"/></svg><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg><span id="theme-label">深色</span></button>
-    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">自动</button>
+    <button id="theme-auto" type="button" aria-pressed="true" title="按本地时间自动切换：07:00–19:00 浅色，其余时间深色">按时间</button>
   </div>
 </header>
 
 <div class="docs-layout">
-  
-  <aside class="sidebar"><a class="area-back" href="../maintenance/index.html">维护手册 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="维护手册栏目"><a class="active" aria-current="page" href="../pages/maintenance.html">维护与版本</a></nav><div class="sidebar-version">手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
-  
+
+  <aside class="sidebar"><a class="area-back" href="../maintenance/index.html">维护手册 · 分区首页</a><button class="module-search" type="button">搜索当前模块 <span>/</span></button><label class="nav-filter-label" for="nav-filter">筛选目录</label><input id="nav-filter" type="search" placeholder="输入标题关键词…"><nav class="module-navigation" aria-label="维护手册栏目"><a class="active" aria-current="page" href="../pages/maintenance.html">维护与版本</a></nav><div class="sidebar-version">基础手册参考版本<br><strong>v18.1.9+fork.170</strong><br>公共内容 · 本地浏览</div></aside>
+
   <main id="main" class="article"><div class="breadcrumb"><a href="../index.html">工作台</a><span>/</span><a href="../maintenance/index.html">维护手册</a></div>
-  <h1 id="_1">维护与版本</h1>
+<h1 id="_1">维护与版本</h1>
 <h2 id="_2">日常离线重建</h2>
 <p>普通使用者浏览已生成的 <code>site/</code> 无需安装构建依赖。维护者直接使用本地已安装的 Python 3.11+，在仓库根目录向同一个解释器安装 <code>requirements-build.txt</code> 中的依赖。先运行 <code>python3 --version</code>（Windows 用 <code>py -3 --version</code>）确认版本至少为 3.11；若默认命令对应旧版本，请改用已安装的 Python 3.11+ 解释器绝对路径。首次安装依赖需要可访问的软件源；离线重建前须预先安装依赖或准备适合维护机的 wheel。</p>
 <p>Linux（Python 3.11+）：</p>
@@ -78,10 +78,24 @@ python3 scripts/maintenance/package.py
 <h2 id="_6">公共发布包</h2>
 <p><code>scripts/maintenance/package.py</code> 输出 <code>.tmp/releases/</code> 中的 ZIP 与 SHA-256；包内有共享能力、维护脚本、公共源码、生成门户和 Linux 实体二进制。仅按文件白名单选入内容，合成一个空黄区的 <code>.gitignore</code>；不读取公司数据或打包 <code>.tmp/</code>。</p>
 <p>OMP 已有许可和第三方声明保留在 <code>licenses/omp/</code>，随公共包交付。Claude Code 为原厂客户端，本仓库不对其声明自有许可证。打包不会向远端发布。</p>
-<h2 id="_7">验证边界</h2>
+<h2 id="_7">公司红区内部交付</h2>
+<p>公共发布包继续使用白名单，不读取黄区。内部交付由公司批准的工具单独完成，不放宽公共打包脚本。</p>
+<p>在黄区完成生成后，检查 <code>yellow/.site/build-report.html</code>，处理读取失败、缺失引用、隐藏附件目录和被清理的表现形式；超限文件须确认是否拆分或调整 <code>--max-lines</code>。超过阈值的原文须保留。</p>
+<p>内部包保留完整目录关系：<code>site/</code>、隐藏目录 <code>yellow/.site/</code>、<code>yellow/docs/</code>（原文、图片及附件）及 <code>scripts/</code>。需要安装能力时再随公共包保留 <code>omp/</code>、<code>dist/</code> 等；需要 OMP Wiki 时加入经批准的 <code>yellow/docs.db</code>，并完成数据库检查。不能只复制 <code>site/</code>，也不能漏掉 <code>.site</code>。</p>
+<p>用公司工具生成最终包，解压到另一个目录后，从维护仓库执行：</p>
+<pre><code class="language-bash">python3 tests/verify_delivery.py --root /path/to/extracted-delivery
+</code></pre>
+<p>检查生成文件哈希、公共/内部构建一致性、原文和被引用附件、链接、锚点、内部搜索、HTTP 路径兼容及清单计数。存在被清理的引用或读取失败时验收不通过。私有报告只写维护仓库 <code>.tmp/delivery-verification.json</code>，不放公共 <code>site/</code>；报告保留构建标识、内部生成时间、文档计数和问题明细。</p>
+<p>在解压目录启动 <code>scripts/serve_site.py</code> 后，再加 <code>--http-base http://127.0.0.1:9333</code> 验证实际 HTTP 文件内容。还须在目标浏览器断网检查直接打开与 HTTP 打开、内部入口、搜索、交互和网络请求；脚本静态验收不替代浏览器或公司环境验收。</p>
+<p>交付清单由维护者记录源码 commit（有未提交修改须注明）、门户构建标识、资料批次、内部生成时间、最终包 SHA-256、上述验收报告，以及目标机实际 <code>omp --version</code> / <code>claude --version</code> 输出。基础手册版本、各文章参考提交和实际软件版本分别记录，不相互替代。</p>
+<h2 id="_8">本地与集中访问</h2>
+<p>个人使用：每人获取完整交付包，直接打开网页或在自己的机器启动服务。<code>127.0.0.1:9333</code> 只指向当前机器，管理员启动后不能用其他同事的回环地址访问它。</p>
+<p>集中访问：由公司批准的静态服务以交付根目录为根提供内部地址，保留上述路径关系并限定资源范围。个人服务仍固定监听 <code>127.0.0.1:9333</code>。</p>
+<p>只读共享目录下安装前，先复制交付内容到个人可写目录。同步会在停止 OMP 前检查暂存目录，正式执行还会先创建暂存文件；<code>--dry-run</code> 只读检查权限，不承诺之后的磁盘状态不变。</p>
+<h2 id="_9">验证边界</h2>
 <p>本机隔离测试不触碰真实个人 OMP 目录。Windows 可执行 Python 逻辑和浏览器 <code>file://</code> 测试，Linux /proc 进程机制需在 Linux 下验证。CentOS 7、公司模型、PAD 库及 Sailor 的现场运行结果必须单独记录，不能用本地测试替代。</p>
-  
-  <div class="article-end">本页参考 v18.1.9+fork.170。实际可用能力以本机二进制与会话配置为准。</div></main>
+
+  <div class="article-end">基础手册参考 v18.1.9+fork.170；单项更新依据见正文。实际可用能力以本机二进制与会话配置为准。</div></main>
   <aside class="toc" aria-label="本页导航"><p>本页目录</p><div class="toc">
 <ul>
 <li><a href="#_2">日常离线重建</a></li>
@@ -89,13 +103,15 @@ python3 scripts/maintenance/package.py
 <li><a href="#_4">外围更新发行版</a></li>
 <li><a href="#_5">内容维护</a></li>
 <li><a href="#_6">公共发布包</a></li>
-<li><a href="#_7">验证边界</a></li>
+<li><a href="#_7">公司红区内部交付</a></li>
+<li><a href="#_8">本地与集中访问</a></li>
+<li><a href="#_9">验证边界</a></li>
 </ul>
 </div>
 <a class="back-top" href="#main">返回顶部 ↑</a></aside>
 </div>
 
-<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>v18.1.9+fork.170 <b>·</b> 无运行时外部资源</span></footer>
+<footer><span>DFT 工作台 <b> / </b> 团队离线手册</span><span>门户构建 2b82d0d20714 <b>·</b> 无运行时外部资源</span></footer>
 <dialog id="search-dialog" aria-labelledby="search-title"><div class="search-heading"><h2 id="search-title">搜索维护手册</h2><button id="search-close" aria-label="关闭搜索">×</button></div><label for="search-input">输入中文关键词、命令或 Skill 名称</label><input id="search-input" type="search" placeholder="例如：复位、PAD、fullsend" autocomplete="off"><p id="search-status" role="status">本地全文搜索 · 不发送任何请求</p><div id="search-results"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 </body>

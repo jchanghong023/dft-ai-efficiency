@@ -41,9 +41,12 @@
   };
   window.DFTSearch = {normalize,ranges,highlight};
   const currentArea = document.body.dataset.area;
+  const scope = currentArea === 'home' ? '全部公共内容（含 DFT，不含内部文档）' : document.querySelector('#search-title').textContent.replace(/^搜索/, '');
+  const idleStatus = `当前范围：${scope} · 本地全文搜索`;
+  status.textContent = idleStatus;
   const everydayCommands = new Set(['pages/command-model.html', 'pages/command-resume.html', 'pages/command-compact.html']);
   const documents = (window.DFT_SEARCH || [])
-    .filter(item => currentArea === 'home' ? ['start', 'team', 'maintenance'].includes(item.area) : item.area === currentArea)
+    .filter(item => currentArea === 'home' ? ['start', 'team', 'maintenance', 'dft'].includes(item.area) : item.area === currentArea)
     .map(item => ({...item, normalized: normalize(item.title + " " + item.text),
       purpose: normalize((item.sections || []).find(s => s.title === '功能与场景')?.text.split(/[。！？]/)[0] || '')}));
   const openSearch = () => { dialog.showModal(); input.focus(); };
@@ -73,13 +76,13 @@
       link.append(title,location,excerpt); results.append(link);
     }
     shown+=next.length;
-    status.textContent=hits.length ? `找到 ${hits.length} 篇文档，已显示 ${shown} 篇` : '没有找到结果，请换一个关键词。';
+    status.textContent=`当前范围：${scope} · ` + (hits.length ? `找到 ${hits.length} 篇文档，已显示 ${shown} 篇` : '没有找到结果，请换关键词或进入其他分区。');
     more.hidden=shown>=hits.length; more.textContent=`继续显示（剩余 ${hits.length-shown} 篇）`;
   };
   more.addEventListener('click',appendResults);
   input.addEventListener('input',() => {
     query=normalize(input.value.trim()); results.replaceChildren(); more.hidden=true; shown=0; hits=[];
-    if(!query){ status.textContent='本地全文搜索 · 不发送任何请求'; return; }
+    if(!query){ status.textContent=idleStatus; return; }
     terms=query.split(/\s+/);
     const relevance = item => {
       const title = normalize(item.title);
