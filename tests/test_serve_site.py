@@ -48,7 +48,7 @@ class ServeSiteTests(unittest.TestCase):
         cls.temp.cleanup()
 
     def request(self, path, method="GET"):
-        connection = HTTPConnection(*self.server.server_address, timeout=5)
+        connection = HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
         try:
             connection.request(method, path)
             response = connection.getresponse()
@@ -56,8 +56,8 @@ class ServeSiteTests(unittest.TestCase):
         finally:
             connection.close()
 
-    def test_loopback_and_entry(self):
-        self.assertEqual(self.server.server_address[0], "127.0.0.1")
+    def test_all_interfaces_and_entry(self):
+        self.assertEqual(self.server.server_address[0], "0.0.0.0")
         self.assertEqual(serve_site.PORT, 9333)
         status, headers, body = self.request("/")
         self.assertEqual(status, 302)

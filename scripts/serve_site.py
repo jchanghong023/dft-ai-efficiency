@@ -1,4 +1,4 @@
-"""Serve the offline portal on http://127.0.0.1:9333/ using Python 3.11+."""
+"""Serve the offline portal on all IPv4 interfaces, port 9333, using Python 3.11+."""
 from __future__ import annotations
 
 import argparse
@@ -10,7 +10,7 @@ from urllib.parse import unquote, urlsplit
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 9333
 MOUNTS = ("site", "yellow/.site", "yellow/docs")
 
@@ -102,7 +102,12 @@ def main() -> int:
         print(f"Cannot listen on {HOST}:{PORT}: {exc}. Check whether port {PORT} is in use.", file=sys.stderr)
         return 1
     with server:
-        print(f"DFT portal: http://{HOST}:{PORT}/\nPress Ctrl+C to stop.", flush=True)
+        print(
+            f"Listening on {HOST}:{PORT}\n"
+            f"DFT portal (local): http://127.0.0.1:{PORT}/\n"
+            f"Other machines: http://<server-ip>:{PORT}/\nPress Ctrl+C to stop.",
+            flush=True,
+        )
         try:
             server.serve_forever()
         except KeyboardInterrupt:
